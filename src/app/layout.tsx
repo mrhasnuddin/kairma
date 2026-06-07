@@ -1,0 +1,42 @@
+import type { Metadata } from "next";
+import { ThemeProvider, themeScript } from "@/lib/theme";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "KAIRMA OS · The AI workforce for cross-border brands",
+  description:
+    "ONE BOX. YOUR FIRST AI EMPLOYEE. Deploy a sovereign AI workforce on-premise in 48 hours. Brand data stays local, powered by Kairma Edge Appliance.",
+  keywords: [
+    "KAIRMA",
+    "KAIRMA OS",
+    "Sovereign AI",
+    "Cross-border brands",
+    "AI workforce",
+    "Edge Appliance",
+    "Web3Labs",
+    "Kairma Box",
+  ],
+  authors: [{ name: "KAIRMA" }],
+  openGraph: {
+    title: "KAIRMA OS",
+    description: "The AI workforce for cross-border brands.",
+    type: "website",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="antialiased">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
+    </html>
+  );
+}
