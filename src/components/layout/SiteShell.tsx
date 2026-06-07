@@ -260,9 +260,7 @@ export const SiteShell: React.FC = () => {
       case "status":
         return "lg:col-span-1 h-full";
       case "architecture":
-        return activeGroups.includes("system") && !activeGroups.includes("problem")
-          ? "lg:col-span-2 h-full min-h-[360px]"
-          : "lg:col-span-1 h-full min-h-[360px]";
+        return "lg:col-span-2 h-full min-h-[360px]";
       case "how-it-works":
         return activeGroups.includes("system") && !activeGroups.includes("problem") && !activeGroups.includes("begin")
           ? "lg:col-span-3 h-full"
