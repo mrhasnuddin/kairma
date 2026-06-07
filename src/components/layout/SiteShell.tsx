@@ -289,7 +289,7 @@ export const SiteShell: React.FC = () => {
   };
 
   return (
-    <VoidBackground className="relative min-h-screen lg:h-screen w-full flex flex-col pt-2.5 pb-5 px-5 lg:overflow-hidden text-theme-text transition-colors duration-300 bg-theme-void">
+    <VoidBackground className="relative min-h-screen lg:h-screen w-full flex flex-col pt-2.5 pb-24 lg:pb-5 px-5 lg:overflow-hidden text-theme-text transition-colors duration-300 bg-theme-void">
       
       {/* 1. Boot Sequence Overlay */}
       <AnimatePresence>
@@ -360,7 +360,7 @@ export const SiteShell: React.FC = () => {
       />
 
       {/* 4. Dashboard Viewport Container */}
-      <main className="flex-1 min-h-0 w-full mt-4 relative z-10 flex flex-col justify-start overflow-y-auto">
+      <main className="flex-1 min-h-0 w-full mt-4 pb-24 lg:pb-0 relative z-10 flex flex-col justify-start overflow-y-auto">
         <div className="workspace-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full [grid-auto-flow:dense]">
           <AnimatePresence mode="popLayout">
             {visiblePanels.map((panel) => {
