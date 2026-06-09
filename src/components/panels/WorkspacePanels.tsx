@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useSiteCopy, useLanguage } from "@/lib/language";
 import PanelFrame from "./PanelFrame";
 import Button from "../ui/Button";
-import WireframeOctahedron from "../visual/WireframeOctahedron";
+import GlassWorkforceCube from "../visual/GlassWorkforceCube";
 import FallingPattern from "../visual/FallingPattern";
 import { useTheme } from "@/lib/theme";
 
@@ -328,17 +328,14 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
                 </p>
               </div>
 
-              <div className={`w-20 h-20 ${isCompact ? "md:w-24 md:h-24" : "md:w-32 md:h-32"} flex-shrink-0 relative mx-auto my-2`}>
-                <WireframeOctahedron speed={0.007} />
+              <div className={`w-32 h-32 ${isCompact ? "md:w-36 md:h-36" : "md:w-44 md:h-44"} flex-shrink-0 relative mx-auto my-4`}>
+                <GlassWorkforceCube speed={0.007} />
               </div>
 
               <div className="flex items-center gap-5 mt-auto font-mono">
                 <Button variant="primary" size="md" onClick={onOpenPilot} className="font-bold border-theme-accent text-xs md:text-sm py-2 px-5">
                   {c.cta.begin}
                 </Button>
-                <div className="text-xs md:text-sm text-theme-text-muted tracking-widest animate-bounce mt-1">
-                  {c.scrollText}
-                </div>
               </div>
             </div>
           )}
@@ -492,12 +489,12 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
       corners={true}
       className="h-full flex flex-col justify-between relative"
       headerRight={
-        <div className="flex items-center gap-2 relative" ref={dropdownRef}>
+        <div className="flex items-center gap-3 relative select-none" ref={dropdownRef}>
           {/* Language Switcher Dropdown */}
           <div className="relative">
             <button
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-              className="flex items-center gap-1 px-2 py-0.5 border border-theme-border/40 rounded-sm bg-theme-void/80 hover:border-theme-accent text-theme-text-muted hover:text-theme-text text-[9px] md:text-[10px] font-mono font-bold tracking-wider cursor-pointer transition-colors outline-none"
+              className="flex items-center gap-1.5 px-3 py-1 border border-theme-border/60 hover:border-theme-accent rounded-sm bg-theme-void/90 hover:bg-theme-void text-theme-text-muted hover:text-theme-text text-[11px] md:text-[12px] font-mono font-bold tracking-wider cursor-pointer transition-colors duration-150 outline-none"
               aria-label="Select language"
             >
               <span>
@@ -506,11 +503,11 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
                 {language === "zh-TW" && "繁"}
                 {language === "vi" && "VN"}
               </span>
-              <span className={`text-[6px] md:text-[7px] transition-transform duration-150 ${langDropdownOpen ? "rotate-180" : ""}`}>▼</span>
+              <span className={`text-[7px] md:text-[8px] transition-transform duration-150 ${langDropdownOpen ? "rotate-180" : ""}`}>▼</span>
             </button>
 
             {langDropdownOpen && (
-              <div className="absolute right-0 top-full mt-1.5 w-24 border border-theme-border bg-theme-void/95 backdrop-blur-md shadow-2xl rounded-sm py-1 z-50 flex flex-col font-mono text-[9px] md:text-[10px]">
+              <div className="absolute right-0 top-full mt-1.5 w-28 border border-theme-border bg-theme-void/95 backdrop-blur-md shadow-2xl rounded-sm py-1 z-50 flex flex-col font-mono text-[11px] md:text-[12px]">
                 {(["en", "zh-CN", "zh-TW", "vi"] as const).map((lang) => (
                   <button
                     key={lang}
@@ -518,7 +515,7 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
                       setLanguage(lang);
                       setLangDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-2.5 py-1.5 cursor-pointer transition-colors select-none ${
+                    className={`w-full text-left px-3 py-2 cursor-pointer transition-colors duration-150 select-none ${
                       language === lang
                         ? "bg-theme-accent/15 text-theme-accent font-bold"
                         : "text-theme-text-muted hover:bg-theme-border/20 hover:text-theme-text"
@@ -536,14 +533,31 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
 
           <div className="w-[1px] h-3 bg-theme-border/40 self-center mx-0.5" />
 
-          {/* Color Switcher */}
-          <button
+          {/* Theme Switcher Pill Toggle */}
+          <div 
             onClick={toggleTheme}
-            className="w-5 h-5 rounded-full border border-theme-border/60 hover:border-theme-accent bg-theme-void/70 hover:bg-theme-accent/5 flex items-center justify-center cursor-pointer transition-colors duration-150 focus:outline-none"
-            aria-label="Toggle theme"
+            className="flex items-center gap-0.5 p-0.5 border border-theme-border/50 hover:border-theme-accent rounded-full bg-theme-void/80 cursor-pointer transition-colors duration-150 select-none"
+            title="Toggle theme"
           >
-            <div className={`w-2 h-2 rounded-full bg-theme-accent ${theme === "matrix-dark" ? "animate-pulse" : ""}`} />
-          </button>
+            <div className={`p-1 rounded-full transition-all duration-150 ${theme === "korea-light" ? "bg-theme-accent text-theme-void" : "text-theme-text-muted hover:text-theme-text"}`}>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            </div>
+            <div className={`p-1 rounded-full transition-all duration-150 ${theme === "matrix-dark" ? "bg-theme-accent text-theme-void" : "text-theme-text-muted hover:text-theme-text"}`}>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            </div>
+          </div>
         </div>
       }
     >
