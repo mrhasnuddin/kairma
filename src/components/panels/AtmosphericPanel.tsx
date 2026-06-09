@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from "react";
 import PanelFrame from "./PanelFrame";
 import ThemeSwitcher from "../ui/ThemeSwitcher";
-import { siteCopy } from "@/data/site-copy";
+import { useSiteCopy } from "@/lib/language";
 import { useTheme } from "@/lib/theme";
 
 export const AtmosphericPanel: React.FC = () => {
   const { theme } = useTheme();
+  const siteCopy = useSiteCopy();
   const sc = siteCopy.status;
   const [time, setTime] = useState("");
 

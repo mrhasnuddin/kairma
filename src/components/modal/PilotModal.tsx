@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { siteCopy } from "@/data/site-copy";
+import { useSiteCopy } from "@/lib/language";
 import Button from "../ui/Button";
 
 interface PilotModalProps {
@@ -11,6 +11,7 @@ interface PilotModalProps {
 }
 
 export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
+  const siteCopy = useSiteCopy();
   const c = siteCopy.pilotModal;
   const [formData, setFormData] = useState({
     name: "",

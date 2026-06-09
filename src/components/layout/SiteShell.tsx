@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { siteCopy } from "@/data/site-copy";
+import { useSiteCopy } from "@/lib/language";
 import Header from "./Header";
 import VoidBackground from "../visual/VoidBackground";
 import GothicGrid from "../visual/GothicGrid";
@@ -20,6 +20,7 @@ import {
 export type FocusId = "solutions" | "about" | "ecosystem" | "community";
 
 export const SiteShell: React.FC = () => {
+  const siteCopy = useSiteCopy();
   const [activePanels, setActivePanels] = useState<FocusId[]>([
     "solutions",
     "about",

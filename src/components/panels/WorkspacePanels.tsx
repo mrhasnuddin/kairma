@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { siteCopy } from "@/data/site-copy";
+import { useSiteCopy, useLanguage } from "@/lib/language";
 import PanelFrame from "./PanelFrame";
 import Button from "../ui/Button";
 import WireframeOctahedron from "../visual/WireframeOctahedron";
@@ -155,6 +155,7 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
   activeInnerTab,
   onInnerTabChange,
 }) => {
+  const siteCopy = useSiteCopy();
   const c = siteCopy.hero;
   const chi = siteCopy.howItWorks;
   const cwk = siteCopy.whatKairmaIs;
@@ -327,6 +328,7 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
   isCompact = false,
 }) => {
   const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage } = useLanguage();
   const [timeStr, setTimeStr] = useState("");
   const [timezoneStr, setTimezoneStr] = useState("");
 
@@ -361,6 +363,41 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
       terminalStyle={false}
       corners={true}
       className="h-full flex flex-col justify-between relative"
+      headerRight={
+        <div className="flex items-center gap-2">
+          {/* Language Switcher */}
+          <div className="flex items-center gap-0.5 border border-theme-border/40 p-0.5 rounded-sm bg-theme-void/85 font-mono text-[9px] md:text-[10px]">
+            {(["en", "zh-CN", "zh-TW", "vi"] as const).map((lang) => (
+              <button
+                key={lang}
+                onClick={() => setLanguage(lang)}
+                className={`px-1.5 py-0.5 tracking-wider cursor-pointer transition-colors duration-150 rounded-xs select-none outline-none font-bold ${
+                  language === lang
+                    ? "bg-theme-accent text-theme-void"
+                    : "text-theme-text-muted hover:text-theme-text"
+                }`}
+                aria-label={`Switch to ${lang}`}
+              >
+                {lang === "en" && "EN"}
+                {lang === "zh-CN" && "简"}
+                {lang === "zh-TW" && "繁"}
+                {lang === "vi" && "VN"}
+              </button>
+            ))}
+          </div>
+
+          <div className="w-[1px] h-3 bg-theme-border/40 self-center mx-1" />
+
+          {/* Color Switcher */}
+          <button
+            onClick={toggleTheme}
+            className="w-5 h-5 rounded-full border border-theme-border/60 hover:border-theme-accent bg-theme-void/70 hover:bg-theme-accent/5 flex items-center justify-center cursor-pointer transition-colors duration-150 focus:outline-none"
+            aria-label="Toggle theme"
+          >
+            <div className={`w-2 h-2 rounded-full bg-theme-accent ${theme === "matrix-dark" ? "animate-pulse" : ""}`} />
+          </button>
+        </div>
+      }
     >
       <div className="absolute inset-0 pointer-events-none z-0">
         <FallingPattern opacity={theme === "matrix-dark" ? 0.75 : 0.85} />
@@ -382,14 +419,6 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
               <span className="text-xs md:text-sm font-bold text-theme-text tracking-wider tabular-nums">
                 {timeStr || "00:00:00"} {timezoneStr}
               </span>
-
-              <button
-                onClick={toggleTheme}
-                className="w-5 h-5 md:w-6 md:h-6 rounded-full border border-theme-border/60 hover:border-theme-accent bg-theme-void/70 hover:bg-theme-accent/5 flex items-center justify-center cursor-pointer transition-colors duration-150 focus:outline-none"
-                aria-label="Toggle theme"
-              >
-                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-theme-accent animate-pulse" />
-              </button>
             </div>
           </div>
 
@@ -430,6 +459,7 @@ export const AboutPanel: React.FC<AboutPanelProps> = ({
   activeInnerTab,
   onInnerTabChange,
 }) => {
+  const siteCopy = useSiteCopy();
   const cp = siteCopy.problem;
   const cwn = siteCopy.whyNow;
   const ci = siteCopy.insight;
@@ -623,6 +653,7 @@ interface EcosystemPanelProps {
 export const EcosystemPanel: React.FC<EcosystemPanelProps> = ({
   isCompact = false,
 }) => {
+  const siteCopy = useSiteCopy();
   const cs = siteCopy.story;
   const cp = siteCopy.partners;
   const cf = siteCopy.footer;
@@ -788,6 +819,7 @@ export const CommunityPanel: React.FC<CommunityPanelProps> = ({
   onOpenPilot,
   isCompact = false,
 }) => {
+  const siteCopy = useSiteCopy();
   const cb = siteCopy.begin;
   const cc = siteCopy.closing;
   const cf = siteCopy.footer;

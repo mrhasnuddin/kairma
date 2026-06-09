@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { kairmaEase } from "@/lib/animation";
-import { siteCopy } from "@/data/site-copy";
+import { useSiteCopy } from "@/lib/language";
 
 export const ArchitectureArrows: React.FC = () => {
+  const siteCopy = useSiteCopy();
   const c = siteCopy.architecture;
   const [activeTab, setActiveTab] = useState<"lake" | "sop" | "cloud" | null>(null);
 

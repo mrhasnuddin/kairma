@@ -1,8 +1,48 @@
 "use client";
 
 import React from "react";
+import { useLanguage } from "@/lib/language";
 
 export type FocusId = "solutions" | "about" | "ecosystem" | "community";
+
+const navTranslations = {
+  en: {
+    solutions: "Solutions",
+    about: "About",
+    ecosystem: "Ecosystem",
+    community: "Community",
+    brief: "Brief",
+    begin: "Begin",
+    os: "operating system"
+  },
+  "zh-CN": {
+    solutions: "解决方案",
+    about: "关于",
+    ecosystem: "生态系统",
+    community: "社区",
+    brief: "简报",
+    begin: "开始",
+    os: "操作系统"
+  },
+  "zh-TW": {
+    solutions: "解決方案",
+    about: "關於",
+    ecosystem: "生態系統",
+    community: "社群",
+    brief: "簡報",
+    begin: "開始",
+    os: "作業系統"
+  },
+  vi: {
+    solutions: "Giải pháp",
+    about: "Giới thiệu",
+    ecosystem: "Hệ sinh thái",
+    community: "Cộng đồng",
+    brief: "Tóm tắt",
+    begin: "Bắt đầu",
+    os: "Hệ điều hành"
+  }
+};
 
 interface HeaderProps {
   activePanels: FocusId[];
@@ -15,6 +55,8 @@ export const Header: React.FC<HeaderProps> = ({
   onTogglePanel,
   onOpenPilot,
 }) => {
+  const { language } = useLanguage();
+  const t = navTranslations[language as keyof typeof navTranslations] || navTranslations.en;
   const navItemClass = (focusId: FocusId) => {
     const isActive = activePanels.includes(focusId);
     return `text-xs md:text-sm tracking-[0.18em] font-mono uppercase font-bold cursor-pointer transition-colors duration-200 select-none outline-none focus-visible:text-theme-accent flex items-center gap-2 ${
@@ -72,8 +114,8 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-6 md:gap-8 flex-1">
           {/* Desktop Nav on Left */}
           <div className="hidden lg:flex items-center gap-6 md:gap-8">
-            {renderNavButton("solutions", "Solutions")}
-            {renderNavButton("about", "About")}
+            {renderNavButton("solutions", t.solutions)}
+            {renderNavButton("about", t.about)}
           </div>
 
           {/* Mobile Wordmark on Left */}
@@ -113,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({
               Kairma
             </span>
             <span className="text-[11px] md:text-xs text-theme-text-muted tracking-[0.25em] uppercase font-mono leading-none -mt-1 select-none">
-              operating system
+              {t.os}
             </span>
           </div>
         </div>
@@ -122,8 +164,8 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-6 md:gap-8 flex-1 justify-end">
           {/* Desktop Nav on Right */}
           <div className="hidden lg:flex items-center gap-6 md:gap-8">
-            {renderNavButton("ecosystem", "Ecosystem")}
-            {renderNavButton("community", "Community")}
+            {renderNavButton("ecosystem", t.ecosystem)}
+            {renderNavButton("community", t.community)}
             <div className="w-[1px] h-5 bg-theme-border/60" />
           </div>
 
@@ -134,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({
             rel="noopener noreferrer"
             className="text-xs tracking-[0.18em] text-theme-text-muted hover:text-theme-text uppercase font-semibold inline-flex items-center gap-1.5 select-none focus-visible:text-theme-accent"
           >
-            Brief ↗
+            {t.brief} ↗
           </a>
 
           {/* CTA Button */}
@@ -143,7 +185,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="px-4 py-2 md:px-5 md:py-2.5 text-xs tracking-[0.18em] font-bold uppercase border border-theme-border bg-theme-void/85 text-theme-text hover:border-theme-accent hover:text-theme-accent transition-all duration-200 select-none cursor-pointer rounded-xs outline-none focus-visible:ring-1 focus-visible:ring-theme-accent"
             aria-label="Open Request a Pilot dialog"
           >
-            Begin →
+            {t.begin} →
           </button>
         </div>
       </header>
@@ -152,10 +194,10 @@ export const Header: React.FC<HeaderProps> = ({
       <nav
         className="fixed bottom-4 left-4 right-4 z-40 lg:hidden h-16 border border-theme-border/60 bg-theme-void/90 backdrop-blur-md rounded-sm flex items-center justify-around px-4 font-mono text-[9px] sm:text-xs shadow-lg"
       >
-        {renderMobileNavButton("solutions", "Solutions")}
-        {renderMobileNavButton("about", "About")}
-        {renderMobileNavButton("ecosystem", "Ecosystem")}
-        {renderMobileNavButton("community", "Community")}
+        {renderMobileNavButton("solutions", t.solutions)}
+        {renderMobileNavButton("about", t.about)}
+        {renderMobileNavButton("ecosystem", t.ecosystem)}
+        {renderMobileNavButton("community", t.community)}
       </nav>
     </>
   );
