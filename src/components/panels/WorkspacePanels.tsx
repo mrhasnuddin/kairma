@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useSiteCopy, useLanguage } from "@/lib/language";
 import PanelFrame from "./PanelFrame";
@@ -8,6 +8,113 @@ import Button from "../ui/Button";
 import WireframeOctahedron from "../visual/WireframeOctahedron";
 import FallingPattern from "../visual/FallingPattern";
 import { useTheme } from "@/lib/theme";
+
+const panelTranslations = {
+  en: {
+    solutionsTabs: {
+      overview: "Overview",
+      flywheel: "Flywheel",
+      layers: "OS Layers",
+      architecture: "Architecture",
+    },
+    aboutTabs: {
+      mission: "Mission",
+      whynow: "Why Now",
+      insights: "Insights",
+      moats: "Moats",
+    },
+    runtime: {
+      online: "ONLINE",
+      osName: "OS NAME",
+      cpuLoad: "CPU LOAD",
+      memory: "MEMORY",
+      dataMode: "DATA MODE",
+      status: "STATUS",
+      localSealed: "LOCAL (SEALED)",
+      secure: "SECURE",
+      shaderActive: "▸ KAIRMA MATRIX SHADER ACTIVE",
+      codesOnline: "▸ REACTION CODES ONLINE",
+    }
+  },
+  "zh-CN": {
+    solutionsTabs: {
+      overview: "概览",
+      flywheel: "增长飞轮",
+      layers: "系统层级",
+      architecture: "系统架构",
+    },
+    aboutTabs: {
+      mission: "愿景使命",
+      whynow: "时代契机",
+      insights: "深度洞察",
+      moats: "壁垒优势",
+    },
+    runtime: {
+      online: "运行中",
+      osName: "系统名称",
+      cpuLoad: "CPU 负载",
+      memory: "内存占用",
+      dataMode: "数据模式",
+      status: "运行状态",
+      localSealed: "本地化 (安全锁定)",
+      secure: "安全",
+      shaderActive: "▸ KAIRMA 矩阵渲染激活",
+      codesOnline: "▸ 反馈逻辑已就绪",
+    }
+  },
+  "zh-TW": {
+    solutionsTabs: {
+      overview: "概覽",
+      flywheel: "增長飛輪",
+      layers: "系統層級",
+      architecture: "系統架構",
+    },
+    aboutTabs: {
+      mission: "願景使命",
+      whynow: "時代契機",
+      insights: "深度洞察",
+      moats: "壁壘優勢",
+    },
+    runtime: {
+      online: "運行中",
+      osName: "系統名稱",
+      cpuLoad: "CPU 負載",
+      memory: "記憶體佔用",
+      dataMode: "數據模式",
+      status: "運行狀態",
+      localSealed: "在地化 (安全鎖定)",
+      secure: "安全",
+      shaderActive: "▸ KAIRMA 矩陣渲染啟用",
+      codesOnline: "▸ 反饋邏輯就緒",
+    }
+  },
+  vi: {
+    solutionsTabs: {
+      overview: "Tổng quan",
+      flywheel: "Bánh đà",
+      layers: "Các lớp HĐH",
+      architecture: "Kiến trúc",
+    },
+    aboutTabs: {
+      mission: "Sứ mệnh",
+      whynow: "Bối cảnh",
+      insights: "Nhận thức",
+      moats: "Lợi thế",
+    },
+    runtime: {
+      online: "ĐANG HOẠT ĐỘNG",
+      osName: "TÊN HỆ ĐIỀU HÀNH",
+      cpuLoad: "TẢI CPU",
+      memory: "BỘ NHỚ",
+      dataMode: "CHẾ ĐỘ DỮ LIỆU",
+      status: "TRẠNG THÁI",
+      localSealed: "CỤC BỘ (BẢO MẬT)",
+      secure: "AN TOÀN",
+      shaderActive: "▸ TRÌNH BÓNG MA TRẬN KAIRMA ĐANG HOẠT ĐỘNG",
+      codesOnline: "▸ MÃ PHẢN HỒI ĐANG HOẠT ĐỘNG",
+    }
+  }
+};
 
 // ==========================================
 // VISUAL GRAPHICS HELPERS
@@ -155,6 +262,9 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
   activeInnerTab,
   onInnerTabChange,
 }) => {
+  const { language } = useLanguage();
+  const t = panelTranslations[language as keyof typeof panelTranslations] || panelTranslations.en;
+
   const siteCopy = useSiteCopy();
   const c = siteCopy.hero;
   const chi = siteCopy.howItWorks;
@@ -167,10 +277,10 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
   const setTab = onInnerTabChange || setInternalTab;
 
   const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "flywheel", label: "Flywheel" },
-    { id: "layers", label: "OS Layers" },
-    { id: "architecture", label: "Architecture" },
+    { id: "overview", label: t.solutionsTabs.overview },
+    { id: "flywheel", label: t.solutionsTabs.flywheel },
+    { id: "layers", label: t.solutionsTabs.layers },
+    { id: "architecture", label: t.solutionsTabs.architecture },
   ];
 
   return (
@@ -331,6 +441,22 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
   const { language, setLanguage } = useLanguage();
   const [timeStr, setTimeStr] = useState("");
   const [timezoneStr, setTimezoneStr] = useState("");
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setLangDropdownOpen(false);
+      }
+    };
+    if (langDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [langDropdownOpen]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -348,12 +474,14 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
     return () => clearInterval(interval);
   }, []);
 
+  const t = panelTranslations[language as keyof typeof panelTranslations] || panelTranslations.en;
+
   const stats = [
-    { label: "OS NAME", val: "KAIRMA OS" },
-    { label: "CPU LOAD", val: "1.4% (turbopack)" },
-    { label: "MEMORY", val: "192MB / 8GB" },
-    { label: "DATA MODE", val: "LOCAL (sealed)" },
-    { label: "STATUS", val: "SECURE" },
+    { label: t.runtime.osName, val: "KAIRMA OS" },
+    { label: t.runtime.cpuLoad, val: "1.4% (turbopack)" },
+    { label: t.runtime.memory, val: "192MB / 8GB" },
+    { label: t.runtime.dataMode, val: t.runtime.localSealed },
+    { label: t.runtime.status, val: t.runtime.secure },
   ];
 
   return (
@@ -364,29 +492,49 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
       corners={true}
       className="h-full flex flex-col justify-between relative"
       headerRight={
-        <div className="flex items-center gap-2">
-          {/* Language Switcher */}
-          <div className="flex items-center gap-0.5 border border-theme-border/40 p-0.5 rounded-sm bg-theme-void/85 font-mono text-[9px] md:text-[10px]">
-            {(["en", "zh-CN", "zh-TW", "vi"] as const).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setLanguage(lang)}
-                className={`px-1.5 py-0.5 tracking-wider cursor-pointer transition-colors duration-150 rounded-xs select-none outline-none font-bold ${
-                  language === lang
-                    ? "bg-theme-accent text-theme-void"
-                    : "text-theme-text-muted hover:text-theme-text"
-                }`}
-                aria-label={`Switch to ${lang}`}
-              >
-                {lang === "en" && "EN"}
-                {lang === "zh-CN" && "简"}
-                {lang === "zh-TW" && "繁"}
-                {lang === "vi" && "VN"}
-              </button>
-            ))}
+        <div className="flex items-center gap-2 relative" ref={dropdownRef}>
+          {/* Language Switcher Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+              className="flex items-center gap-1 px-2 py-0.5 border border-theme-border/40 rounded-sm bg-theme-void/80 hover:border-theme-accent text-theme-text-muted hover:text-theme-text text-[9px] md:text-[10px] font-mono font-bold tracking-wider cursor-pointer transition-colors outline-none"
+              aria-label="Select language"
+            >
+              <span>
+                {language === "en" && "EN"}
+                {language === "zh-CN" && "简"}
+                {language === "zh-TW" && "繁"}
+                {language === "vi" && "VN"}
+              </span>
+              <span className={`text-[6px] md:text-[7px] transition-transform duration-150 ${langDropdownOpen ? "rotate-180" : ""}`}>▼</span>
+            </button>
+
+            {langDropdownOpen && (
+              <div className="absolute right-0 top-full mt-1.5 w-24 border border-theme-border bg-theme-void/95 backdrop-blur-md shadow-2xl rounded-sm py-1 z-50 flex flex-col font-mono text-[9px] md:text-[10px]">
+                {(["en", "zh-CN", "zh-TW", "vi"] as const).map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => {
+                      setLanguage(lang);
+                      setLangDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-2.5 py-1.5 cursor-pointer transition-colors select-none ${
+                      language === lang
+                        ? "bg-theme-accent/15 text-theme-accent font-bold"
+                        : "text-theme-text-muted hover:bg-theme-border/20 hover:text-theme-text"
+                    }`}
+                  >
+                    {lang === "en" && "English"}
+                    {lang === "zh-CN" && "简体中文"}
+                    {lang === "zh-TW" && "繁體中文"}
+                    {lang === "vi" && "Tiếng Việt"}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="w-[1px] h-3 bg-theme-border/40 self-center mx-1" />
+          <div className="w-[1px] h-3 bg-theme-border/40 self-center mx-0.5" />
 
           {/* Color Switcher */}
           <button
@@ -412,7 +560,7 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
           <div className={`flex ${isCompact ? "flex-col gap-2" : "justify-between items-center"} bg-theme-void/50 p-2.5 md:p-3.5 border border-theme-border/20 rounded-xs`}>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-theme-accent animate-ping" />
-              <span className="text-xs md:text-sm text-theme-text font-bold">ONLINE</span>
+              <span className="text-xs md:text-sm text-theme-text font-bold">{t.runtime.online}</span>
             </div>
             
             <div className={`flex items-center ${isCompact ? "justify-between w-full" : "gap-3.5"}`}>
@@ -434,8 +582,8 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
 
           {/* Footer Text */}
           <div className={`border-t border-theme-border/20 ${isCompact ? "pt-3 text-[10px] md:text-xs" : "pt-4 text-xs md:text-sm"} text-theme-text-muted/65 leading-relaxed tracking-wider`}>
-            ▸ KAIRMA MATRIX SHADER ACTIVE<br/>
-            ▸ REACTION CODES ONLINE
+            {t.runtime.shaderActive}<br/>
+            {t.runtime.codesOnline}
           </div>
 
         </div>
@@ -459,6 +607,9 @@ export const AboutPanel: React.FC<AboutPanelProps> = ({
   activeInnerTab,
   onInnerTabChange,
 }) => {
+  const { language } = useLanguage();
+  const t = panelTranslations[language as keyof typeof panelTranslations] || panelTranslations.en;
+
   const siteCopy = useSiteCopy();
   const cp = siteCopy.problem;
   const cwn = siteCopy.whyNow;
@@ -472,10 +623,10 @@ export const AboutPanel: React.FC<AboutPanelProps> = ({
   const setTab = onInnerTabChange || setInternalTab;
 
   const tabs = [
-    { id: "mission", label: "Mission" },
-    { id: "whynow", label: "Why Now" },
-    { id: "insights", label: "Insights" },
-    { id: "moats", label: "Moats" },
+    { id: "mission", label: t.aboutTabs.mission },
+    { id: "whynow", label: t.aboutTabs.whynow },
+    { id: "insights", label: t.aboutTabs.insights },
+    { id: "moats", label: t.aboutTabs.moats },
   ];
 
   return (
