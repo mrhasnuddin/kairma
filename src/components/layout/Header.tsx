@@ -2,39 +2,39 @@
 
 import React from "react";
 
-type GroupId = "problem" | "system" | "moats" | "story" | "begin";
+export type FocusId = "solutions" | "about" | "ecosystem" | "community";
 
 interface HeaderProps {
-  activeGroups: GroupId[];
-  onToggleGroup: (group: GroupId | "reset") => void;
+  activePanels: FocusId[];
+  onTogglePanel: (focus: FocusId | "reset") => void;
   onOpenPilot: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  activeGroups,
-  onToggleGroup,
+  activePanels,
+  onTogglePanel,
   onOpenPilot,
 }) => {
-  const navItemClass = (groupId: GroupId) => {
-    const isActive = activeGroups.includes(groupId);
-    return `text-xs md:text-sm tracking-[0.18em] font-mono uppercase font-bold cursor-pointer transition-colors duration-200 select-none outline-none focus-visible:text-theme-accent flex items-center gap-1.5 ${
+  const navItemClass = (focusId: FocusId) => {
+    const isActive = activePanels.includes(focusId);
+    return `text-xs md:text-sm tracking-[0.18em] font-mono uppercase font-bold cursor-pointer transition-colors duration-200 select-none outline-none focus-visible:text-theme-accent flex items-center gap-2 ${
       isActive 
         ? "text-theme-accent" 
         : "text-theme-text-muted hover:text-theme-text"
     }`;
   };
 
-  const renderNavButton = (groupId: GroupId, label: string) => {
-    const isActive = activeGroups.includes(groupId);
+  const renderNavButton = (focusId: FocusId, label: string) => {
+    const isActive = activePanels.includes(focusId);
     return (
       <button
-        onClick={() => onToggleGroup(groupId)}
-        className={navItemClass(groupId)}
-        aria-label={`Toggle ${label} workspace group`}
+        onClick={() => onTogglePanel(focusId)}
+        className={navItemClass(focusId)}
+        aria-label={`Toggle ${label} workspace focus`}
       >
-        <span className="relative py-1 flex items-center gap-1.5 group select-none">
+        <span className="relative py-2.5 flex items-center gap-2 group select-none">
           {isActive && (
-            <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
           )}
           <span>{label}</span>
           <span className={`absolute bottom-0 left-0 right-0 h-[1.5px] bg-theme-accent transition-transform duration-200 ${
@@ -45,17 +45,17 @@ export const Header: React.FC<HeaderProps> = ({
     );
   };
 
-  const renderMobileNavButton = (groupId: GroupId, label: string) => {
-    const isActive = activeGroups.includes(groupId);
+  const renderMobileNavButton = (focusId: FocusId, label: string) => {
+    const isActive = activePanels.includes(focusId);
     return (
       <button
-        onClick={() => onToggleGroup(groupId)}
-        className={`flex items-center gap-1 font-bold uppercase text-[10px] sm:text-xs tracking-[0.18em] transition-colors duration-200 focus-visible:text-theme-accent outline-none select-none ${
+        onClick={() => onTogglePanel(focusId)}
+        className={`flex items-center gap-1.5 font-bold uppercase text-xs sm:text-sm tracking-[0.18em] transition-colors duration-200 focus-visible:text-theme-accent outline-none select-none ${
           isActive ? "text-theme-accent" : "text-theme-text-muted"
         }`}
-        aria-label={`Toggle ${label} group`}
+        aria-label={`Toggle ${label} focus`}
       >
-        <span className="text-[10px] sm:text-xs leading-none transition-colors duration-200 select-none">
+        <span className="text-xs sm:text-sm leading-none transition-colors duration-200 select-none">
           {isActive ? "●" : "○"}
         </span>
         <span>{label}</span>
@@ -66,27 +66,26 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header
-        className="sticky top-2.5 z-40 h-12 w-full flex items-center justify-between px-4 border border-theme-border/60 bg-theme-void/85 backdrop-blur-md rounded-sm transition-all duration-300 font-mono shadow-md"
+        className="sticky lg:relative lg:top-0 top-4 z-40 h-16 w-full flex items-center justify-between px-6 md:px-8 border border-theme-border/60 bg-theme-void/85 backdrop-blur-md rounded-sm transition-all duration-300 font-mono shadow-md"
       >
         {/* Left Section */}
-        <div className="flex items-center gap-4 md:gap-6 flex-1">
+        <div className="flex items-center gap-6 md:gap-8 flex-1">
           {/* Desktop Nav on Left */}
-          <div className="hidden lg:flex items-center gap-4 md:gap-6">
-            {renderNavButton("problem", "Problem")}
-            {renderNavButton("system", "System")}
-            {renderNavButton("moats", "Moats")}
+          <div className="hidden lg:flex items-center gap-6 md:gap-8">
+            {renderNavButton("solutions", "Solutions")}
+            {renderNavButton("about", "About")}
           </div>
 
           {/* Mobile Wordmark on Left */}
           <div 
-            onClick={() => onToggleGroup("reset")}
+            onClick={() => onTogglePanel("reset")}
             className="flex lg:hidden flex-col items-start justify-center cursor-pointer select-none group focus-visible:ring-1 focus-visible:ring-theme-accent py-1"
             role="button"
             tabIndex={0}
             aria-label="Reset workspace to home"
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                onToggleGroup("reset");
+                onTogglePanel("reset");
               }
             }}
           >
@@ -99,33 +98,33 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Center Section (Desktop Only) */}
         <div className="hidden lg:flex flex-col items-center justify-center flex-1">
           <div 
-            onClick={() => onToggleGroup("reset")}
-            className="flex flex-col items-center justify-center cursor-pointer select-none group focus-visible:ring-1 focus-visible:ring-theme-accent px-4 py-1"
+            onClick={() => onTogglePanel("reset")}
+            className="flex flex-col items-center justify-center cursor-pointer select-none group focus-visible:ring-1 focus-visible:ring-theme-accent px-6 py-2"
             role="button"
             tabIndex={0}
             aria-label="Reset workspace to home"
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                onToggleGroup("reset");
+                onTogglePanel("reset");
               }
             }}
           >
             <span className="font-gothic text-2xl md:text-3xl text-theme-text tracking-normal transition-colors duration-200 group-hover:text-theme-accent font-blackletter">
               Kairma
             </span>
-            <span className="text-[9px] text-theme-text-muted tracking-[0.25em] uppercase font-mono leading-none -mt-1 select-none">
+            <span className="text-[11px] md:text-xs text-theme-text-muted tracking-[0.25em] uppercase font-mono leading-none -mt-1 select-none">
               operating system
             </span>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-4 md:gap-5 flex-1 justify-end">
+        <div className="flex items-center gap-6 md:gap-8 flex-1 justify-end">
           {/* Desktop Nav on Right */}
-          <div className="hidden lg:flex items-center gap-4 md:gap-5">
-            {renderNavButton("story", "Story")}
-            {renderNavButton("begin", "Begin")}
-            <div className="w-[1px] h-4 bg-theme-border/60" />
+          <div className="hidden lg:flex items-center gap-6 md:gap-8">
+            {renderNavButton("ecosystem", "Ecosystem")}
+            {renderNavButton("community", "Community")}
+            <div className="w-[1px] h-5 bg-theme-border/60" />
           </div>
 
           {/* Actions (Always Visible) */}
@@ -133,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
             href="/KAIRMA Business Deck 2026.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs tracking-[0.18em] text-theme-text-muted hover:text-theme-text uppercase font-semibold inline-flex items-center gap-1 select-none focus-visible:text-theme-accent"
+            className="text-xs tracking-[0.18em] text-theme-text-muted hover:text-theme-text uppercase font-semibold inline-flex items-center gap-1.5 select-none focus-visible:text-theme-accent"
           >
             Brief ↗
           </a>
@@ -141,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* CTA Button */}
           <button
             onClick={onOpenPilot}
-            className="px-3.5 py-1.5 md:px-4 md:py-2 text-xs tracking-[0.18em] font-bold uppercase border border-theme-border bg-theme-void/85 text-theme-text hover:border-theme-accent hover:text-theme-accent transition-all duration-200 select-none cursor-pointer rounded-xs outline-none focus-visible:ring-1 focus-visible:ring-theme-accent"
+            className="px-4 py-2 md:px-5 md:py-2.5 text-xs tracking-[0.18em] font-bold uppercase border border-theme-border bg-theme-void/85 text-theme-text hover:border-theme-accent hover:text-theme-accent transition-all duration-200 select-none cursor-pointer rounded-xs outline-none focus-visible:ring-1 focus-visible:ring-theme-accent"
             aria-label="Open Request a Pilot dialog"
           >
             Begin →
@@ -151,13 +150,12 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Sticky Mobile Bottom Nav Bar */}
       <nav
-        className="fixed bottom-5 left-5 right-5 z-40 lg:hidden h-12 border border-theme-border/60 bg-theme-void/90 backdrop-blur-md rounded-sm flex items-center justify-around px-2 font-mono text-[9px] sm:text-xs shadow-lg"
+        className="fixed bottom-4 left-4 right-4 z-40 lg:hidden h-16 border border-theme-border/60 bg-theme-void/90 backdrop-blur-md rounded-sm flex items-center justify-around px-4 font-mono text-[9px] sm:text-xs shadow-lg"
       >
-        {renderMobileNavButton("problem", "Problem")}
-        {renderMobileNavButton("system", "System")}
-        {renderMobileNavButton("moats", "Moats")}
-        {renderMobileNavButton("story", "Story")}
-        {renderMobileNavButton("begin", "Begin")}
+        {renderMobileNavButton("solutions", "Solutions")}
+        {renderMobileNavButton("about", "About")}
+        {renderMobileNavButton("ecosystem", "Ecosystem")}
+        {renderMobileNavButton("community", "Community")}
       </nav>
     </>
   );

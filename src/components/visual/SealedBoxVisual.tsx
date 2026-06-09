@@ -1,128 +1,306 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 import { useTheme } from "@/lib/theme";
 
 export const SealedBoxVisual: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
-  
-  // Custom easing matching brand rules
-  const kairmaEase = [0.16, 1, 0.3, 1];
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationId: number;
+    let angle = 0;
+
+    // Handle high DPI screens
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    // Render loop
+    const render = () => {
+      const w = canvas.width / window.devicePixelRatio;
+      const h = canvas.height / window.devicePixelRatio;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2 - 15;
+
+      // Box dimensions
+      const boxW = 100;
+      const boxH = 120;
+      const boxD = 40; // Isometric depth offset
+
+      // Theme Colors
+      const isDark = theme === "matrix-dark";
+      const accentColor = isDark ? "#1FAA68" : "#C8442E";
+      const accentGlow = isDark ? "rgba(31, 170, 104, 0.45)" : "rgba(200, 68, 46, 0.45)";
+      const accentDim = isDark ? "rgba(31, 170, 104, 0.15)" : "rgba(200, 68, 46, 0.15)";
+      const chromeColor = isDark ? "#A0A0A8" : "#55524E";
+
+      // 1. Draw Abstract Background Radar Circles
+      ctx.strokeStyle = isDark ? "rgba(31, 170, 104, 0.08)" : "rgba(200, 68, 46, 0.08)";
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(cx, cy + 20, 120, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy + 20, 85, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Horizontal reference axis
+      ctx.setLineDash([2, 8]);
+      ctx.strokeStyle = isDark ? "rgba(192, 192, 200, 0.15)" : "rgba(31, 26, 23, 0.15)";
+      ctx.beginPath();
+      ctx.moveTo(cx - 140, cy + 20);
+      ctx.lineTo(cx + 140, cy + 20);
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset line dash
+
+      // 2. Draw Bottom Glowing Ellipse (Base Glow)
+      const glowGrad = ctx.createRadialGradient(cx, cy + boxH / 2 + 10, 5, cx, cy + boxH / 2 + 15, 60);
+      glowGrad.addColorStop(0, accentGlow);
+      glowGrad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = glowGrad;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + boxH / 2 + 12, 70, 20, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 3. Define 3D Box Vertices
+      // Top face vertices
+      const t0 = { x: cx, y: cy - boxH / 2 - boxD / 2 };        // Back center
+      const t1 = { x: cx + boxW / 2, y: cy - boxH / 2 };        // Right corner
+      const t2 = { x: cx, y: cy - boxH / 2 + boxD / 2 };        // Front center
+      const t3 = { x: cx - boxW / 2, y: cy - boxH / 2 };        // Left corner
+
+      // Bottom face vertices
+      const b0 = { x: t0.x, y: t0.y + boxH };
+      const b1 = { x: t1.x, y: t1.y + boxH };
+      const b2 = { x: t2.x, y: t2.y + boxH };
+      const b3 = { x: t3.x, y: t3.y + boxH };
+
+      // 4. Draw faces of the monolith (Back-to-front rendering)
+
+      // A. LEFT FACE (Shaded & Chiseled)
+      const leftGrad = ctx.createLinearGradient(t3.x, t3.y, t2.x, t2.y);
+      leftGrad.addColorStop(0, isDark ? "#0A0D0A" : "#D4C5AF");
+      leftGrad.addColorStop(1, isDark ? "#121812" : "#E2D3BC");
+      ctx.fillStyle = leftGrad;
+      ctx.beginPath();
+      ctx.moveTo(t3.x, t3.y);
+      ctx.lineTo(t2.x, t2.y);
+      ctx.lineTo(b2.x, b2.y);
+      ctx.lineTo(b3.x, b3.y);
+      ctx.closePath();
+      ctx.fill();
+
+      // Draw Left Face ridges (cooling slats)
+      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.07)";
+      ctx.lineWidth = 1;
+      const numSlats = 7;
+      for (let i = 1; i < numSlats; i++) {
+        const t = i / numSlats;
+        // Interpolate top and bottom points
+        const tx = t3.x + (t2.x - t3.x) * t;
+        const ty = t3.y + (t2.y - t3.y) * t;
+        const bx = t3.x + (t2.x - t3.x) * t;
+        const by = t3.y + (t2.y - t3.y) * t + boxH;
+
+        // Ridge shadow line
+        ctx.strokeStyle = isDark ? "#050705" : "#B2A694";
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+
+        // Ridge highlight line
+        ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(255, 255, 255, 0.4)";
+        ctx.beginPath();
+        ctx.moveTo(tx + 1, ty);
+        ctx.lineTo(bx + 1, by);
+        ctx.stroke();
+      }
+
+      // B. RIGHT FACE (Motivated lighting side)
+      const rightGrad = ctx.createLinearGradient(t2.x, t2.y, t1.x, t1.y);
+      rightGrad.addColorStop(0, isDark ? "#182018" : "#E8D9C2");
+      rightGrad.addColorStop(1, isDark ? "#0D110D" : "#CDBFAF");
+      ctx.fillStyle = rightGrad;
+      ctx.beginPath();
+      ctx.moveTo(t2.x, t2.y);
+      ctx.lineTo(t1.x, t1.y);
+      ctx.lineTo(b1.x, b1.y);
+      ctx.lineTo(b2.x, b2.y);
+      ctx.closePath();
+      ctx.fill();
+
+      // Draw Right Face vertical ridges
+      for (let i = 1; i < numSlats; i++) {
+        const t = i / numSlats;
+        const tx = t2.x + (t1.x - t2.x) * t;
+        const ty = t2.y + (t1.y - t2.y) * t;
+        const bx = t2.x + (t1.x - t2.x) * t;
+        const by = t2.y + (t1.y - t2.y) * t + boxH;
+
+        // Shadow line
+        ctx.strokeStyle = isDark ? "#080B08" : "#C2B5A2";
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+
+        // Highlight line
+        ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.5)";
+        ctx.beginPath();
+        ctx.moveTo(tx + 1, ty);
+        ctx.lineTo(bx + 1, by);
+        ctx.stroke();
+      }
+
+      // C. TOP FACE
+      const topGrad = ctx.createLinearGradient(t3.x, t3.y, t1.x, t1.y);
+      topGrad.addColorStop(0, isDark ? "#283428" : "#F6EAD4");
+      topGrad.addColorStop(0.5, isDark ? "#1C251C" : "#EFE1C8");
+      topGrad.addColorStop(1, isDark ? "#121A12" : "#DECFAF");
+      ctx.fillStyle = topGrad;
+      ctx.beginPath();
+      ctx.moveTo(t0.x, t0.y);
+      ctx.lineTo(t1.x, t1.y);
+      ctx.lineTo(t2.x, t2.y);
+      ctx.lineTo(t3.x, t3.y);
+      ctx.closePath();
+      ctx.fill();
+
+      // Draw top edge highlight/rim light
+      ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.18)" : "rgba(255, 255, 255, 0.7)";
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(t3.x, t3.y);
+      ctx.lineTo(t2.x, t2.y);
+      ctx.lineTo(t1.x, t1.y);
+      ctx.stroke();
+
+      // 5. Draw Etched "K" Gothic Emblem on the left face
+      // Let's place it at center of left face
+      const lcx = (t3.x + t2.x) / 2;
+      const lcy = (t3.y + b2.y) / 2;
+
+      ctx.save();
+      // Shield outline
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(lcx - 12, lcy - 16);
+      ctx.lineTo(lcx + 12, lcy - 16);
+      ctx.lineTo(lcx + 12, lcy + 2);
+      ctx.quadraticCurveTo(lcx + 12, lcy + 12, lcx, lcy + 20);
+      ctx.quadraticCurveTo(lcx - 12, lcy + 12, lcx - 12, lcy + 2);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Glow effect for shield
+      ctx.shadowColor = accentColor;
+      ctx.shadowBlur = 4;
+      ctx.strokeStyle = accentColor;
+      ctx.stroke();
+      ctx.shadowBlur = 0; // Reset shadow
+
+      // Gothic "K" emblem inside shield (Stylized gothic geometry)
+      ctx.fillStyle = isDark ? "#E8F0E8" : "#1F1A17";
+      ctx.font = "italic bold 16px 'Georgia', serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("𝔎", lcx, lcy);
+      ctx.restore();
+
+      // 6. Draw glowing LED base lines (Neons on bottom rim)
+      ctx.save();
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = accentColor;
+      ctx.shadowBlur = 10;
+
+      // Bottom left edge neon
+      ctx.beginPath();
+      ctx.moveTo(b3.x, b3.y);
+      ctx.lineTo(b2.x, b2.y);
+      ctx.stroke();
+
+      // Bottom right edge neon
+      ctx.beginPath();
+      ctx.moveTo(b2.x, b2.y);
+      ctx.lineTo(b1.x, b1.y);
+      ctx.stroke();
+      ctx.restore();
+
+      // 7. Draw orbiting particles around the monolith
+      angle += 0.008;
+      const radiusX = 110;
+      const radiusY = 32;
+      const orbY = cy + boxH / 2 - 15;
+
+      const numParticles = 2;
+      for (let i = 0; i < numParticles; i++) {
+        const offset = (i * Math.PI) + angle;
+        const px = cx + Math.cos(offset) * radiusX;
+        const py = orbY + Math.sin(offset) * radiusY;
+
+        // Only draw particles in front of the box if sin(offset) > 0, otherwise behind (drawn first)
+        const isBehind = Math.sin(offset) < 0;
+
+        // We'll draw them all with varying opacity to simulate 3D depth
+        ctx.fillStyle = accentColor;
+        ctx.shadowColor = accentColor;
+        ctx.shadowBlur = isBehind ? 2 : 6;
+        ctx.beginPath();
+        ctx.arc(px, py, isBehind ? 1.5 : 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Draw orbital trail
+        ctx.strokeStyle = isBehind ? accentDim : accentGlow;
+        ctx.lineWidth = isBehind ? 0.3 : 0.8;
+        ctx.beginPath();
+        ctx.ellipse(cx, orbY, radiusX, radiusY, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      animationId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+      cancelAnimationFrame(animationId);
+    };
+  }, [theme]);
 
   return (
-    <div className="relative w-full h-full min-h-[280px] flex items-center justify-center overflow-hidden bg-theme-void/25 border border-theme-border rounded-sm backdrop-blur-xs select-none">
-      {/* Abstract orbital background lines */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none">
-        <svg className="w-4/5 h-4/5 text-theme-chrome" viewBox="0 0 400 400" fill="none">
-          <circle cx="200" cy="200" r="140" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 6" />
-          <circle cx="200" cy="200" r="100" stroke="currentColor" strokeWidth="0.25" />
-          <path d="M 60,200 L 340,200" stroke="currentColor" strokeWidth="0.25" strokeDasharray="2 10" />
-          <path d="M 200,60 L 200,340" stroke="currentColor" strokeWidth="0.25" strokeDasharray="2 10" />
-        </svg>
+    <div className="relative w-full h-[230px] flex items-center justify-center overflow-hidden bg-theme-void/35 border border-theme-border/60 rounded-xs select-none">
+      <canvas ref={canvasRef} className="w-full h-full block" />
+      
+      {/* Telemetry labels overlay */}
+      <div className="absolute top-2 left-3 text-[8px] font-mono text-theme-text-muted opacity-80 flex flex-col select-none">
+        <span>CORE: OPTICAL_MONOLITH</span>
+        <span>STATUS: SYSTEM_SEALED</span>
       </div>
-
-      {/* Sealed Box Monolith */}
-      <div className="relative w-48 h-48 flex items-center justify-center">
-        {/* Back glow shadow */}
-        <motion.div 
-          className="absolute w-36 h-36 rounded-full bg-theme-accent/5 blur-xl pointer-events-none"
-          animate={{
-            scale: [1, 1.05, 1],
-            opacity: [0.6, 0.8, 0.6]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-
-        {/* 3D-ish Etched Box Outline */}
-        <div className="relative w-36 h-36 bg-theme-void/90 border-2 border-theme-chrome/40 rounded-sm shadow-2xl flex flex-col justify-between p-3 select-none">
-          {/* Internal corner brackets inside the box */}
-          <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-theme-accent/80" />
-          <div className="absolute top-1 right-1 w-2 h-2 border-t border-r border-theme-accent/80" />
-          <div className="absolute bottom-1 left-1 w-2 h-2 border-b border-l border-theme-accent/80" />
-          <div className="absolute bottom-1 right-1 w-2 h-2 border-b border-r border-theme-accent/80" />
-
-          {/* Top panel: status text */}
-          <div className="flex items-center justify-between text-[8px] font-mono tracking-widest text-theme-text-muted">
-            <span>MODEL: KB-X86</span>
-            <span className="flex items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-theme-accent animate-ping" />
-              <span className="text-theme-accent">SEALED</span>
-            </span>
-          </div>
-
-          {/* Center visual: Schrödinger's superposition sigil (abstract cat/box sigil) */}
-          <div className="flex-1 flex items-center justify-center my-2 relative">
-            <svg className="w-16 h-16 text-theme-text opacity-90" viewBox="0 0 100 100" fill="none">
-              {/* Outer diamond */}
-              <rect x="25" y="25" width="50" height="50" transform="rotate(45 50 50)" stroke="currentColor" strokeWidth="0.75" />
-              {/* Inner circle */}
-              <circle cx="50" cy="50" r="18" stroke="var(--theme-accent)" strokeWidth="0.75" strokeDasharray="3 3" />
-              {/* Core void node */}
-              <circle cx="50" cy="50" r="4" fill="currentColor" />
-              {/* Cat sigil stylized subtle ears (architectural points) */}
-              <path d="M 40,30 L 44,38 L 36,38 Z" fill="currentColor" opacity="0.8" />
-              <path d="M 60,30 L 56,38 L 64,38 Z" fill="currentColor" opacity="0.8" />
-              {/* Quantum superposition curves */}
-              <path d="M 20,50 Q 50,20 80,50" stroke="currentColor" strokeWidth="0.25" opacity="0.5" />
-              <path d="M 20,50 Q 50,80 80,50" stroke="currentColor" strokeWidth="0.25" opacity="0.5" />
-            </svg>
-          </div>
-
-          {/* Bottom panel: Local Data indicators */}
-          <div className="border-t border-theme-border/40 pt-1.5 flex justify-between text-[7px] font-mono tracking-tight text-theme-text-muted">
-            <div className="flex flex-col">
-              <span>DATA LAKE: LOCAL</span>
-              <span>CIPHER: AES-256</span>
-            </div>
-            <div className="text-right flex flex-col justify-end">
-              <span className="text-theme-accent font-bold">100% SECURE</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Orbiting particles/indicator nodes (restrained, no excessive animation) */}
-        <motion.div 
-          className="absolute w-2 h-2 rounded-full bg-theme-accent"
-          style={{ x: 0, y: 0 }}
-          animate={{
-            x: [90, 0, -90, 0, 90],
-            y: [0, 90, 0, -90, 0],
-            z: [0, 1, 0, -1, 0]
-          }}
-          transition={{
-            duration: 16,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <motion.div 
-          className="absolute w-1.5 h-1.5 rounded-full bg-theme-chrome"
-          style={{ x: 0, y: 0 }}
-          animate={{
-            x: [-75, 0, 75, 0, -75],
-            y: [0, -75, 0, 75, 0]
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      </div>
-
-      {/* Telemetry captions inside panel */}
-      <div className="absolute bottom-2 left-3 text-[8px] font-mono text-theme-text-muted opacity-80 flex flex-col select-none">
-        <span>PREMISE APP: KAIRMA.EXE</span>
-        <span>STATUS: STEADY STATE</span>
-      </div>
-      <div className="absolute bottom-2 right-3 text-[8px] font-mono text-theme-text-muted opacity-80 flex flex-col text-right select-none">
-        <span>ANTENNA: DUPLEX_OFF</span>
-        <span>TEMPLE_CLK: 1400mhz</span>
+      <div className="absolute top-2 right-3 text-[8px] font-mono text-theme-text-muted opacity-80 flex flex-col text-right select-none">
+        <span>POWER: NOMINAL</span>
+        <span>TEMP: 34.2°C</span>
       </div>
     </div>
   );

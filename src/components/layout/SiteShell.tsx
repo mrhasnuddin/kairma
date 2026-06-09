@@ -10,139 +10,50 @@ import PilotModal from "../modal/PilotModal";
 
 // Modular workspace panels
 import {
-  HeroPanel,
-  StatusPanel,
-  ProblemNumPanel,
-  PainPointsPanel,
-  WhyNowPanel,
-  InsightPanel,
-  FourLayersPanel,
-  ArchitecturePanel,
-  HowItWorksPanel,
-  LocalChamberPanel,
-  DefensibilitySummaryPanel,
-  SopEnginePanel,
-  AgentLibraryPanel,
-  MsAlignmentPanel,
-  AssetLightHardwarePanel,
-  Web3LabsPanel,
-  MicrosoftPanel,
-  YZiLabsPanel,
-  InMotionPanel,
-  ProvenanceSummaryPanel,
-  BeginEnterprisePanel,
-  BeginBuildersPanel,
-  ClosingStatementPanel,
-  ContactPanel,
-  LocationsPanel,
-  ProvenancePanel,
-  MiniBeginPanel,
+  SolutionsPanel,
+  CoreRuntimePanel,
+  AboutPanel,
+  EcosystemPanel,
+  CommunityPanel,
 } from "../panels/WorkspacePanels";
 
-type GroupId = "problem" | "system" | "moats" | "story" | "begin";
-
-interface PanelInfo {
-  id: string;
-  group: GroupId | "persistent" | "persistent-cta";
-}
-
-const PANELS: PanelInfo[] = [
-  // Persistent
-  { id: "hero", group: "persistent" },
-  { id: "status", group: "persistent" },
-
-  // Group: Problem
-  { id: "problem-num", group: "problem" },
-  { id: "pain-points", group: "problem" },
-  { id: "why-now", group: "problem" },
-  { id: "insight", group: "problem" },
-
-  // Group: System
-  { id: "four-layers", group: "system" },
-  { id: "architecture", group: "system" },
-  { id: "how-it-works", group: "system" },
-  { id: "local-chamber", group: "system" },
-
-  // Group: Moats
-  { id: "defensibility-summary", group: "moats" },
-  { id: "sop-engine", group: "moats" },
-  { id: "agent-library", group: "moats" },
-  { id: "ms-alignment", group: "moats" },
-  { id: "asset-light-hardware", group: "moats" },
-
-  // Group: Story
-  { id: "web3labs", group: "story" },
-  { id: "microsoft", group: "story" },
-  { id: "yzi-labs", group: "story" },
-  { id: "in-motion", group: "story" },
-  { id: "provenance-summary", group: "story" },
-
-  // Group: Begin
-  { id: "begin-enterprise", group: "begin" },
-  { id: "begin-builders", group: "begin" },
-  { id: "closing-statement", group: "begin" },
-  { id: "contact", group: "begin" },
-  { id: "locations", group: "begin" },
-  { id: "provenance", group: "begin" },
-
-  // Mini Begin CTA
-  { id: "mini-begin", group: "persistent-cta" },
-];
-
-const PANEL_MAP = {
-  "hero": HeroPanel,
-  "status": StatusPanel,
-  "problem-num": ProblemNumPanel,
-  "pain-points": PainPointsPanel,
-  "why-now": WhyNowPanel,
-  "insight": InsightPanel,
-  "four-layers": FourLayersPanel,
-  "architecture": ArchitecturePanel,
-  "how-it-works": HowItWorksPanel,
-  "local-chamber": LocalChamberPanel,
-  "defensibility-summary": DefensibilitySummaryPanel,
-  "sop-engine": SopEnginePanel,
-  "agent-library": AgentLibraryPanel,
-  "ms-alignment": MsAlignmentPanel,
-  "asset-light-hardware": AssetLightHardwarePanel,
-  "web3labs": Web3LabsPanel,
-  "microsoft": MicrosoftPanel,
-  "yzi-labs": YZiLabsPanel,
-  "in-motion": InMotionPanel,
-  "provenance-summary": ProvenanceSummaryPanel,
-  "begin-enterprise": BeginEnterprisePanel,
-  "begin-builders": BeginBuildersPanel,
-  "closing-statement": ClosingStatementPanel,
-  "contact": ContactPanel,
-  "locations": LocationsPanel,
-  "provenance": ProvenancePanel,
-  "mini-begin": MiniBeginPanel,
-};
+export type FocusId = "solutions" | "about" | "ecosystem" | "community";
 
 export const SiteShell: React.FC = () => {
-  const [activeGroups, setActiveGroups] = useState<GroupId[]>([]);
+  const [activePanels, setActivePanels] = useState<FocusId[]>([
+    "solutions",
+    "about",
+    "ecosystem",
+    "community",
+  ]);
   const [booting, setBooting] = useState<boolean>(true);
   const [pilotOpen, setPilotOpen] = useState<boolean>(false);
   const [visibleLines, setVisibleLines] = useState<number>(0);
+  const [isDesktop, setIsDesktop] = useState<boolean>(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Sync state with URL search parameters
   useEffect(() => {
     const checkQueryParam = () => {
       const params = new URLSearchParams(window.location.search);
-      const groupsStr = params.get("groups");
-      if (groupsStr) {
-        const groups = groupsStr
+      const panelsParam = params.get("panels");
+      if (panelsParam) {
+        const panels = panelsParam
           .split(",")
-          .filter((g) => ["problem", "system", "moats", "story", "begin"].includes(g)) as GroupId[];
-        setActiveGroups(groups.slice(0, 2)); // Enforce max 2 groups
+          .filter((p) =>
+            ["solutions", "about", "ecosystem", "community"].includes(p)
+          ) as FocusId[];
+        setActivePanels(panels);
       } else {
-        // Default to Problem + System if already booted, otherwise empty (Large Hero)
-        const hasBooted = localStorage.getItem("kairma-booted") === "true";
-        if (hasBooted) {
-          setActiveGroups(["problem", "system"]);
-        } else {
-          setActiveGroups([]);
-        }
+        setActivePanels(["solutions", "about", "ecosystem", "community"]);
       }
     };
 
@@ -191,103 +102,128 @@ export const SiteShell: React.FC = () => {
   const finishBoot = () => {
     localStorage.setItem("kairma-booted", "true");
     setBooting(false);
-    // On first boot finished, open default panels
+    
     const params = new URLSearchParams(window.location.search);
-    if (!params.get("groups")) {
-      setActiveGroups(["problem", "system"]);
-      const url = new URL(window.location.href);
-      url.searchParams.set("groups", "problem,system");
-      window.history.replaceState(null, "", url.pathname + url.search);
+    const panelsParam = params.get("panels");
+    if (panelsParam) {
+      const panels = panelsParam
+        .split(",")
+        .filter((p) =>
+          ["solutions", "about", "ecosystem", "community"].includes(p)
+        ) as FocusId[];
+      setActivePanels(panels);
+    } else {
+      setActivePanels(["solutions", "about", "ecosystem", "community"]);
     }
   };
 
-  const handleToggleGroup = (group: GroupId | "reset") => {
-    let nextGroups: GroupId[] = [];
-    if (group === "reset") {
-      nextGroups = [];
-    } else {
-      if (activeGroups.includes(group)) {
-        nextGroups = activeGroups.filter((item) => item !== group);
+  const handleTogglePanel = (panelId: FocusId | "reset") => {
+    if (panelId === "reset") {
+      const allPanels: FocusId[] = ["solutions", "about", "ecosystem", "community"];
+      setActivePanels(allPanels);
+      const url = new URL(window.location.href);
+      url.searchParams.set("panels", allPanels.join(","));
+      window.history.pushState(null, "", url.pathname + url.search);
+      return;
+    }
+
+    setActivePanels((prev) => {
+      const order: FocusId[] = ["solutions", "about", "ecosystem", "community"];
+      const next = prev.includes(panelId)
+        ? prev.filter((p) => p !== panelId)
+        : order.filter((p) => prev.includes(p) || p === panelId);
+
+      // Sync with URL params
+      const url = new URL(window.location.href);
+      if (next.length > 0) {
+        url.searchParams.set("panels", next.join(","));
       } else {
-        const next = [...activeGroups, group];
-        if (next.length > 2) {
-          nextGroups = next.slice(1); // oldest-out queue
-        } else {
-          nextGroups = next;
-        }
+        url.searchParams.delete("panels");
       }
-    }
+      window.history.pushState(null, "", url.pathname + url.search);
+      return next;
+    });
+  };
 
-    setActiveGroups(nextGroups);
+  const isSolActive = activePanels.includes("solutions");
+  const isAboutActive = activePanels.includes("about");
+  const isEcoActive = activePanels.includes("ecosystem");
+  const isCommActive = activePanels.includes("community");
+  const hasRow2 = isEcoActive || isCommActive;
+  const isRightActive = isAboutActive || isCommActive;
 
-    // Sync with URL params
-    const url = new URL(window.location.href);
-    if (nextGroups.length > 0) {
-      url.searchParams.set("groups", nextGroups.join(","));
-    } else {
-      url.searchParams.delete("groups");
-    }
-    window.history.pushState(null, "", url.pathname + url.search);
+  const solFlex = isSolActive ? (isRightActive ? 2 : 5) : 0;
+  const coreFlex = !isSolActive && isRightActive && !hasRow2 ? 2 : 1;
+  const leftFlex = solFlex + coreFlex;
+
+  const aboutFlex = !isSolActive ? (hasRow2 ? 5 : 4) : 3;
+  const rightFlex = isAboutActive ? aboutFlex : 3;
+
+  const solStyle: React.CSSProperties = {
+    flex: isDesktop ? `${solFlex} 1 0%` : "none",
+    width: isDesktop ? "auto" : "100%",
+    height: isDesktop ? "100%" : (isSolActive ? "auto" : "0px"),
+    opacity: isSolActive ? 1 : 0,
+    visibility: isSolActive ? "visible" : "hidden",
+    pointerEvents: isSolActive ? "auto" : "none",
+    marginRight: isDesktop ? (isSolActive ? "16px" : "0px") : "0px",
+    marginBottom: isDesktop ? "0px" : (isSolActive ? "16px" : "0px"),
+    overflow: "hidden",
+    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+  };
+
+  const coreStyle: React.CSSProperties = {
+    flex: isDesktop ? `${coreFlex} 1 0%` : "none",
+    width: isDesktop ? "auto" : "100%",
+    minWidth: isDesktop ? "350px" : "auto",
+    height: isDesktop ? "100%" : "auto",
+    opacity: 1,
+    marginRight: "0px",
+    marginBottom: isDesktop ? "0px" : (isEcoActive || isRightActive ? "16px" : "0px"),
+    overflow: "hidden",
+    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+  };
+
+  const aboutStyle: React.CSSProperties = {
+    width: "100%",
+    height: isDesktop ? "100%" : (isAboutActive ? "auto" : "0px"),
+    opacity: isAboutActive ? 1 : 0,
+    visibility: isAboutActive ? "visible" : "hidden",
+    pointerEvents: isAboutActive ? "auto" : "none",
+    marginRight: "0px",
+    marginBottom: isDesktop ? "0px" : (isAboutActive && isCommActive ? "16px" : "0px"),
+    overflow: "hidden",
+    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+  };
+
+  const ecoStyle: React.CSSProperties = {
+    width: "100%",
+    height: isDesktop ? "100%" : (isEcoActive ? "auto" : "0px"),
+    opacity: isEcoActive ? 1 : 0,
+    visibility: isEcoActive ? "visible" : "hidden",
+    pointerEvents: isEcoActive ? "auto" : "none",
+    marginRight: "0px",
+    marginBottom: "0px",
+    overflow: "hidden",
+    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+  };
+
+  const commStyle: React.CSSProperties = {
+    width: "100%",
+    height: isDesktop ? "100%" : (isCommActive ? "auto" : "0px"),
+    opacity: isCommActive ? 1 : 0,
+    visibility: isCommActive ? "visible" : "hidden",
+    pointerEvents: isCommActive ? "auto" : "none",
+    marginRight: "0px",
+    marginBottom: "0px",
+    overflow: "hidden",
+    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
   };
 
   const bc = siteCopy.boot;
-  const activeCount = activeGroups.length;
-
-  // Filter panels to display
-  const visiblePanels = PANELS.filter((panel) => {
-    if (activeCount === 0) {
-      // Large Hero identity state
-      return panel.id === "hero" || panel.id === "status" || panel.id === "local-chamber";
-    }
-    if (panel.group === "persistent") return true;
-    if (panel.group === "persistent-cta") {
-      return activeCount > 0 && !activeGroups.includes("begin");
-    }
-    return activeGroups.includes(panel.group as GroupId);
-  });
-
-  const getPanelGridClasses = (panelId: string) => {
-    if (activeCount === 0) {
-      if (panelId === "hero") return "lg:col-span-2 lg:row-span-2 h-full min-h-[400px]";
-      if (panelId === "local-chamber") return "lg:col-span-1 h-full";
-      if (panelId === "status") return "lg:col-span-1 h-full";
-      return "hidden";
-    }
-
-    switch (panelId) {
-      case "hero":
-        return "lg:col-span-1 h-full";
-      case "status":
-        return "lg:col-span-1 h-full";
-      case "architecture":
-        return "lg:col-span-2 h-full min-h-[360px]";
-      case "how-it-works":
-        return activeGroups.includes("system") && !activeGroups.includes("problem") && !activeGroups.includes("begin")
-          ? "lg:col-span-3 h-full"
-          : "lg:col-span-2 h-full";
-      case "insight":
-        return activeGroups.includes("problem") && activeGroups.includes("system")
-          ? "lg:col-span-2 h-full"
-          : "lg:col-span-1 h-full";
-      case "provenance-summary":
-        return "lg:col-span-2 h-full";
-      case "closing-statement":
-        return "lg:col-span-2 h-full";
-      case "begin-enterprise":
-        return "lg:col-span-1 h-full";
-      case "begin-builders":
-        return "lg:col-span-1 h-full";
-      case "mini-begin":
-        if (activeGroups.includes("problem") && activeCount === 1) return "lg:col-span-3 h-full";
-        if (activeGroups.includes("moats") && activeCount === 1) return "lg:col-span-2 h-full";
-        return "lg:col-span-1 h-full";
-      default:
-        return "lg:col-span-1 h-full";
-    }
-  };
 
   return (
-    <VoidBackground className="relative min-h-screen lg:h-screen w-full flex flex-col pt-2.5 pb-24 lg:pb-5 px-5 lg:overflow-hidden text-theme-text transition-colors duration-300 bg-theme-void">
+    <VoidBackground className="relative min-h-screen lg:h-screen w-full flex flex-col pt-4 pb-24 lg:pb-4 px-4 lg:overflow-hidden text-theme-text transition-colors duration-300 bg-theme-void">
       
       {/* 1. Boot Sequence Overlay */}
       <AnimatePresence>
@@ -348,48 +284,122 @@ export const SiteShell: React.FC = () => {
       </AnimatePresence>
 
       {/* 2. Visual Layer Backgrounds */}
-      <GothicGrid opacity={activeCount === 0 ? 0.09 : 0.04} />
+      <GothicGrid opacity={activePanels.length === 4 ? 0.09 : 0.04} />
 
       {/* 3. OS Header */}
       <Header
-        activeGroups={activeGroups}
-        onToggleGroup={handleToggleGroup}
+        activePanels={activePanels}
+        onTogglePanel={handleTogglePanel}
         onOpenPilot={() => setPilotOpen(true)}
       />
 
       {/* 4. Dashboard Viewport Container */}
-      <main className="flex-1 min-h-0 w-full mt-4 pb-24 lg:pb-0 relative z-10 flex flex-col justify-start overflow-y-auto">
-        <div className="workspace-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full [grid-auto-flow:dense]">
-          <AnimatePresence mode="popLayout">
-            {visiblePanels.map((panel) => {
-              const Component = PANEL_MAP[panel.id as keyof typeof PANEL_MAP];
-              const gridClass = getPanelGridClasses(panel.id);
-              
-              return (
-                <motion.section
-                  key={panel.id}
-                  layout
-                  layoutId={panel.id}
-                  className={`panel ${gridClass}`}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{
-                    duration: 0.6,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                >
-                  <Component
-                    isCompact={activeCount > 0}
-                    activeGroups={activeGroups}
-                    onToggleGroup={handleToggleGroup}
-                    onOpenPilot={() => setPilotOpen(true)}
-                    onNavigateToGroup={handleToggleGroup}
-                  />
-                </motion.section>
-              );
-            })}
-          </AnimatePresence>
+      <main className="flex-1 min-h-0 w-full mt-4 pb-24 lg:pb-0 relative z-10 flex flex-col justify-start overflow-y-auto lg:overflow-hidden">
+        <div
+          className="flex flex-col lg:flex-row w-full h-full min-h-0 select-none animate-fade-in"
+          style={{
+            height: isDesktop ? "100%" : "auto",
+          }}
+        >
+          {/* Left Column Group: Solutions, Core Runtime, Ecosystem */}
+          <div
+            className="flex flex-col min-w-0 h-full"
+            style={{
+              flex: isDesktop ? `${leftFlex} 1 0%` : "none",
+              width: isDesktop ? "auto" : "100%",
+              marginRight: isDesktop ? (isRightActive ? "16px" : "0px") : "0px",
+              marginBottom: isDesktop ? "0px" : (isRightActive ? "16px" : "0px"),
+              transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          >
+            {/* Row 1: Solutions + Core Runtime */}
+            <div
+              className="flex flex-col lg:flex-row w-full min-h-0"
+              style={{
+                height: isDesktop ? (isEcoActive ? "calc(54vh - 64px)" : "100%") : "auto",
+                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+            >
+              {/* Solutions Panel */}
+              <div className="w-full flex flex-col h-full min-w-0" style={solStyle}>
+                <SolutionsPanel
+                  isCompact={activePanels.includes("about")}
+                  onOpenPilot={() => setPilotOpen(true)}
+                />
+              </div>
+
+              {/* Core Runtime Panel */}
+              <div className="w-full flex flex-col h-full min-w-0" style={coreStyle}>
+                <CoreRuntimePanel isCompact={isSolActive || isAboutActive} />
+              </div>
+            </div>
+
+            {/* Row 2: Ecosystem */}
+            <div
+              className="w-full min-h-0 overflow-hidden"
+              style={{
+                height: isDesktop ? (isEcoActive ? "calc(46vh - 64px)" : "0px") : "auto",
+                opacity: isDesktop ? (isEcoActive ? 1 : 0) : 1,
+                marginTop: isDesktop ? (isEcoActive ? "16px" : "0px") : "0px",
+                visibility: isDesktop ? (isEcoActive ? "visible" : "hidden") : "visible",
+                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+            >
+              <div className="w-full flex flex-col h-full min-w-0" style={ecoStyle}>
+                <EcosystemPanel isCompact={isCommActive} />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column Group: About, Community */}
+          <div
+            className="flex flex-col min-w-0 h-full"
+            style={{
+              flex: isDesktop ? `${isRightActive ? rightFlex : 0} 1 0%` : "none",
+              width: isDesktop ? "auto" : "100%",
+              opacity: isRightActive ? 1 : 0,
+              visibility: isRightActive ? "visible" : "hidden",
+              pointerEvents: isRightActive ? "auto" : "none",
+              transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          >
+            {/* Row 1: About */}
+            <div
+              className="w-full min-h-0 overflow-hidden"
+              style={{
+                height: isDesktop ? (isAboutActive ? (isCommActive ? "calc(54vh - 64px)" : "100%") : "0px") : "auto",
+                opacity: isAboutActive ? 1 : 0,
+                visibility: isAboutActive ? "visible" : "hidden",
+                pointerEvents: isAboutActive ? "auto" : "none",
+                marginBottom: isDesktop ? "0px" : (isAboutActive && isCommActive ? "16px" : "0px"),
+                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+            >
+              <div className="w-full flex flex-col h-full min-w-0" style={aboutStyle}>
+                <AboutPanel isCompact={isSolActive} />
+              </div>
+            </div>
+
+            {/* Row 2: Community */}
+            <div
+              className="w-full min-h-0 overflow-hidden"
+              style={{
+                height: isDesktop ? (isCommActive ? (isAboutActive ? "calc(46vh - 64px)" : "100%") : "0px") : "auto",
+                opacity: isCommActive ? 1 : 0,
+                marginTop: isDesktop ? (isCommActive && isAboutActive ? "16px" : "0px") : "0px",
+                visibility: isCommActive ? "visible" : "hidden",
+                pointerEvents: isCommActive ? "auto" : "none",
+                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+            >
+              <div className="w-full flex flex-col h-full min-w-0" style={commStyle}>
+                <CommunityPanel
+                  onOpenPilot={() => setPilotOpen(true)}
+                  isCompact={isEcoActive}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 

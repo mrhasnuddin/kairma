@@ -40,7 +40,7 @@ export const PanelFrame: React.FC<PanelFrameProps> = ({
 
   return (
     <div
-      className={`relative flex flex-col overflow-hidden bg-theme-void/80 backdrop-blur-sm transition-all duration-300 font-mono ${borderClass} ${width} ${height} ${className}`}
+      className={`relative flex flex-col overflow-hidden bg-theme-void/80 backdrop-blur-sm transition-colors duration-300 font-mono ${borderClass} ${width} ${height} ${className}`}
     >
       {/* Corner Brackets */}
       {corners && (
@@ -53,65 +53,33 @@ export const PanelFrame: React.FC<PanelFrameProps> = ({
       )}
 
       {/* Header Bar */}
-      {(title || subtitle || terminalStyle) && (
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-theme-border bg-theme-void/60 text-xs select-none">
-          <div className="flex items-center gap-3">
-            {terminalStyle && (
-              <span className="text-theme-accent font-semibold tracking-[0.18em] mr-0.5">
-                //
-              </span>
-            )}
+      {(title || terminalStyle) && (
+        <div className="flex items-center justify-between px-6 py-3 md:px-8 md:py-4 border-b border-theme-border bg-theme-void/60 text-xs select-none">
+          <div className="flex items-center gap-2">
             {status && (
               <span
                 className={`w-1.5 h-1.5 rounded-full ${statusColor[status]}`}
               />
             )}
-            <div className="flex flex-col">
-              {title && (
-                <span className="font-mono font-bold uppercase tracking-[0.18em] text-theme-text text-[11px] md:text-xs">
-                  {title}
-                </span>
-              )}
-              {subtitle && (
-                <span className="text-[10px] text-theme-text-muted font-mono leading-none tracking-wider mt-0.5 uppercase">
-                  {subtitle}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 text-theme-text-muted">
-            {headerRight}
-            {terminalStyle && (
-              <div className="flex items-center gap-2 font-mono text-[10px] md:text-xs opacity-80">
-                <span className="opacity-40 tracking-[0.18em]">LOC:</span>
-                <span className="text-theme-accent font-semibold tracking-[0.18em]">SYS.PANEL</span>
-              </div>
+            {title && (
+              <span className="font-mono font-bold uppercase tracking-[0.18em] text-theme-text text-xs md:text-sm">
+                {title}
+              </span>
             )}
           </div>
+
+          {headerRight && (
+            <div className="flex items-center gap-4 text-theme-text-muted">
+              {headerRight}
+            </div>
+          )}
         </div>
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 p-4 relative overflow-y-auto min-h-0 text-sm md:text-base text-theme-text">
+      <div className="flex-1 p-6 md:p-8 relative overflow-y-auto min-h-0 text-sm md:text-base text-theme-text">
         {children}
       </div>
-
-      {/* Terminal Style Footer */}
-      {terminalStyle && (
-        <div className="flex items-center justify-between px-3.5 py-1.5 border-t border-theme-border bg-theme-void/40 text-[10px] md:text-xs font-mono text-theme-text-muted select-none">
-          <div className="flex items-center gap-2">
-            <span className="text-theme-accent font-bold">&gt;</span>
-            <span className="animate-pulse tracking-wider">_ READY</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="tracking-wider">KAIRMA.OS_V1.0.0</span>
-            <span className="px-1.5 py-0.5 border border-theme-border text-theme-accent text-[9px] tracking-[0.18em] uppercase rounded-sm font-semibold">
-              SECURE
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

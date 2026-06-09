@@ -36,7 +36,7 @@ export const VoidBackground: React.FC<VoidBackgroundProps> = ({
       />
 
       {/* Main layout container */}
-      <div className="relative z-10 w-full min-h-screen flex flex-col">
+      <div className="relative z-10 w-full flex-1 min-h-0 flex flex-col">
         {children}
       </div>
     </div>
