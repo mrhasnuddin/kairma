@@ -171,6 +171,34 @@ export interface StatusCopy {
   };
 }
 
+export interface EcosystemModelsCopy {
+  title: string;
+  subtitle: string;
+  fullRankings: string;
+  fetching: string;
+  metrics: {
+    intelligence: string;
+    coding: string;
+    agentic: string;
+  };
+  tableHeaders: {
+    model: string;
+    context: string;
+    price: string;
+    intel: string;
+    code: string;
+  };
+  detailLabels: {
+    free: string;
+    rank: string;
+    context: string;
+    input: string;
+    output: string;
+    modality: string;
+    benchmarkScores: string;
+  };
+}
+
 export interface SpecDetail {
   label: string;
   val: string;
@@ -257,6 +285,7 @@ export interface SiteCopyType {
   photography: PhotographyCopy;
   audio: AudioCopy;
   pilotModal: PilotModalCopy;
+  ecosystemModels: EcosystemModelsCopy;
 }
 
 export const siteCopy: SiteCopyType = {
@@ -662,6 +691,33 @@ export const siteCopy: SiteCopyType = {
       downloadCta: "Download the 2-page architecture brief (PDF)",
       downloadLink: "/KAIRMA Business Deck 2026.pdf",
       closeCta: "Close"
+    }
+  },
+  ecosystemModels: {
+    title: "LLM Rankings",
+    subtitle: "Top models · Ranked by weekly usage · via OpenRouter",
+    fullRankings: "Full Rankings ↗",
+    fetching: "Fetching Rankings...",
+    metrics: {
+      intelligence: "Intelligence",
+      coding: "Coding",
+      agentic: "Agentic"
+    },
+    tableHeaders: {
+      model: "Model",
+      context: "Context",
+      price: "Price/M",
+      intel: "Intel",
+      code: "Code"
+    },
+    detailLabels: {
+      free: "Free",
+      rank: "Rank",
+      context: "Context:",
+      input: "Input:",
+      output: "Output:",
+      modality: "Modality:",
+      benchmarkScores: "Benchmark Scores"
     }
   }
 };

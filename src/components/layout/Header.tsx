@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
     return (
       <button
         onClick={() => onTogglePanel(focusId)}
-        className={`flex items-center gap-1.5 font-bold uppercase text-xs sm:text-sm tracking-[0.18em] transition-colors duration-200 focus-visible:text-theme-accent outline-none select-none ${
+        className={`flex items-center gap-1.5 font-bold uppercase text-xs sm:text-sm tracking-[0.18em] transition-colors duration-200 focus-visible:text-theme-accent outline-none select-none flex-shrink-0 whitespace-nowrap ${
           isActive ? "text-theme-accent" : "text-theme-text-muted"
         }`}
         aria-label={`Toggle ${label} focus`}
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header
-        className="sticky lg:relative lg:top-0 top-4 z-40 h-16 w-full flex items-center justify-between px-6 md:px-8 border border-theme-border/60 bg-theme-void/85 backdrop-blur-md rounded-sm transition-all duration-300 font-mono shadow-md"
+        className="sticky lg:relative lg:top-0 top-4 z-40 h-16 w-full flex items-center justify-between px-6 md:px-8 border border-theme-border/60 bg-theme-void/85 backdrop-blur-md rounded-sm transition-all duration-300 font-mono flex-shrink-0"
       >
         {/* Left Section */}
         <div className="flex items-center gap-6 md:gap-8 flex-1">
@@ -154,9 +154,6 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="font-gothic text-2xl md:text-3xl text-theme-text tracking-normal transition-colors duration-200 group-hover:text-theme-accent font-blackletter">
               Kairma
             </span>
-            <span className="text-[11px] md:text-xs text-theme-text-muted tracking-[0.25em] uppercase font-mono leading-none -mt-1 select-none">
-              {t.os}
-            </span>
           </div>
         </div>
 
@@ -169,37 +166,47 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="w-[1px] h-5 bg-theme-border/60" />
           </div>
 
-          {/* Actions (Always Visible) */}
-          <a
-            href="/KAIRMA Business Deck 2026.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs tracking-[0.18em] text-theme-text-muted hover:text-theme-text uppercase font-semibold inline-flex items-center gap-1.5 select-none focus-visible:text-theme-accent"
-          >
-            {t.brief} ↗
-          </a>
-
-          {/* CTA Button */}
-          <button
-            onClick={onOpenPilot}
-            className="px-4 py-2 md:px-5 md:py-2.5 text-xs tracking-[0.18em] font-bold uppercase border border-theme-border bg-theme-void/85 text-theme-text hover:border-theme-accent hover:text-theme-accent transition-all duration-200 select-none cursor-pointer rounded-xs outline-none focus-visible:ring-1 focus-visible:ring-theme-accent"
-            aria-label="Open Request a Pilot dialog"
-          >
-            {t.begin} →
-          </button>
+          {/* Actions removed for now per request */}
         </div>
       </header>
-
-      {/* Sticky Mobile Bottom Nav Bar */}
-      <nav
-        className="fixed bottom-4 left-4 right-4 z-40 lg:hidden h-16 border border-theme-border/60 bg-theme-void/90 backdrop-blur-md rounded-sm flex items-center justify-around px-4 font-mono text-[9px] sm:text-xs shadow-lg"
-      >
-        {renderMobileNavButton("solutions", t.solutions)}
-        {renderMobileNavButton("about", t.about)}
-        {renderMobileNavButton("ecosystem", t.ecosystem)}
-        {renderMobileNavButton("community", t.community)}
-      </nav>
     </>
+  );
+};
+
+export const MobileNav: React.FC<HeaderProps> = ({
+  activePanels,
+  onTogglePanel,
+}) => {
+  const { language } = useLanguage();
+  const t = navTranslations[language as keyof typeof navTranslations] || navTranslations.en;
+
+  const renderMobileNavButton = (focusId: FocusId, label: string) => {
+    const isActive = activePanels.includes(focusId);
+    return (
+      <button
+        onClick={() => onTogglePanel(focusId)}
+        className={`flex items-center gap-1 font-bold uppercase text-[10px] tracking-[0.12em] transition-colors duration-200 focus-visible:text-theme-accent outline-none select-none ${
+          isActive ? "text-theme-accent" : "text-theme-text-muted"
+        }`}
+        aria-label={`Toggle ${label} focus`}
+      >
+        <span className="text-[10px] leading-none transition-colors duration-200 select-none">
+          {isActive ? "●" : "○"}
+        </span>
+        <span>{label}</span>
+      </button>
+    );
+  };
+
+  return (
+    <nav
+      className="lg:hidden w-full h-14 flex-shrink-0 border border-theme-border/60 bg-theme-void/90 backdrop-blur-md rounded-sm flex items-center justify-evenly px-2"
+    >
+      {renderMobileNavButton("solutions", t.solutions)}
+      {renderMobileNavButton("about", t.about)}
+      {renderMobileNavButton("ecosystem", t.ecosystem)}
+      {renderMobileNavButton("community", t.community)}
+    </nav>
   );
 };
 

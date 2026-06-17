@@ -121,3 +121,12 @@ body {
   box-shadow: 0 0 10px var(--theme-border-glow), inset 0 0 4px var(--theme-border-glow);
 }
 
+/* Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

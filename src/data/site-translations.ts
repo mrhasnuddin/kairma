@@ -405,6 +405,33 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         downloadLink: "/KAIRMA Business Deck 2026.pdf",
         closeCta: "关闭"
       }
+    },
+    ecosystemModels: {
+      title: "大模型排行榜",
+      subtitle: "基于 OpenRouter 周度使用量排名",
+      fullRankings: "完整榜单 ↗",
+      fetching: "正在获取排名...",
+      metrics: {
+        intelligence: "智能能力",
+        coding: "代码能力",
+        agentic: "智能体能力"
+      },
+      tableHeaders: {
+        model: "模型",
+        context: "上下文",
+        price: "价格/百万token",
+        intel: "智能",
+        code: "代码"
+      },
+      detailLabels: {
+        free: "免费",
+        rank: "排名",
+        context: "上下文:",
+        input: "输入:",
+        output: "输出:",
+        modality: "模态:",
+        benchmarkScores: "基准评分"
+      }
     }
   },
   "zh-TW": {
@@ -808,6 +835,33 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         downloadLink: "/KAIRMA Business Deck 2026.pdf",
         closeCta: "關閉"
       }
+    },
+    ecosystemModels: {
+      title: "大模型排行榜",
+      subtitle: "基於 OpenRouter 週度使用量排名",
+      fullRankings: "完整榜單 ↗",
+      fetching: "正在獲取排名...",
+      metrics: {
+        intelligence: "智能能力",
+        coding: "程式碼能力",
+        agentic: "智能體能力"
+      },
+      tableHeaders: {
+        model: "模型",
+        context: "上下文",
+        price: "價格/百萬token",
+        intel: "智能",
+        code: "程式碼"
+      },
+      detailLabels: {
+        free: "免費",
+        rank: "排名",
+        context: "上下文:",
+        input: "輸入:",
+        output: "輸出:",
+        modality: "模態:",
+        benchmarkScores: "基準評分"
+      }
     }
   },
   vi: {
@@ -1210,6 +1264,33 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         downloadCta: "Tải bản tóm tắt kiến trúc 2 trang (PDF)",
         downloadLink: "/KAIRMA Business Deck 2026.pdf",
         closeCta: "Đóng"
+      }
+    },
+    ecosystemModels: {
+      title: "Xếp hạng LLM",
+      subtitle: "Mô hình hàng đầu · Xếp hạng theo mức sử dụng hàng tuần · qua OpenRouter",
+      fullRankings: "Bảng xếp hạng đầy đủ ↗",
+      fetching: "Đang tải xếp hạng...",
+      metrics: {
+        intelligence: "Thông minh",
+        coding: "Lập trình",
+        agentic: "Tác tử"
+      },
+      tableHeaders: {
+        model: "Mô hình",
+        context: "Ngữ cảnh",
+        price: "Giá/M",
+        intel: "Thông minh",
+        code: "Lập trình"
+      },
+      detailLabels: {
+        free: "Miễn phí",
+        rank: "Xếp hạng",
+        context: "Ngữ cảnh:",
+        input: "Đầu vào:",
+        output: "Đầu ra:",
+        modality: "Định dạng:",
+        benchmarkScores: "Điểm chuẩn"
       }
     }
   }

@@ -40,29 +40,15 @@ export const PanelFrame: React.FC<PanelFrameProps> = ({
 
   return (
     <div
-      className={`relative flex flex-col overflow-hidden bg-theme-void/80 backdrop-blur-sm transition-colors duration-300 font-mono ${borderClass} ${width} ${height} ${className}`}
+      className={`relative flex flex-col min-w-0 overflow-hidden bg-theme-void/80 backdrop-blur-md transition-colors duration-300 font-sans border border-theme-border/20 ${width} ${height} ${className}`}
     >
-      {/* Corner Brackets */}
-      {corners && (
-        <>
-          <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-theme-accent pointer-events-none z-10" />
-          <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-theme-accent pointer-events-none z-10" />
-          <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-theme-accent pointer-events-none z-10" />
-          <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-theme-accent pointer-events-none z-10" />
-        </>
-      )}
 
       {/* Header Bar */}
-      {(title || terminalStyle) && (
-        <div className="flex items-center justify-between px-6 py-3 md:px-8 md:py-4 border-b border-theme-border bg-theme-void/60 text-xs select-none">
-          <div className="flex items-center gap-2">
-            {status && (
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${statusColor[status]}`}
-              />
-            )}
+      {(title) && (
+        <div className="flex items-center justify-between px-8 py-6 md:px-12 md:py-8 select-none">
+          <div className="flex items-center gap-3">
             {title && (
-              <span className="font-mono font-bold uppercase tracking-[0.18em] text-theme-text text-xs md:text-sm">
+              <span className="font-sans font-medium text-theme-text text-xl md:text-2xl tracking-wide">
                 {title}
               </span>
             )}
@@ -77,7 +63,7 @@ export const PanelFrame: React.FC<PanelFrameProps> = ({
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 p-6 md:p-8 relative overflow-y-auto min-h-0 text-sm md:text-base text-theme-text">
+      <div className="flex-1 min-w-0 min-h-0 px-8 pb-8 md:px-12 md:pb-12 relative overflow-y-auto overflow-x-hidden text-base md:text-lg text-theme-text/90 font-sans leading-relaxed custom-scrollbar">
         {children}
       </div>
     </div>

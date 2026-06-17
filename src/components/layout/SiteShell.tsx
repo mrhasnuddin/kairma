@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteCopy } from "@/lib/language";
-import Header from "./Header";
+import Header, { FocusId, MobileNav } from "./Header";
 import VoidBackground from "../visual/VoidBackground";
 import GothicGrid from "../visual/GothicGrid";
 import PilotModal from "../modal/PilotModal";
@@ -16,8 +16,6 @@ import {
   EcosystemPanel,
   CommunityPanel,
 } from "../panels/WorkspacePanels";
-
-export type FocusId = "solutions" | "about" | "ecosystem" | "community";
 
 export const SiteShell: React.FC = () => {
   const siteCopy = useSiteCopy();
@@ -118,23 +116,26 @@ export const SiteShell: React.FC = () => {
     }
   };
 
-  const handleTogglePanel = (panelId: FocusId | "reset") => {
-    if (panelId === "reset") {
-      const allPanels: FocusId[] = ["solutions", "about", "ecosystem", "community"];
-      setActivePanels(allPanels);
-      const url = new URL(window.location.href);
-      url.searchParams.set("panels", allPanels.join(","));
-      window.history.pushState(null, "", url.pathname + url.search);
-      return;
-    }
-
+  const handleTogglePanel = (focus: FocusId | "reset") => {
     setActivePanels((prev) => {
-      const order: FocusId[] = ["solutions", "about", "ecosystem", "community"];
-      const next = prev.includes(panelId)
-        ? prev.filter((p) => p !== panelId)
-        : order.filter((p) => prev.includes(p) || p === panelId);
+      if (focus === "reset") {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("panels");
+        window.history.pushState(null, "", url.pathname + url.search);
+        return [];
+      }
 
-      // Sync with URL params
+      let next: FocusId[];
+      if (!isDesktop) {
+        // Mobile behavior: toggle on means ONLY this panel is active.
+        // Toggle off means NO panel is active (which shows core).
+        next = prev.includes(focus) ? [] : [focus];
+      } else {
+        next = prev.includes(focus)
+          ? prev.filter((p) => p !== focus)
+          : [...prev, focus];
+      }
+
       const url = new URL(window.location.href);
       if (next.length > 0) {
         url.searchParams.set("panels", next.join(","));
@@ -150,81 +151,12 @@ export const SiteShell: React.FC = () => {
   const isAboutActive = activePanels.includes("about");
   const isEcoActive = activePanels.includes("ecosystem");
   const isCommActive = activePanels.includes("community");
-  const hasRow2 = isEcoActive || isCommActive;
-  const isRightActive = isAboutActive || isCommActive;
-
-  const solFlex = isSolActive ? (isRightActive ? 2 : 5) : 0;
-  const coreFlex = !isSolActive && isRightActive && !hasRow2 ? 2 : 1;
-  const leftFlex = solFlex + coreFlex;
-
-  const aboutFlex = !isSolActive ? (hasRow2 ? 5 : 4) : 3;
-  const rightFlex = isAboutActive ? aboutFlex : 3;
-
-  const solStyle: React.CSSProperties = {
-    flex: isDesktop ? `${solFlex} 1 0%` : "none",
-    width: isDesktop ? "auto" : "100%",
-    height: isDesktop ? "100%" : (isSolActive ? "auto" : "0px"),
-    opacity: isSolActive ? 1 : 0,
-    visibility: isSolActive ? "visible" : "hidden",
-    pointerEvents: isSolActive ? "auto" : "none",
-    marginRight: isDesktop ? (isSolActive ? "16px" : "0px") : "0px",
-    marginBottom: isDesktop ? "0px" : (isSolActive ? "16px" : "0px"),
-    overflow: "hidden",
-    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-  };
-
-  const coreStyle: React.CSSProperties = {
-    flex: isDesktop ? `${coreFlex} 1 0%` : "none",
-    width: isDesktop ? "auto" : "100%",
-    minWidth: isDesktop ? "350px" : "auto",
-    height: isDesktop ? "100%" : "auto",
-    opacity: 1,
-    marginRight: "0px",
-    marginBottom: isDesktop ? "0px" : (isEcoActive || isRightActive ? "16px" : "0px"),
-    overflow: "hidden",
-    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-  };
-
-  const aboutStyle: React.CSSProperties = {
-    width: "100%",
-    height: isDesktop ? "100%" : (isAboutActive ? "auto" : "0px"),
-    opacity: isAboutActive ? 1 : 0,
-    visibility: isAboutActive ? "visible" : "hidden",
-    pointerEvents: isAboutActive ? "auto" : "none",
-    marginRight: "0px",
-    marginBottom: isDesktop ? "0px" : (isAboutActive && isCommActive ? "16px" : "0px"),
-    overflow: "hidden",
-    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-  };
-
-  const ecoStyle: React.CSSProperties = {
-    width: "100%",
-    height: isDesktop ? "100%" : (isEcoActive ? "auto" : "0px"),
-    opacity: isEcoActive ? 1 : 0,
-    visibility: isEcoActive ? "visible" : "hidden",
-    pointerEvents: isEcoActive ? "auto" : "none",
-    marginRight: "0px",
-    marginBottom: "0px",
-    overflow: "hidden",
-    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-  };
-
-  const commStyle: React.CSSProperties = {
-    width: "100%",
-    height: isDesktop ? "100%" : (isCommActive ? "auto" : "0px"),
-    opacity: isCommActive ? 1 : 0,
-    visibility: isCommActive ? "visible" : "hidden",
-    pointerEvents: isCommActive ? "auto" : "none",
-    marginRight: "0px",
-    marginBottom: "0px",
-    overflow: "hidden",
-    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-  };
+  const isRightActive = isAboutActive || isEcoActive;
 
   const bc = siteCopy.boot;
 
   return (
-    <VoidBackground className="relative min-h-screen lg:h-screen w-full flex flex-col pt-4 pb-24 lg:pb-4 px-4 lg:overflow-hidden text-theme-text transition-colors duration-300 bg-theme-void">
+    <VoidBackground className="relative h-[100dvh] w-full flex flex-col gap-3 lg:gap-[10px] p-4 overflow-hidden text-theme-text transition-colors duration-300 bg-theme-void">
       
       {/* 1. Boot Sequence Overlay */}
       <AnimatePresence>
@@ -295,116 +227,164 @@ export const SiteShell: React.FC = () => {
       />
 
       {/* 4. Dashboard Viewport Container */}
-      <main className="flex-1 min-h-0 w-full mt-4 pb-24 lg:pb-0 relative z-10 flex flex-col justify-start overflow-y-auto lg:overflow-hidden">
-        <div
-          className="flex flex-col lg:flex-row w-full h-full min-h-0 select-none animate-fade-in"
-          style={{
-            height: isDesktop ? "100%" : "auto",
-          }}
-        >
-          {/* Left Column Group: Solutions, Core Runtime, Ecosystem */}
+      <main className="flex-1 min-h-0 w-full relative z-10 overflow-hidden">
+        {/* gap-[6px] drives ALL inter-panel gaps on desktop — no double-padding */}
+        <div className="flex flex-col lg:flex-row w-full h-full min-h-0 select-none animate-fade-in lg:gap-[6px]">
+
+          {/* ── Left Column: Workflow OS / Core Runtime / Community ── */}
           <div
-            className="flex flex-col min-w-0 h-full"
-            style={{
-              flex: isDesktop ? `${leftFlex} 1 0%` : "none",
-              width: isDesktop ? "auto" : "100%",
-              marginRight: isDesktop ? (isRightActive ? "16px" : "0px") : "0px",
-              marginBottom: isDesktop ? "0px" : (isRightActive ? "16px" : "0px"),
+            className="flex flex-col min-w-0 min-h-0 overflow-hidden lg:gap-[6px]"
+            style={isDesktop ? {
+              flex: isRightActive ? "0 0 calc(50% - 3px)" : "1 1 100%",
+              height: "100%",
               transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            } : {
+              display: isRightActive ? "none" : "flex",
+              width: "100%",
+              height: "100%",
             }}
           >
-            {/* Row 1: Solutions + Core Runtime */}
+            {/* Row 1: Solutions + Core Runtime — gap-[6px] for horizontal split */}
             <div
-              className="flex flex-col lg:flex-row w-full min-h-0"
-              style={{
-                height: isDesktop ? (isEcoActive ? "calc(54vh - 64px)" : "100%") : "auto",
+              className="flex flex-col lg:flex-row w-full min-h-0 overflow-hidden lg:gap-[6px]"
+              style={isDesktop ? {
+                flex: isCommActive ? "0 0 calc(65% - 3px)" : "1 1 100%",
+                height: isCommActive ? "calc(65% - 3px)" : "100%",
                 transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              } : {
+                display: isCommActive ? "none" : "flex",
+                width: "100%",
+                height: "100%",
               }}
             >
               {/* Solutions Panel */}
-              <div className="w-full flex flex-col h-full min-w-0" style={solStyle}>
+              <div
+                className="min-w-0 min-h-0 overflow-hidden flex flex-col"
+                style={isDesktop ? {
+                  flex: isSolActive ? "0 0 calc(50% - 3px)" : "0 0 0%",
+                  height: "100%",
+                  opacity: isSolActive ? 1 : 0,
+                  visibility: isSolActive ? "visible" : "hidden",
+                  pointerEvents: isSolActive ? "auto" : "none",
+                  transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+                } : {
+                  display: isSolActive ? "flex" : "none",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
                 <SolutionsPanel
-                  isCompact={activePanels.includes("about")}
+                  isCompact={activePanels.includes("about") || activePanels.includes("ecosystem")}
                   onOpenPilot={() => setPilotOpen(true)}
                 />
               </div>
 
               {/* Core Runtime Panel */}
-              <div className="w-full flex flex-col h-full min-w-0" style={coreStyle}>
-                <CoreRuntimePanel isCompact={isSolActive || isAboutActive} />
-              </div>
-            </div>
-
-            {/* Row 2: Ecosystem */}
-            <div
-              className="w-full min-h-0 overflow-hidden"
-              style={{
-                height: isDesktop ? (isEcoActive ? "calc(46vh - 64px)" : "0px") : "auto",
-                opacity: isDesktop ? (isEcoActive ? 1 : 0) : 1,
-                marginTop: isDesktop ? (isEcoActive ? "16px" : "0px") : "0px",
-                visibility: isDesktop ? (isEcoActive ? "visible" : "hidden") : "visible",
-                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-              }}
-            >
-              <div className="w-full flex flex-col h-full min-w-0" style={ecoStyle}>
-                <EcosystemPanel isCompact={isCommActive} />
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column Group: About, Community */}
-          <div
-            className="flex flex-col min-w-0 h-full"
-            style={{
-              flex: isDesktop ? `${isRightActive ? rightFlex : 0} 1 0%` : "none",
-              width: isDesktop ? "auto" : "100%",
-              opacity: isRightActive ? 1 : 0,
-              visibility: isRightActive ? "visible" : "hidden",
-              pointerEvents: isRightActive ? "auto" : "none",
-              transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-            }}
-          >
-            {/* Row 1: About */}
-            <div
-              className="w-full min-h-0 overflow-hidden"
-              style={{
-                height: isDesktop ? (isAboutActive ? (isCommActive ? "calc(54vh - 64px)" : "100%") : "0px") : "auto",
-                opacity: isAboutActive ? 1 : 0,
-                visibility: isAboutActive ? "visible" : "hidden",
-                pointerEvents: isAboutActive ? "auto" : "none",
-                marginBottom: isDesktop ? "0px" : (isAboutActive && isCommActive ? "16px" : "0px"),
-                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-              }}
-            >
-              <div className="w-full flex flex-col h-full min-w-0" style={aboutStyle}>
-                <AboutPanel isCompact={isSolActive} />
+              <div
+                className="min-w-0 min-h-0 overflow-hidden flex flex-col"
+                style={isDesktop ? {
+                  flex: "1 1 0%",
+                  height: "100%",
+                  transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+                } : {
+                  display: activePanels.length > 0 ? "none" : "flex",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <CoreRuntimePanel isCompact={isSolActive || isAboutActive || isEcoActive} />
               </div>
             </div>
 
             {/* Row 2: Community */}
             <div
-              className="w-full min-h-0 overflow-hidden"
-              style={{
-                height: isDesktop ? (isCommActive ? (isAboutActive ? "calc(46vh - 64px)" : "100%") : "0px") : "auto",
+              className="w-full min-w-0 min-h-0 overflow-hidden flex flex-col"
+              style={isDesktop ? {
+                flex: isCommActive ? "0 0 calc(35% - 3px)" : "0 0 0%",
+                height: isCommActive ? "calc(35% - 3px)" : "0%",
                 opacity: isCommActive ? 1 : 0,
-                marginTop: isDesktop ? (isCommActive && isAboutActive ? "16px" : "0px") : "0px",
                 visibility: isCommActive ? "visible" : "hidden",
                 pointerEvents: isCommActive ? "auto" : "none",
                 transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              } : {
+                display: isCommActive ? "flex" : "none",
+                width: "100%",
+                height: "100%",
               }}
             >
-              <div className="w-full flex flex-col h-full min-w-0" style={commStyle}>
-                <CommunityPanel
-                  onOpenPilot={() => setPilotOpen(true)}
-                  isCompact={isEcoActive}
-                />
-              </div>
+              <CommunityPanel
+                onOpenPilot={() => setPilotOpen(true)}
+                isCompact={isEcoActive}
+              />
             </div>
           </div>
+
+          {/* ── Right Column: Ecosystem / Operational Intel ── */}
+          <div
+            className="flex flex-col min-w-0 min-h-0 overflow-hidden lg:gap-[6px]"
+            style={isDesktop ? {
+              flex: isRightActive ? "0 0 calc(50% - 3px)" : "0 0 0%",
+              height: "100%",
+              opacity: isRightActive ? 1 : 0,
+              visibility: isRightActive ? "visible" : "hidden",
+              pointerEvents: isRightActive ? "auto" : "none",
+              transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            } : {
+              display: isRightActive ? "flex" : "none",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            {/* Ecosystem Panel */}
+            <div
+              className="w-full min-w-0 min-h-0 overflow-hidden flex flex-col"
+              style={isDesktop ? {
+                flex: isEcoActive ? (isAboutActive ? "0 0 calc(50% - 3px)" : "1 1 100%") : "0 0 0%",
+                height: isEcoActive ? (isAboutActive ? "calc(50% - 3px)" : "100%") : "0%",
+                opacity: isEcoActive ? 1 : 0,
+                visibility: isEcoActive ? "visible" : "hidden",
+                pointerEvents: isEcoActive ? "auto" : "none",
+                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              } : {
+                display: isEcoActive ? "flex" : "none",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <EcosystemPanel isCompact={isCommActive} />
+            </div>
+
+            {/* About Panel (Operational Intel) */}
+            <div
+              className="w-full min-w-0 min-h-0 overflow-hidden flex flex-col"
+              style={isDesktop ? {
+                flex: isAboutActive ? (isEcoActive ? "0 0 calc(50% - 3px)" : "1 1 100%") : "0 0 0%",
+                height: isAboutActive ? (isEcoActive ? "calc(50% - 3px)" : "100%") : "0%",
+                opacity: isAboutActive ? 1 : 0,
+                visibility: isAboutActive ? "visible" : "hidden",
+                pointerEvents: isAboutActive ? "auto" : "none",
+                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              } : {
+                display: isAboutActive ? "flex" : "none",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <AboutPanel isCompact={isSolActive} />
+            </div>
+          </div>
+
         </div>
       </main>
 
-      {/* 5. Onboarding Pilot Modal */}
+      {/* 5. Mobile Bottom Nav */}
+      <MobileNav
+        activePanels={activePanels}
+        onTogglePanel={handleTogglePanel}
+        onOpenPilot={() => setPilotOpen(true)}
+      />
+
+      {/* 6. Onboarding Pilot Modal */}
       <PilotModal isOpen={pilotOpen} onClose={() => setPilotOpen(false)} />
       
     </VoidBackground>

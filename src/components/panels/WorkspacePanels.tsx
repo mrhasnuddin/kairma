@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSiteCopy, useLanguage } from "@/lib/language";
 import PanelFrame from "./PanelFrame";
 import Button from "../ui/Button";
-import GlassWorkforceCube from "../visual/GlassWorkforceCube";
 import FallingPattern from "../visual/FallingPattern";
+import { TrendingModels } from "../data/TrendingModels";
 import { useTheme } from "@/lib/theme";
 
 const panelTranslations = {
@@ -289,28 +289,28 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
       status="active"
       terminalStyle={false}
       corners={true}
-      className="h-full flex flex-col justify-between"
+      className="h-full flex flex-col justify-between min-w-0"
     >
-      <div className="flex flex-col justify-start select-none gap-5 flex-1 min-h-0">
+      <div className="flex flex-col justify-start select-none gap-5 flex-1 min-h-0 min-w-0 w-full">
         {/* Dynamic Tab Selector Headers */}
-        <div className="flex flex-wrap items-center gap-2.5 border-b border-theme-border/20 pb-3">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-2 border-b border-theme-border/20 pb-3 w-full">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id as any)}
-              className={`text-xs md:text-sm font-mono font-bold uppercase tracking-wider px-3.5 py-1.5 border transition-all duration-150 rounded-xs cursor-pointer ${
+              className={`flex-shrink-0 text-xs font-mono font-bold uppercase tracking-widest px-3.5 py-1.5 transition-all duration-200 cursor-pointer rounded-xs border ${
                 activeTab === t.id
-                  ? "border-theme-accent bg-theme-accent/10 text-theme-accent"
-                  : "border-theme-border/40 text-theme-text-muted hover:border-theme-text hover:text-theme-text"
+                  ? "bg-theme-accent border-theme-accent text-theme-void shadow-[0_0_8px_rgba(var(--theme-accent-rgb),0.4)]"
+                  : "bg-theme-void/40 border-theme-border/40 text-theme-text-muted hover:border-theme-accent/50 hover:text-theme-text"
               }`}
             >
-              [{t.label}]
+              {t.label}
             </button>
           ))}
         </div>
 
         {/* Tab Content Display */}
-        <div className="flex-1 my-1 flex flex-col justify-start min-h-0 relative z-10 overflow-y-auto">
+        <div className="flex-1 my-1 flex flex-col justify-start min-h-0 min-w-0 w-full relative z-10 overflow-y-auto overflow-x-hidden">
           {activeTab === "overview" && (
             <div className="flex flex-col justify-start gap-5 py-2">
               <div className="flex flex-col gap-3">
@@ -328,9 +328,7 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
                 </p>
               </div>
 
-              <div className={`w-32 h-32 ${isCompact ? "md:w-36 md:h-36" : "md:w-44 md:h-44"} flex-shrink-0 relative mx-auto my-4`}>
-                <GlassWorkforceCube speed={0.007} />
-              </div>
+
 
               <div className="flex items-center gap-5 mt-auto font-mono">
                 <Button variant="primary" size="md" onClick={onOpenPilot} className="font-bold border-theme-accent text-xs md:text-sm py-2 px-5">
@@ -368,7 +366,7 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
               </h4>
               <div className={`flex flex-col ${isCompact ? "lg:flex-col" : "lg:flex-row"} md:flex-row items-center gap-4 mt-2 min-h-0`}>
                 <PyramidVisual selectedIdx={null} onSelect={() => {}} />
-                <div className="flex-1 flex flex-col gap-2.5 overflow-y-auto min-h-0 pr-1 w-full">
+                <div className="flex-1 min-w-0 flex flex-col gap-2.5 overflow-y-auto min-h-0 pr-1 w-full">
                   {cwk.layers.map((layer) => (
                     <div key={layer.id} className="p-3.5 border border-theme-border/40 rounded-xs bg-theme-void/65 flex flex-col gap-0.5">
                       <div className="flex items-center gap-2">
@@ -390,7 +388,7 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
               </h4>
               <div className={`flex flex-col ${isCompact ? "lg:flex-col" : "lg:flex-row"} md:flex-row gap-4 mt-2 overflow-y-auto pr-1`}>
                 {/* Customer Premise */}
-                <div className="flex-1 p-4 border border-theme-border/40 rounded-xs bg-theme-void/60 flex flex-col gap-2.5">
+                <div className="flex-1 min-w-0 p-4 border border-theme-border/40 rounded-xs bg-theme-void/60 flex flex-col gap-2.5">
                   <span className="text-xs font-bold text-theme-accent uppercase tracking-wider">{car.premise.title}</span>
                   <div className="flex flex-col gap-1.5 text-xs md:text-sm">
                     <div><span className="font-bold text-theme-text">Edge Node:</span> <span className="text-theme-text-muted">{car.premise.box} ({car.premise.specs})</span></div>
@@ -400,7 +398,7 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
                   </div>
                 </div>
                 {/* Cloud Models */}
-                <div className="flex-1 p-4 border border-theme-border/40 rounded-xs bg-theme-void/60 flex flex-col justify-start gap-2.5">
+                <div className="flex-1 min-w-0 p-4 border border-theme-border/40 rounded-xs bg-theme-void/60 flex flex-col justify-start gap-2.5">
                   <div className="flex flex-col gap-3">
                     <span className="text-xs font-bold text-theme-accent uppercase tracking-wider">{car.cloud.title}</span>
                     <div className="flex flex-wrap gap-2 mt-1">
@@ -506,9 +504,16 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
               <span className={`text-[7px] md:text-[8px] transition-transform duration-150 ${langDropdownOpen ? "rotate-180" : ""}`}>▼</span>
             </button>
 
-            {langDropdownOpen && (
-              <div className="absolute right-0 top-full mt-1.5 w-28 border border-theme-border bg-theme-void/95 backdrop-blur-md shadow-2xl rounded-sm py-1 z-50 flex flex-col font-mono text-[11px] md:text-[12px]">
-                {(["en", "zh-CN", "zh-TW", "vi"] as const).map((lang) => (
+            <AnimatePresence>
+              {langDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="absolute right-0 top-full mt-1.5 w-28 border border-theme-border bg-theme-void/95 backdrop-blur-md shadow-2xl rounded-sm py-1 z-50 flex flex-col font-mono text-[11px] md:text-[12px]"
+                >
+                  {(["en", "zh-CN", "zh-TW", "vi"] as const).map((lang) => (
                   <button
                     key={lang}
                     onClick={() => {
@@ -527,8 +532,9 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
                     {lang === "vi" && "Tiếng Việt"}
                   </button>
                 ))}
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="w-[1px] h-3 bg-theme-border/40 self-center mx-0.5" />
@@ -649,28 +655,28 @@ export const AboutPanel: React.FC<AboutPanelProps> = ({
       status="idle"
       terminalStyle={false}
       corners={true}
-      className="h-full flex flex-col justify-between"
+      className="h-full flex flex-col justify-between min-w-0"
     >
-      <div className="flex flex-col justify-start select-none gap-5 flex-1 min-h-0 w-full max-w-4xl mx-auto">
+      <div className="flex flex-col justify-start select-none gap-5 flex-1 min-h-0 min-w-0 w-full max-w-4xl mx-auto">
         {/* Tabs Selector */}
-        <div className="flex flex-wrap items-center gap-2.5 border-b border-theme-border/20 pb-3">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-2 border-b border-theme-border/20 pb-3 w-full">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id as any)}
-              className={`text-xs md:text-sm font-mono font-bold uppercase tracking-wider px-3.5 py-1.5 border transition-all duration-150 rounded-xs cursor-pointer ${
+              className={`flex-shrink-0 text-xs font-mono font-bold uppercase tracking-widest px-3.5 py-1.5 transition-all duration-200 cursor-pointer rounded-xs border ${
                 activeTab === t.id
-                  ? "border-theme-accent bg-theme-accent/10 text-theme-accent"
-                  : "border-theme-border/40 text-theme-text-muted hover:border-theme-text hover:text-theme-text"
+                  ? "bg-theme-accent border-theme-accent text-theme-void shadow-[0_0_8px_rgba(var(--theme-accent-rgb),0.4)]"
+                  : "bg-theme-void/40 border-theme-border/40 text-theme-text-muted hover:border-theme-accent/50 hover:text-theme-text"
               }`}
             >
-              [{t.label}]
+              {t.label}
             </button>
           ))}
         </div>
 
         {/* Tab Content Display */}
-        <div className="flex-1 my-1 flex flex-col justify-start min-h-0 relative z-10 overflow-y-auto">
+        <div className="flex-1 my-1 flex flex-col justify-start min-h-0 min-w-0 w-full relative z-10 overflow-y-auto overflow-x-hidden">
           {activeTab === "mission" && (
             <div className="flex flex-col justify-start gap-4 py-2 flex-1 min-h-0">
               <div className="flex flex-col justify-between gap-4 w-full">
@@ -773,7 +779,7 @@ export const AboutPanel: React.FC<AboutPanelProps> = ({
                   {cd.heading}
                 </h3>
               </div>
-              <div className={`grid grid-cols-2 ${isCompact ? "lg:grid-cols-2" : "lg:grid-cols-4"} md:grid-cols-4 gap-4 mt-2 overflow-y-auto pr-1`}>
+              <div className={`grid grid-cols-1 sm:grid-cols-2 ${isCompact ? "lg:grid-cols-2" : "lg:grid-cols-4"} gap-4 mt-2 overflow-y-auto pr-1`}>
                 {cd.moats.map((moat, idx) => {
                   const isHovered = hoveredMoat === idx;
                   return (
@@ -826,11 +832,12 @@ export const EcosystemPanel: React.FC<EcosystemPanelProps> = ({
   const caudio = siteCopy.audio;
 
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const [internalTab, setInternalTab] = useState<"origins" | "guidelines">("origins");
+  const [internalTab, setInternalTab] = useState<"origins" | "guidelines" | "models">("origins");
 
   const tabs = [
     { id: "origins", label: "Origins & Nodes" },
     { id: "guidelines", label: "Brand DNA" },
+    { id: "models", label: "Ecosystem Models" },
   ];
 
   return (
@@ -839,28 +846,28 @@ export const EcosystemPanel: React.FC<EcosystemPanelProps> = ({
       status="idle"
       terminalStyle={false}
       corners={true}
-      className="h-full flex flex-col justify-between"
+      className="h-full flex flex-col justify-between min-w-0"
     >
-      <div className="flex flex-col justify-start select-none gap-5 flex-1 min-h-0">
+      <div className="flex flex-col justify-start select-none gap-5 flex-1 min-h-0 min-w-0 w-full">
         {/* Tabs Selector */}
-        <div className="flex flex-wrap items-center gap-2.5 border-b border-theme-border/20 pb-3">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-2 border-b border-theme-border/20 pb-3 w-full">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setInternalTab(t.id as any)}
-              className={`text-xs md:text-sm font-mono font-bold uppercase tracking-wider px-3.5 py-1.5 border transition-all duration-150 rounded-xs cursor-pointer ${
+              className={`flex-shrink-0 text-xs font-mono font-bold uppercase tracking-widest px-3.5 py-1.5 transition-all duration-200 cursor-pointer rounded-xs border ${
                 internalTab === t.id
-                  ? "border-theme-accent bg-theme-accent/10 text-theme-accent"
-                  : "border-theme-border/40 text-theme-text-muted hover:border-theme-text hover:text-theme-text"
+                  ? "bg-theme-accent border-theme-accent text-theme-void shadow-[0_0_8px_rgba(var(--theme-accent-rgb),0.4)]"
+                  : "bg-theme-void/40 border-theme-border/40 text-theme-text-muted hover:border-theme-accent/50 hover:text-theme-text"
               }`}
             >
-              [{t.label}]
+              {t.label}
             </button>
           ))}
         </div>
 
         {/* Tab Content Display */}
-        <div className="flex-1 my-1 flex flex-col justify-start min-h-0 relative z-10 overflow-y-auto">
+        <div className="flex-1 my-1 flex flex-col justify-start min-h-0 min-w-0 w-full relative z-10 overflow-y-auto overflow-x-hidden">
           {internalTab === "origins" && (
             <div className="flex flex-col justify-start gap-4 py-1 flex-1 min-h-0 font-mono">
               <div>
@@ -921,6 +928,14 @@ export const EcosystemPanel: React.FC<EcosystemPanelProps> = ({
                     {cp.heading} · <span className="text-theme-accent font-semibold">[MARKS PENDING]</span>
                   </span>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {internalTab === "models" && (
+            <div className="flex flex-col justify-start gap-4 py-1 flex-1 min-h-0 min-w-0 w-full font-mono h-full overflow-hidden">
+              <div className="min-w-0 w-full">
+                <TrendingModels />
               </div>
             </div>
           )}
@@ -1016,16 +1031,26 @@ export const CommunityPanel: React.FC<CommunityPanelProps> = ({
               >
                 {showEnterpriseSpecs ? "Hide specs ▲" : "Show specs ▼"}
               </button>
-              {showEnterpriseSpecs && (
-                <ul className="flex flex-col gap-1.5 mt-2.5 text-xs md:text-sm text-theme-text-muted list-none pl-0">
-                  {cb.enterprise.features.map((feat) => (
-                    <li key={feat} className="flex items-start gap-2">
-                      <span className="text-theme-accent font-bold">▪</span>
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <AnimatePresence initial={false}>
+                {showEnterpriseSpecs && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <ul className="flex flex-col gap-1.5 mt-2.5 text-xs md:text-sm text-theme-text-muted list-none pl-0 pb-1">
+                      {cb.enterprise.features.map((feat) => (
+                        <li key={feat} className="flex items-start gap-2">
+                          <span className="text-theme-accent font-bold">▪</span>
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <div className="mt-auto pt-3.5 border-t border-theme-border/20 flex flex-col gap-2">
               <Button variant="primary" size="md" onClick={onOpenPilot} className="font-bold border-theme-accent text-xs md:text-sm py-2.5 px-5">
@@ -1049,16 +1074,26 @@ export const CommunityPanel: React.FC<CommunityPanelProps> = ({
               >
                 {showBuilderSpecs ? "Hide specs ▲" : "Show specs ▼"}
               </button>
-              {showBuilderSpecs && (
-                <ul className="flex flex-col gap-1.5 mt-2.5 text-xs md:text-sm text-theme-text-muted list-none pl-0">
-                  {cb.builders.features.map((feat) => (
-                    <li key={feat} className="flex items-start gap-2">
-                      <span className="text-theme-chrome/60 font-bold">▪</span>
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <AnimatePresence initial={false}>
+                {showBuilderSpecs && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <ul className="flex flex-col gap-1.5 mt-2.5 text-xs md:text-sm text-theme-text-muted list-none pl-0 pb-1">
+                      {cb.builders.features.map((feat) => (
+                        <li key={feat} className="flex items-start gap-2">
+                          <span className="text-theme-chrome/60 font-bold">▪</span>
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <div className="mt-auto pt-3.5 border-t border-theme-border/20 flex flex-col gap-2">
               <a
