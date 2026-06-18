@@ -156,6 +156,15 @@ export interface BootCopy {
   separator: string;
   steps: { text: string; status: string }[];
   ready: string;
+  ctaImmerse: string;
+  ctaSkip: string;
+}
+
+export interface StoryIntroCopy {
+  osName: string;
+  copyright: string;
+  lines: string[];
+  scrollPrompt: string;
 }
 
 export interface StatusCopy {
@@ -281,6 +290,7 @@ export interface SiteCopyType {
   closing: ClosingCopy;
   footer: FooterCopy;
   boot: BootCopy;
+  storyIntro: StoryIntroCopy;
   status: StatusCopy;
   photography: PhotographyCopy;
   audio: AudioCopy;
@@ -545,14 +555,26 @@ export const siteCopy: SiteCopyType = {
     copyright: "© 2026 KAIRMA"
   },
   boot: {
-    title: "booting kairma os · v1.0.0",
-    separator: "─────────────────────────────",
+    title: "BOOTING KAIRMA OS · V1.0.0",
+    separator: "----------------------------------------",
     steps: [
-      { text: "▸ initializing sop engine", status: "✓" },
-      { text: "▸ loading brand data lake", status: "✓" },
-      { text: "▸ routing to cloud models", status: "✓" }
+      { text: "INITIALIZING SOP WORKFLOW ENGINE", status: "OK" },
+      { text: "LOADING LOCAL BRAND DATA LAKE", status: "OK" },
+      { text: "CONNECTING CLOUD MODEL ROUTER", status: "OK" }
     ],
-    ready: "ready."
+    ready: "SYSTEM READY.",
+    ctaImmerse: "> [ IMMERSE IN STORY ]",
+    ctaSkip: "> [ SKIP TO DASHBOARD ]"
+  },
+  storyIntro: {
+    osName: "KAIRMA OS UNIFIED OPERATING SYSTEM",
+    copyright: "COPYRIGHT © 2026 WEB3LABS",
+    lines: [
+      "The era of labor scaling is over.",
+      "AI models now replace repetitive cross-border tasks.",
+      "KAIRMA is the chassis. You build the engine."
+    ],
+    scrollPrompt: "[ SCROLL TO INITIALIZE RUNTIME CORE ]"
   },
   status: {
     osName: "KAIRMA OS",

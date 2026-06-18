@@ -258,14 +258,26 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       copyright: "© 2026 KAIRMA 版权所有"
     },
     boot: {
-      title: "正在启动 kairma 操作系统 · v1.0.0",
-      separator: "─────────────────────────────",
+      title: "正在启动 KAIRMA 操作系统 · V1.0.0",
+      separator: "----------------------------------------",
       steps: [
-        { text: "▸ 正在初始化 SOP 工作流引擎", status: "✓" },
-        { text: "▸ 正在加载本地品牌数据湖", status: "✓" },
-        { text: "▸ 正在连接云端多模型路由器", status: "✓" }
+        { text: "正在初始化 SOP 工作流引擎", status: "OK" },
+        { text: "正在加载本地品牌数据湖", status: "OK" },
+        { text: "正在连接云端多模型路由器", status: "OK" }
       ],
-      ready: "准备就绪。"
+      ready: "准备就绪。",
+      ctaImmerse: "> [ 沉浸于故事 ]",
+      ctaSkip: "> [ 跳过至控制台 ]"
+    },
+    storyIntro: {
+      osName: "KAIRMA OS 统一操作系统",
+      copyright: "版权所有 © 2026 WEB3LABS",
+      lines: [
+        "算力替代人力的时代已经到来。",
+        "AI 模型正在取代重复性的跨境工作。",
+        "KAIRMA 是底盘。你来构建引擎。"
+      ],
+      scrollPrompt: "[ 向下滚动以初始化核心运行库 ]"
     },
     status: {
       osName: "KAIRMA OS",
@@ -688,14 +700,26 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       copyright: "© 2026 KAIRMA 版權所有"
     },
     boot: {
-      title: "正在啟動 kairma 操作系統 · v1.0.0",
-      separator: "─────────────────────────────",
+      title: "正在啟動 KAIRMA 作業系統 · V1.0.0",
+      separator: "----------------------------------------",
       steps: [
-        { text: "▸ 正在初始化 SOP 工作流引擎", status: "✓" },
-        { text: "▸ 正在載入本地品牌數據湖", status: "✓" },
-        { text: "▸ 正在連接雲端多模型路由器", status: "✓" }
+        { text: "正在初始化 SOP 工作流程引擎", status: "OK" },
+        { text: "正在載入本地品牌數據湖", status: "OK" },
+        { text: "正在連接雲端多模型路由器", status: "OK" }
       ],
-      ready: "準備就緒。"
+      ready: "準備就緒。",
+      ctaImmerse: "> [ 沉浸於故事 ]",
+      ctaSkip: "> [ 跳過至控制台 ]"
+    },
+    storyIntro: {
+      osName: "KAIRMA OS 統一作業系統",
+      copyright: "版權所有 © 2026 WEB3LABS",
+      lines: [
+        "算力替代人力的時代已經到來。",
+        "AI 模型正在取代重複性的跨境工作。",
+        "KAIRMA 是底盤。你來構建引擎。"
+      ],
+      scrollPrompt: "[ 向下滾動以初始化核心運行庫 ]"
     },
     status: {
       osName: "KAIRMA OS",
@@ -1118,14 +1142,26 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       copyright: "© 2026 KAIRMA. Bản quyền được bảo lưu."
     },
     boot: {
-      title: "đang khởi động hệ điều hành kairma os · v1.0.0",
-      separator: "─────────────────────────────",
+      title: "KHỞI ĐỘNG KAIRMA OS · V1.0.0",
+      separator: "----------------------------------------",
       steps: [
-        { text: "▸ đang khởi tạo động cơ SOP", status: "✓" },
-        { text: "▸ đang tải hồ dữ liệu thương hiệu tại chỗ", status: "✓" },
-        { text: "▸ đang định tuyến đến các mô hình đám mây", status: "✓" }
+        { text: "KHỞI TẠO ĐỘNG CƠ QUY TRÌNH SOP", status: "OK" },
+        { text: "TẢI HỒ DỮ LIỆU THƯƠNG HIỆU ĐỊA PHƯƠNG", status: "OK" },
+        { text: "KẾT NỐI BỘ ĐỊNH TUYẾN MÔ HÌNH ĐÁM MÂY", status: "OK" }
       ],
-      ready: "hệ thống đã sẵn sàng."
+      ready: "SẴN SÀNG.",
+      ctaImmerse: "> [ TRẢI NGHIỆM CÂU CHUYỆN ]",
+      ctaSkip: "> [ BỎ QUA ĐẾN BẢNG ĐIỀU KHIỂN ]"
+    },
+    storyIntro: {
+      osName: "HỆ ĐIỀU HÀNH KAIRMA OS THỐNG NHẤT",
+      copyright: "BẢN QUYỀN © 2026 WEB3LABS",
+      lines: [
+        "Kỷ nguyên mở rộng quy mô lao động đã kết thúc.",
+        "Các mô hình AI hiện đang thay thế các nhiệm vụ xuyên biên giới lặp đi lặp lại.",
+        "KAIRMA là khung gầm. Bạn xây dựng động cơ."
+      ],
+      scrollPrompt: "[ CUỘN XUỐNG ĐỂ KHỞI TẠO LÕI RUNTIME ]"
     },
     status: {
       osName: "KAIRMA OS",
