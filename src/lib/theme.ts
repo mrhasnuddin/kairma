@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
-export type Theme = "matrix-dark" | "korea-light";
+export type Theme = "matrix-mode" | "xuan-mode";
 
 export const THEME_KEY = "kairma-theme";
 
@@ -15,22 +15,25 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("matrix-dark");
+  const [theme, setThemeState] = useState<Theme>("matrix-mode");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(THEME_KEY) as Theme | null;
-    let initialTheme: Theme = "matrix-dark";
+    let initialTheme: Theme = "matrix-mode";
 
-    if (saved === "matrix-dark" || saved === "korea-light") {
+    if (saved === "matrix-mode" || saved === "xuan-mode") {
       initialTheme = saved;
     } else {
       const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-      initialTheme = prefersLight ? "korea-light" : "matrix-dark";
+      initialTheme = prefersLight ? "xuan-mode" : "matrix-mode";
     }
 
     setThemeState(initialTheme);
     document.documentElement.setAttribute("data-theme", initialTheme);
+    if (initialTheme === "xuan-mode") {
+      document.documentElement.classList.add("xuan-mode");
+    }
     setMounted(true);
   }, []);
 
@@ -38,14 +41,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState(newTheme);
     localStorage.setItem(THEME_KEY, newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
+    if (newTheme === "xuan-mode") {
+      document.documentElement.classList.add("xuan-mode");
+    } else {
+      document.documentElement.classList.remove("xuan-mode");
+    }
   }, []);
 
   const toggleTheme = useCallback(() => {
-    const nextTheme = theme === "matrix-dark" ? "korea-light" : "matrix-dark";
+    const nextTheme = theme === "matrix-mode" ? "xuan-mode" : "matrix-mode";
     setTheme(nextTheme);
   }, [theme, setTheme]);
 
-  // Use React.createElement to keep the file as a clean .ts file (no JSX needed)
   return React.createElement(
     ThemeContext.Provider,
     { value: { theme, setTheme, toggleTheme } },
@@ -66,14 +73,17 @@ export const themeScript = `
   (function() {
     try {
       var saved = localStorage.getItem('${THEME_KEY}');
-      var theme = 'matrix-dark';
-      if (saved === 'matrix-dark' || saved === 'korea-light') {
+      var theme = 'matrix-mode';
+      if (saved === 'matrix-mode' || saved === 'xuan-mode') {
         theme = saved;
       } else {
         var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-        theme = prefersLight ? 'korea-light' : 'matrix-dark';
+        theme = prefersLight ? 'xuan-mode' : 'matrix-mode';
       }
       document.documentElement.setAttribute('data-theme', theme);
+      if (theme === 'xuan-mode') {
+        document.documentElement.classList.add("xuan-mode");
+      }
     } catch (e) {}
   })();
 `;

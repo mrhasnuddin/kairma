@@ -83,7 +83,7 @@ export const AtmosphericPanel: React.FC = () => {
               THEME CONTROL
             </span>
             <span className="text-[9px] opacity-75 font-mono text-theme-accent uppercase">
-              {theme === "matrix-dark" ? "Matrix Dark" : "Korea Light"}
+              {theme === "matrix-mode" ? "Matrix Mode" : "Xuan Mode"}
             </span>
           </div>
           <ThemeSwitcher />

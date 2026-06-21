@@ -110,7 +110,7 @@ export const GlassWorkforceCube: React.FC<GlassWorkforceCubeProps> = ({
         }
       }
       // Fallback
-      return theme === "matrix-dark" ? "31, 170, 104" : "200, 68, 46";
+      return theme === "matrix-mode" ? "31, 170, 104" : "200, 68, 46";
     };
 
     const rgbStr = getAccentRGB(accent);

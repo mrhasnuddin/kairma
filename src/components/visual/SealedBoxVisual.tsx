@@ -44,7 +44,7 @@ export const SealedBoxVisual: React.FC = () => {
       const boxD = 40; // Isometric depth offset
 
       // Theme Colors
-      const isDark = theme === "matrix-dark";
+      const isDark = theme === "matrix-mode";
       const accentColor = isDark ? "#1FAA68" : "#C8442E";
       const accentGlow = isDark ? "rgba(31, 170, 104, 0.45)" : "rgba(200, 68, 46, 0.45)";
       const accentDim = isDark ? "rgba(31, 170, 104, 0.15)" : "rgba(200, 68, 46, 0.15)";

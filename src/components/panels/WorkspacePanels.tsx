@@ -425,6 +425,8 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
 // 2. CORE RUNTIME PANEL (SHADER & DIAGNOSTICS)
 // ==========================================
 
+// ==========================================
+
 interface CoreRuntimePanelProps {
   isCompact?: boolean;
 }
@@ -539,13 +541,12 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
 
           <div className="w-[1px] h-3 bg-theme-border/40 self-center mx-0.5" />
 
-          {/* Theme Switcher Pill Toggle */}
           <div 
             onClick={toggleTheme}
             className="flex items-center gap-0.5 p-0.5 border border-theme-border/50 hover:border-theme-accent rounded-full bg-theme-void/80 cursor-pointer transition-colors duration-150 select-none"
             title="Toggle theme"
           >
-            <div className={`p-1 rounded-full transition-all duration-150 ${theme === "korea-light" ? "bg-theme-accent text-theme-void" : "text-theme-text-muted hover:text-theme-text"}`}>
+            <div className={`p-1 rounded-full transition-all duration-150 ${theme === "xuan-mode" ? "bg-theme-accent text-theme-void" : "text-theme-text-muted hover:text-theme-text"}`}>
               <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -558,7 +559,7 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
               </svg>
             </div>
-            <div className={`p-1 rounded-full transition-all duration-150 ${theme === "matrix-dark" ? "bg-theme-accent text-theme-void" : "text-theme-text-muted hover:text-theme-text"}`}>
+            <div className={`p-1 rounded-full transition-all duration-150 ${theme === "matrix-mode" ? "bg-theme-accent text-theme-void" : "text-theme-text-muted hover:text-theme-text"}`}>
               <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
@@ -568,7 +569,7 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
       }
     >
       <div className="absolute inset-0 pointer-events-none z-0">
-        <FallingPattern opacity={theme === "matrix-dark" ? 0.75 : 0.85} />
+        <FallingPattern opacity={theme === "matrix-mode" ? 0.75 : 0.85} />
       </div>
 
       {/* Centering wrapper */}

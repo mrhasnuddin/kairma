@@ -9,13 +9,13 @@ export const ThemeSwitcher: React.FC = () => {
   return (
     <div className="flex items-center gap-1 border border-theme-border/50 p-1 rounded-full bg-theme-void/80 font-mono text-[10px] w-full max-w-[150px] select-none">
       <button
-        onClick={() => setTheme("korea-light")}
+        onClick={() => setTheme("xuan-mode")}
         className={`flex-1 flex items-center justify-center gap-1.5 py-1 px-2.5 rounded-full cursor-pointer transition-all duration-150 outline-none select-none ${
-          theme === "korea-light"
+          theme === "xuan-mode"
             ? "bg-theme-accent text-theme-void font-bold"
             : "text-theme-text-muted hover:text-theme-text"
         }`}
-        aria-label="Switch to Korea Light Theme"
+        aria-label="Switch to Xuan Mode Theme"
       >
         <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="5" />
@@ -31,13 +31,13 @@ export const ThemeSwitcher: React.FC = () => {
         <span>LIGHT</span>
       </button>
       <button
-        onClick={() => setTheme("matrix-dark")}
+        onClick={() => setTheme("matrix-mode")}
         className={`flex-1 flex items-center justify-center gap-1.5 py-1 px-2.5 rounded-full cursor-pointer transition-all duration-150 outline-none select-none ${
-          theme === "matrix-dark"
+          theme === "matrix-mode"
             ? "bg-theme-accent text-theme-void font-bold"
             : "text-theme-text-muted hover:text-theme-text"
         }`}
-        aria-label="Switch to Matrix Dark Theme"
+        aria-label="Switch to Matrix Mode Theme"
       >
         <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />

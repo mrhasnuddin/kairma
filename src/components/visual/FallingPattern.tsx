@@ -141,7 +141,7 @@ export function FallingPattern({
           ];
         }
       }
-      return theme === "matrix-dark" ? [31, 170, 104] : [200, 68, 46];
+      return theme === "matrix-mode" ? [31, 170, 104] : [200, 68, 46];
     };
 
     let colors = resolveColors();
@@ -160,7 +160,7 @@ export function FallingPattern({
       ctx.font = `bold ${fontSize}px monospace`;
       ctx.textAlign = "center";
       
-      const isDark = theme === "matrix-dark";
+      const isDark = theme === "matrix-mode";
 
       for (let i = 0; i < drops.length; i++) {
         const drop = drops[i];
@@ -222,7 +222,7 @@ export function FallingPattern({
     };
   }, [color, backgroundColor, speed, theme]);
 
-  const resolvedOpacity = (opacity ?? 0.15) * (theme === "matrix-dark" ? 1.0 : 3.0);
+  const resolvedOpacity = (opacity ?? 0.15) * (theme === "matrix-mode" ? 1.0 : 3.0);
 
   return (
     <div
