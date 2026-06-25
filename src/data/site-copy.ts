@@ -8,6 +8,7 @@ export interface HeroCopy {
   wordmark: string;
   tagline: string;
   subTagline: string;
+  anchorBio: string;
   cta: {
     begin: string;
     architecture: string;
@@ -275,6 +276,11 @@ export interface PilotModalCopy {
   };
 }
 
+export interface PartnerMarqueeCopy extends SectionCopy {
+  description: string;
+  marqueeLabel: string;
+}
+
 export interface SiteCopyType {
   hero: HeroCopy;
   problem: ProblemCopy;
@@ -296,6 +302,7 @@ export interface SiteCopyType {
   audio: AudioCopy;
   pilotModal: PilotModalCopy;
   ecosystemModels: EcosystemModelsCopy;
+  partnersBox: PartnerMarqueeCopy;
 }
 
 export const siteCopy: SiteCopyType = {
@@ -304,11 +311,18 @@ export const siteCopy: SiteCopyType = {
     wordmark: "Kai rma",
     tagline: "The AI workforce for cross-border brands.",
     subTagline: "ONE BOX. YOUR FIRST AI EMPLOYEE.",
+    anchorBio: "THE UNIFIED OPERATING SYSTEM FOR CROSS-BORDER BRAND OPERATIONS. WE REPLACE REPETITIVE LABOR WITH AUTONOMOUS AI AGENTS, ALLOWING AMBITIOUS BRANDS TO SCALE GLOBALLY WITHOUT LINEAR HEADCOUNT LIMITATIONS.",
     cta: {
       begin: "Begin →",
       architecture: "See the architecture"
     },
     scrollText: "scroll ↓"
+  },
+  partnersBox: {
+    title: "§ 01 · PARTNERS",
+    heading: "GLOBAL AMBITION REQUIRES MORE THAN JUST TALENT.",
+    description: "The most ambitious brands are bottlenecked by legacy operations, scattered data, and linear headcount costs. We fix that. KAIRMA brings the best SOP engine, agentic workflows, and infrastructure to scale your brand globally without scaling your payroll. We turn operational friction into an automated compounding advantage.",
+    marqueeLabel: "ECOSYSTEM PARTNERS"
   },
   problem: {
     title: "§ 01 · THE PROBLEM",
@@ -563,7 +577,7 @@ export const siteCopy: SiteCopyType = {
       { text: "CONNECTING CLOUD MODEL ROUTER", status: "OK" }
     ],
     ready: "SYSTEM READY.",
-    ctaImmerse: "> [ IMMERSE IN STORY ]",
+    ctaImmerse: "> [ CONTINUE ]",
     ctaSkip: "> [ SKIP TO DASHBOARD ]"
   },
   storyIntro: {

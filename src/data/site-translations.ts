@@ -10,6 +10,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       wordmark: "Kai rma",
       tagline: "为跨境品牌打造的 AI 数字员工。",
       subTagline: "开箱即用。您的首个 AI 员工。",
+      anchorBio: "跨境品牌运营的统一操作系统。我们用自主 AI 智能体取代重复性劳动，让雄心勃勃的品牌在不呈线性增加人力的情况下实现全球扩张。",
       cta: {
         begin: "开始 →",
         architecture: "查看架构"
@@ -266,7 +267,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         { text: "正在连接云端多模型路由器", status: "OK" }
       ],
       ready: "准备就绪。",
-      ctaImmerse: "> [ 沉浸于故事 ]",
+      ctaImmerse: "> [ 继续 ]",
       ctaSkip: "> [ 跳过至控制台 ]"
     },
     storyIntro: {
@@ -444,6 +445,12 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         modality: "模态:",
         benchmarkScores: "基准评分"
       }
+    },
+    partnersBox: {
+      title: "§ 01 · 合作伙伴",
+      heading: "全球野心需要的不仅仅是人才。",
+      description: "最雄心勃勃的品牌往往受制于陈旧的运营模式、分散的数据和线性的人力成本。我们来解决这个问题。KAIRMA 提供顶级的 SOP 引擎、智能体工作流和基础设施，在不增加工资支出的前提下，助力品牌全球扩张。我们将运营摩擦转化为自动化的复利优势。",
+      marqueeLabel: "生态合作伙伴"
     }
   },
   "zh-TW": {
@@ -452,6 +459,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       wordmark: "Kai rma",
       tagline: "為跨境品牌打造的 AI 數位員工。",
       subTagline: "開箱即用。您的首個 AI 員工。",
+      anchorBio: "跨境品牌營運的統一作業系統。我們用自主 AI 智能體取代重複性勞動，讓雄心勃勃的品牌在不呈線性增加人力的情況下實現全球擴張。",
       cta: {
         begin: "開始 →",
         architecture: "查看架構"
@@ -708,7 +716,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         { text: "正在連接雲端多模型路由器", status: "OK" }
       ],
       ready: "準備就緒。",
-      ctaImmerse: "> [ 沉浸於故事 ]",
+      ctaImmerse: "> [ 繼續 ]",
       ctaSkip: "> [ 跳過至控制台 ]"
     },
     storyIntro: {
@@ -886,6 +894,12 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         modality: "模態:",
         benchmarkScores: "基準評分"
       }
+    },
+    partnersBox: {
+      title: "§ 01 · 合作夥伴",
+      heading: "全球野心需要的不僅僅是人才。",
+      description: "最雄心勃勃的品牌往往受制於陳舊的營運模式、分散的數據和線性的人力成本。我們來解決這個問題。KAIRMA 提供頂級的 SOP 引擎、智能體工作流和基礎設施，在不增加工資支出的前提下，助力品牌全球擴張。我們將營運摩擦轉化為自動化的複利優勢。",
+      marqueeLabel: "生態合作夥伴"
     }
   },
   vi: {
@@ -894,6 +908,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       wordmark: "Kai rma",
       tagline: "Lực lượng lao động AI cho các thương hiệu xuyên biên giới.",
       subTagline: "MỘT HỘP. NHÂN VIÊN AI ĐẦU TIÊN CỦA BẠN.",
+      anchorBio: "HỆ ĐIỀU HÀNH THỐNG NHẤT CHO HOẠT ĐỘNG THƯƠNG HIỆU XUYÊN BIÊN GIỚI. CHÚNG TÔI THAY THẾ LAO ĐỘNG LẶP LẠI BẰNG CÁC ĐẠI LÝ AI TỰ CHỦ, CHO PHÉP CÁC THƯƠNG HIỆU THAM VỌNG MỞ RỘNG TOÀN CẦU MÀ KHÔNG BỊ GIỚI HẠN SỐ LƯỢNG NHÂN SỰ TUYẾN TÍNH.",
       cta: {
         begin: "Bắt đầu →",
         architecture: "Xem kiến trúc"
@@ -1150,7 +1165,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         { text: "KẾT NỐI BỘ ĐỊNH TUYẾN MÔ HÌNH ĐÁM MÂY", status: "OK" }
       ],
       ready: "SẴN SÀNG.",
-      ctaImmerse: "> [ TRẢI NGHIỆM CÂU CHUYỆN ]",
+      ctaImmerse: "> [ TIẾP TỤC ]",
       ctaSkip: "> [ BỎ QUA ĐẾN BẢNG ĐIỀU KHIỂN ]"
     },
     storyIntro: {
@@ -1328,6 +1343,12 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         modality: "Định dạng:",
         benchmarkScores: "Điểm chuẩn"
       }
+    },
+    partnersBox: {
+      title: "§ 01 · ĐỐI TÁC",
+      heading: "THAM VỌNG TOÀN CẦU ĐÒI HỎI NHIỀU HƠN CHỈ LÀ NHÂN TÀI.",
+      description: "Những thương hiệu tham vọng nhất bị cản trở bởi hoạt động cũ kỹ, dữ liệu phân tán và chi phí nhân sự tuyến tính. Chúng tôi khắc phục điều đó. KAIRMA mang đến công cụ SOP, quy trình làm việc tự chủ và cơ sở hạ tầng tốt nhất để mở rộng thương hiệu toàn cầu mà không tăng bảng lương. Chúng tôi biến ma sát vận hành thành lợi thế tự động.",
+      marqueeLabel: "ĐỐI TÁC HỆ SINH THÁI"
     }
   }
 };

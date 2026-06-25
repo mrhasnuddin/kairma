@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import SiteShell from "@/components/layout/SiteShell";
+import SiteShellV3 from "@/components/layout/SiteShellV3";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
         // CONNECTING TO KAIRMA OS...
       </div>
     }>
-      <SiteShell />
+      <SiteShellV3 />
     </Suspense>
   );
 }
