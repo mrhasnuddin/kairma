@@ -30,6 +30,7 @@ export interface BentoBoxProps {
   withBorder?: boolean;
   withGlow?: boolean;
   invisible?: boolean;
+  mode?: "matrix" | "xuan";
 }
 
 export const BentoBox = ({
