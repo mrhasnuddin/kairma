@@ -6,6 +6,7 @@ import { BurnStream } from "@/components/ui/BurnStream";
 import { BentoGrid, BentoBox } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
+import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import { useTheme } from "@/lib/theme";
 import { useLanguage, useSiteCopy } from "@/lib/language";
 import { Language } from "@/data/site-translations";
@@ -428,20 +429,57 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* 01: Main Hero Canvas */}
-          <OSCard className="col-span-1 md:col-span-3 row-span-1 p-0 overflow-hidden relative min-h-[350px]">
-            {/* The animated grid & map */}
-            <div className="absolute inset-0">
-              <DeploymentCanvas isFast={isDeployHovered} />
-            </div>
+          <OSCard className="col-span-1 md:col-span-3 row-span-1 p-0 overflow-hidden relative min-h-[400px]">
+            <div className="w-full h-full flex flex-col md:flex-row relative">
+              
+              {/* Top-Right Mini Status */}
+              <div className="absolute top-4 right-6 z-30 pointer-events-none hidden md:flex items-center gap-2 px-3 py-1 bg-theme-void/80 backdrop-blur-sm border border-theme-accent/30 rounded-full">
+                <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                <span className="font-mono text-[9px] uppercase tracking-widest text-theme-accent">OPENROUTER SYNC: LIVE</span>
+              </div>
 
-            {/* Overlay Text */}
-            <div className="relative z-20 p-6 md:p-8 max-w-2xl pointer-events-none">
-              <h1 className="text-2xl md:text-4xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl">
-                {siteCopy.fdeHero.canvasH1}
-              </h1>
-              <p className="font-mono text-xs md:text-sm text-theme-text/80 leading-relaxed drop-shadow-md">
-                {siteCopy.fdeHero.canvasSub}
-              </p>
+              {/* Left 40%: Copy and System Status */}
+              <div className="w-full md:w-[40%] p-6 md:p-8 flex flex-col justify-between relative z-20 border-b md:border-b-0 md:border-r border-theme-border/30 bg-gradient-to-r from-theme-void to-theme-void/80 backdrop-blur-sm">
+                
+                <div className="pointer-events-none">
+                  <div className="inline-flex items-center gap-2 mb-6 text-theme-text-muted">
+                    <span className="font-mono text-[9px] uppercase tracking-widest opacity-80">KAIRMA OS · DEPLOYMENT CANVAS</span>
+                  </div>
+
+                  <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl">
+                    {siteCopy.fdeHero.canvasH1}
+                  </h1>
+                  
+                  <p className="font-mono text-xs text-theme-text-muted leading-relaxed drop-shadow-md mb-8">
+                    {siteCopy.fdeHero.canvasSub}
+                  </p>
+                </div>
+
+                {/* Status List */}
+                <div className="mt-auto space-y-2 font-mono text-[10px] uppercase tracking-widest">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-theme-accent rounded-full" />
+                    <span className="text-theme-accent">Agent OS online</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                    <span className="text-theme-text-muted">Data routing</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                    <span className="text-theme-text-muted">Workflow sync</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                    <span className="text-theme-text-muted">Runtime sealed</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right 60%: Globe */}
+              <div className="w-full md:w-[60%] h-[300px] md:h-auto relative z-10 overflow-hidden bg-[#0B0E0B]">
+                <DeploymentGlobe />
+              </div>
             </div>
           </OSCard>
 
