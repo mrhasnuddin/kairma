@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 // Helper for joining classes
 const cx = (...classes: (string | undefined | false | null)[]) => classes.filter(Boolean).join(" ");
@@ -40,7 +43,69 @@ export const BentoBox = ({
   withGlow = false,
   invisible = false,
 }: BentoBoxProps) => {
-  
+  const ref = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  // Track mouse position for glow
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Track position for 3D tilt
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Smooth springs for tilt
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+
+  // Transform values for rotation (max 2 degrees for subtlety)
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["2deg", "-2deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-2deg", "2deg"]);
+
+  useEffect(() => {
+    // Check if device is desktop
+    const checkMobile = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkMobile(); // initial check
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDesktop || !ref.current) return;
+
+    const rect = ref.current.getBoundingClientRect();
+
+    // For Glow
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+
+    // For Tilt
+    const width = rect.width;
+    const height = rect.height;
+
+    const mouseXPos = e.clientX - rect.left;
+    const mouseYPos = e.clientY - rect.top;
+
+    const xPct = mouseXPos / width - 0.5;
+    const yPct = mouseYPos / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseEnter = () => {
+    if (isDesktop) setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    x.set(0);
+    y.set(0);
+  };
+
   if (invisible) {
     return (
       <div className={cx("relative flex flex-col group", className)}>
@@ -50,16 +115,44 @@ export const BentoBox = ({
   }
 
   return (
-    <div
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={isDesktop ? {
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      } : {}}
       className={cx(
         "relative rounded-3xl overflow-hidden flex flex-col group",
-        "bg-theme-void text-theme-text transition-colors duration-700",
-        withBorder && "border border-theme-border",
-        withGlow && "hover:shadow-[0_0_20px_var(--color-theme-border-glow)] transition-shadow duration-500",
+        "bg-theme-void text-theme-text transition-all duration-300",
+        withBorder && "border border-theme-border/50",
+        isDesktop && "hover:border-[var(--color-theme-accent)]/50",
+        // Text lift on hover
+        isDesktop && "[&_h1]:transition-transform [&_h2]:transition-transform [&_h3]:transition-transform [&_p]:transition-transform [&_span]:transition-transform hover:[&_h1]:-translate-y-1 hover:[&_h2]:-translate-y-1 hover:[&_h3]:-translate-y-1 hover:[&_p]:-translate-y-1 hover:[&_span]:-translate-y-1",
         className
       )}
     >
-      {children}
-    </div>
+      {/* Background radial glow */}
+      {isDesktop && (
+        <motion.div
+          className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300"
+          style={{
+            opacity: isHovered ? 1 : 0,
+            background: `radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(31,170,104,0.1), transparent 40%)`,
+          }}
+        />
+      )}
+      
+      {/* Content wrapper with base transformZ to enable 3D popping */}
+      <div 
+        className="relative z-10 w-full h-full flex flex-col"
+        style={isDesktop ? { transform: "translateZ(10px)" } : {}}
+      >
+        {children}
+      </div>
+    </motion.div>
   );
 };

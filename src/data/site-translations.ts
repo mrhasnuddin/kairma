@@ -457,7 +457,9 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       sub: "Kairma 是专为 AI 劳动力打造的前端部署平台。首个品类：跨境品牌运营的 AI 数字员工。",
       state: "Agent OS — 编排层。开放接入开发中。",
       ctaPilot: "申请试点项目",
-      ctaWorks: "前端部署如何运作"
+      ctaWorks: "前端部署如何运作",
+      canvasH1: "全球化野心，需要的不仅是人才。",
+      canvasSub: "遭遇瓶颈的运营、零散的数据以及线性增长的员工成本限制了规模扩张。我们打造无约束增长的自主工作流。"
     },
     fdeShift: {
       title: "Section 1 — The shift",
@@ -468,7 +470,8 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       title: "Section 2 — AI 数字员工",
       heading: "您的首批 AI 数字员工，是部署进来的 — 而不是下载的。",
       desc: "开放接入开发中",
-      roles: ["网红 BD", "内容运营", "客户服务", "合规审计"]
+      roles: ["网红 BD", "内容运营", "客户服务", "合规审计"],
+      statuses: ["试点就绪", "FDE 已配置", "开发中", "私有环境"]
     },
     fdeDeployment: {
       title: "Section 3 — 前端部署 (FDE)",
@@ -950,7 +953,9 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       sub: "Kairma 是專為 AI 勞動力打造的前端部署平台。首個品類：跨境品牌營運的 AI 數位員工。",
       state: "Agent OS — 編排層。開放接入開發中。",
       ctaPilot: "申請試點專案",
-      ctaWorks: "前端部署如何運作"
+      ctaWorks: "前端部署如何運作",
+      canvasH1: "全球化野心，需要的的不只是人才。",
+      canvasSub: "遭遇瓶頸的營運、零散的數據以及線性增長的員工成本限制了規模擴張。我們打造無約束增長的自主工作流。"
     },
     fdeShift: {
       title: "Section 1 — The shift",
@@ -961,7 +966,8 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       title: "Section 2 — AI 數位員工",
       heading: "您的首批 AI 數位員工，是部署進來的 — 而不是下載的。",
       desc: "開放接入開發中",
-      roles: ["網紅 BD", "內容營運", "客戶服務", "合規審計"]
+      roles: ["網紅 BD", "內容營運", "客戶服務", "合規審計"],
+      statuses: ["試點就緒", "FDE 已配置", "開發中", "私有環境"]
     },
     fdeDeployment: {
       title: "Section 3 — 前端部署 (FDE)",
@@ -1443,7 +1449,9 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       sub: "Kairma là một nền tảng triển khai tiền phương (FDE) cho lực lượng lao động AI. Hạng mục đầu tiên: Nhân viên kỹ thuật số AI cho hoạt động thương hiệu xuyên biên giới.",
       state: "Agent OS — Lớp điều phối. Quyền truy cập mở đang được phát triển.",
       ctaPilot: "Đăng ký dự án thí điểm",
-      ctaWorks: "Cách thức triển khai tiền phương hoạt động"
+      ctaWorks: "Cách thức triển khai tiền phương hoạt động",
+      canvasH1: "Tham vọng toàn cầu đòi hỏi nhiều hơn là chỉ tài năng.",
+      canvasSub: "Hoạt động bị tắc nghẽn, dữ liệu phân tán và chi phí nhân sự tăng tuyến tính hạn chế việc mở rộng quy mô. Chúng tôi xây dựng quy trình làm việc tự chủ có thể phát triển không giới hạn."
     },
     fdeShift: {
       title: "Section 1 — Sự chuyển dịch",
@@ -1454,7 +1462,8 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       title: "Section 2 — Nhân viên kỹ thuật số AI",
       heading: "Những nhân viên AI kỹ thuật số đầu tiên của bạn, được triển khai — không phải tải xuống.",
       desc: "Quyền truy cập mở đang được phát triển",
-      roles: ["KOL BD", "vận hành nội dung", "chăm sóc khách hàng", "kiểm toán tuân thủ"]
+      roles: ["KOL BD", "vận hành nội dung", "chăm sóc khách hàng", "kiểm toán tuân thủ"],
+      statuses: ["Sẵn sàng thí điểm", "Đã cấu hình FDE", "Đang phát triển", "Môi trường riêng tư"]
     },
     fdeDeployment: {
       title: "Section 3 — Triển khai tiền phương",

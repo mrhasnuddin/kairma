@@ -1,0 +1,232 @@
+Kairma · 前端叙事 v2 —— FDE 框
+架版
+把 Kairma 重新定义为：一个 FDE-native 的部署平台,AI 数字员工是第一个品类。
+本文三部分：A) FDE 市场与前瞻性深度复盘 · B) 它如何重写 Kairma 的故事并解掉上
+一轮 VC 批评 · C) 置入 FDE 的前端 copywriting v2。
+口径基座:kairma-context canon + VI Bible v2.0 + substrate 分离。文中
+Palantir/OpenAI/Anthropic 数据均引自你提供的文章。
+Part A · FDE 深度复盘:市场与前瞻性
+A1 · FDE 解决的不是"卖",是"落不下去"
+FDE 的本质是消三种落差:知识不对称(厂商懂模型不懂客户业务,客户懂业务不懂 AI 架
+构)、情境复杂到标准化失效(任何 self-serve onboarding 都会失败)、组织阻力(采用失
+败往往不是技术问题,是组织内部阻力)。
+一句话:当产品复杂到客户无法自主部署时,把懂工程又懂业务的人嵌进现场,把功能转化成
+客户组织内的成果。 这就是为什么不是每家公司都需要 FDE——只有"落地鸿沟"足够大
+的产品才需要。AI 数字员工恰恰是落地鸿沟最大的一类产品(它要替代/重设人的工作流,
+不是装个工具)。
+A2 · 反直觉的经济学:服务重,却拿软件倍数
+这是整篇文章最值钱的一点,也是直接推翻我上一轮"服务重=低倍数"判断的依据。
+Palantir 营收 2020 的 11 亿 → 2025 的 44 亿(翻四倍),毛利率不降反升(剔除股酬,2021
+的 82% → 2026 Q1 单季 88%)。如果 FDE 只是销售成本,营收翻四倍毛利率该塌。它没
+塌,因为三件事:
+1. FDE 成本绑进软件订阅溢价,不单收服务费。 客户没有更好替代(自建团队/外包顾问
+更贵且更差),所以肯付溢价覆盖 FDE 成本。
+2. FDE 会计上是 COGS,战略上是 R&D。 每个现场踩的坑都回流成平台可复用功能 → 
+下一次部署比上一次便宜。这是飞轮。
+Kairma · 前端叙事 v2 —— FDE 框架版
+1
+
+---PAGE BREAK---
+3. 只对付得起的客户上 FDE(七位数 ACV 起)。
+核心张力(也是商业模式的命门): FDE 短期是 COGS(压毛利),长期是 R&D(建平台)。能
+不能把前者转成后者,决定你是"裹着软件皮的顾问公司",还是"Palantir"。
+A3 · 为什么 FDE 是结构性的,不是过渡期
+最容易的反驳是:"客户不能自助,只是 AI 还不够好用,忍一下就行。" 文章给了两个反驳,我
+认为都成立:
+1. token 成本永远在。 SaaS 成熟后边际成本趋零;AI 永远有 inference 成本。token
+单价 2022–2025 最高降 99%,但账单不降反升——agentic 用量增速远超单价降
+速。于是两难:用量越大 inference 成本越高;但客户部署失败、用量不涨,又收不回研
+究成本。FDE 的活不是把 AI 卖出去,是确保 token 消耗发生在有价值的地方。 只要
+token 有成本,就永远需要有人保证"用量的品质"。
+2. 部署鸿沟不会收敛到零。 AI 系统和业务流程之间永远有鸿沟,不因工具变易用而消失;
+而且随 agent 决策范围扩大,部署失败的代价越来越高。99.99% 的存量企业做不
+到"一键渗透"。
+A4 · 前瞻性:这是一条正在被巨头验证的主航道
+范式信号: 2026 年 OpenAI 成立 DeployCo(140 亿估值起、收购 Tomoro 拿 ~150
+名 FDE、持多数股权与控制权 → 更像 Palantir 飞轮);Anthropic 与
+Blackstone/H&F/高盛合资(~15 亿,Anthropic 非控制方 → 更像"用 PE 换销售管
+道")。连 Salesforce 都开始招 FDE。企业 AI 的竞争已从"模型能力"转向"部署效
+率"。
+更深的框架(Stratechery): 企业里的 AI 更像 1970 年代主机革命,不是 SaaS。SaaS
+让员工更有效率;AI agent 是直接替代人力 + 重设流程。 FDE 若只配工具=IT 外包;
+若真重设业务流程=价值远超传统 IT 服务。
+结论: 我们从"加速"年代进入"颠覆"年代。"技术公司=零边际成本"、"PLG 是最好的
+冷启动"这些 2005–2020 的直觉,正在被推翻。FDE-native 不是退而求其次的重模
+式,而是这一代企业 AI 的正确形状。
+Part B · 这如何重写 Kairma 的故事
+Kairma · 前端叙事 v2 —— FDE 框架版
+2
+
+---PAGE BREAK---
+B1 · 上一轮"两个故事打架"——被 FDE 框架解掉了
+我上一轮说:你要么是高倍数 PLG 软件、要么是低倍数渠道/服务生意,二者不相容,所以该
+砍掉服务、做轻软件。
+FDE 论题证明这个二分是错的。 Palantir 服务极重却拿 88% 毛利 + 软件倍数。条件只
+有两个:(a) FDE 工作回流成可复用平台(飞轮) + (b) 把 FDE 绑进订阅溢价、只服务付得
+起的客户。
+所以 Kairma 的"软件 + 落地服务 + 一体机 + token"不再是精神分裂,而是一套 FDE-
+native 架构——前提是你能证明飞轮和产品化是真的(见 B5 的诚实张力)。
+B2 · 新定位:FDE-native 平台,AI 数字员工是第一个品类
+层
+定位
+说明
+公司
+AI forward-deployed platform for
+the AI workforce.
+平台底座是 FDE 框架:把 AI 劳动力落
+进客户运营,而非丢个工具
+第一品类
+AI digital employees(AI 数字员工)
+for cross-border brand operations
+替代/重设的是跨境品牌运营里的真实
+岗位(KOL BD、内容、客服、合规)
+产品
+Agent OS
+编排层;FDE 落地时跑在上面
+这把 canon 锁定的 "AI workforce for cross-border brand operations" 升级成了有市
+场航道支撑的版本:不是"又一个 agent 工具",而是"骑在 Palantir/OpenAI 正在验证的
+FDE 主航道上的、做 AI 数字员工落地的垂直玩家"。
+B3 · 一体机/the Box 的新战略意义——比"保护开发者"更
+高阶
+上一版我把闭源一体机讲成"保护开发者 IP"。FDE 框架给了它一个对投资人更值钱的理
+由:
+文章原话级洞察:"能统一掌握现场部署资料的那一方,才有办法真正理解哪些工作流程
+产生有效的 token 消耗。"
+一体机 = 部署基座 + 部署数据的归集点。Kairma 的 box 让每一次现场部署的数据、
+SOP、踩坑留在 Kairma 这一侧,这就是 A2 那个"下一次更便宜"的飞轮的物理载体,也是
+护城河(canon: SOP 控制平面 + 楚楚 18 个月 KOL BD SOP IP)。
+→ 对外仍讲朴素的 "sealed runtime / your data stays yours";对投资人讲
+"deployment-data flywheel"。同一个 box,两套语域。
+Kairma · 前端叙事 v2 —— FDE 框架版
+3
+
+---PAGE BREAK---
+B4 · token 的正解——现在有了前瞻叙事
+canon 红线:token = 用量计费,非币圈。FDE 框架给它补上了价值叙事:
+Kairma 不是"卖你 token",是"用 FDE 保证你的 AI 数字员工把 token 烧在产生商业结果
+的地方"。 这正是 OpenAI/Anthropic 做 FDE 的同一个理由(确保用量品质而非数量)。
+会议记录里的币价/反向并购那套,继续锁在内部,永不上前端。
+B5 · 诚实的张力(FA 纪律,deck 必须答,前端不展开)
+FDE 框架很强,但有两个投资人一定会盘的点,先想清楚:
+1. FDE 短期压毛利。 早期你会先像顾问公司,毛利难看。叙事必须证明飞轮在转(每次部
+署成本下降的曲线),否则估值按服务公司打。
+2. ACV 门槛——这是最尖锐的一刀。 Palantir 的 FDE 经济学建立在七位数 ACV 客户
+上。SEA 跨境品牌运营的客单价大概率到不了。Kairma 的解法必须是"产品化
+FDE":用 box + SOP 库把 80% 的部署标准化,让一个轻量 FDE 收尾最后一公里——
+这样 FDE 经济模型才能在低 ACV 跑通。这一条答好,故事成立;答不好,就是"小客单
++ 重服务"的死亡组合。这是整个 FDE 故事的真正考点。
+Part C · 前端 Copywriting v2(FDE 置入)
+整站调性不变:Notion-clean、诚实、零营销腔、Matrix Mode 暗色、不展示硬
+件。"FDE / forward-deployed" 作为可信度信号保留(技术与投资受众认得这个词),但每
+处都翻译成价值,不堆术语。
+Hero(首屏)
+H1:
+We don't ship you AI. We deploy it into your operations.
+副标:
+Kairma is a forward-deployed platform for the AI workforce. The first category: AI 
+digital employees for cross-border brand operations.
+状态行:
+Agent OS — the orchestration layer. Open access in development.
+CTA:
+Apply to the pilot  · How forward deployment works
+解释:首屏直接占住 FDE 的反 self-serve 立场("不是给你工具,是把它落进你的运
+营"),这句话本身就是 Palantir/OpenAI 路线的浓缩,投资人一眼认得,客户也听得懂。
+Section 1 — The shift(为什么是 FDE,不是 self-serve)
+Kairma · 前端叙事 v2 —— FDE 框架版
+4
+
+---PAGE BREAK---
+标题: The bottleneck moved from model capability to deployment.
+三点:模型已经够强了 → 真正难的是落进一个有阻力、有脏数据、有组织惯性的真实
+业务 → self-serve 在这种复杂度下必然失败。
+一句收尾: Tools make people faster. A workforce does the work. We deploy the second 
+kind. (对应 1970s 主机论:替代人力而非提效)
+Section 2 — AI digital employees(第一品类,产品主区)
+标题: Your first AI digital employees, deployed — not downloaded.
+把跨境品牌运营拆成岗位: KOL BD · content ops · customer care · compliance.  每个=一
+个可部署的数字员工。
+状态诚实:Agent Library 写 "open access in development",不写已 GA。
+Section 3 — Forward deployment(差异化主张,这是新增的核心屏)
+标题: We sit on your side until it produces outcomes.
+文案方向: Our forward-deployed team lands the workforce inside your operations, tunes it 
+to your data and your processes, and makes sure every token your workforce spends 
+produces a business result — not idle usage.
+解释:这一屏是 FDE 论题的客户化身——"我们陪到出结果为止 + 我们保证 token 烧
+在有价值的地方"。这是 self-serve 工具讲不出来的话,也是溢价的理由(A2)。
+Section 4 — The Box(藏硬件,讲部署基座)
+标题: Your workforce runs in a sealed runtime you control.
+文案: Closed by design. Your agents, your data, and the playbooks we build together stay 
+in a private runtime — they don't leak into a shared cloud, and they don't become someone 
+else's training data.
+解释:硬件零展示。对客户=安全/私有;对投资人(deck 里)=部署数据飞轮的归集点
+(B3)。
+Section 5 — Gets cheaper every deployment(飞轮,可选但建议放)
+标题: Every deployment makes the next one faster.
+文案: What we learn on your operations becomes reusable in the platform. The work 
+compounds.
+Kairma · 前端叙事 v2 —— FDE 框架版
+5
+
+---PAGE BREAK---
+解释:把 Palantir 飞轮的"下一次更便宜"翻成客户能感知的承诺,同时埋下投资人爱看
+的复利叙事。
+Section 6 — The pilot(双边:开发者供给 + 落地需求,别让两个受众打
+架)
+两条 motion 在前端要分区不混讲:
+For developers(供给侧):
+Build AI digital employees on Kairma. Your agent logic runs 
+in a sealed, closed-source runtime — it stays yours.  → 申请制,闭源=护 IP。
+For operators(需求侧):
+Get a workforce deployed into your cross-border brand ops. We 
+land it with you.  → design-partner / 共建 cohort,嵌入式 FDE。
+解释:开发者造数字员工(在 box 里受保护)→ Kairma 的 FDE 把它们部署进品牌运营
+→ token 消耗 + SOP 飞轮。一句话点明两侧关系即可,别让首屏同时喊两个受众。
+Footer
+wordmark Kairma(r 断口保留,chrome silver)· 不列 YZi Labs · Microsoft 若放只
+写"经 Web3Labs 框架协议(2026/04)",建议 pilot 阶段弱放或不放。
+Part D · 两套语域:同一个 FDE,对谁讲什么
+概念
+对客户(前端)
+对投资人 / FA(deck)
+FDE
+"我们陪到出结果为止"
+FDE-native GTM,骑 Palantir/OpenAI/Anthropic
+主航道
+the Box
+"你掌控的封闭私有运行
+时"
+部署数据飞轮的物理归集点(护城河)
+token
+"保证烧在有价值的地方"
+用量品质控制 = 抗 churn + 高溢价订阅
+飞轮
+"每次部署都更快"
+COGS→R&D 转化,毛利随规模上升
+重服务
+(不提)
+产品化 FDE 在低 ACV 跑通(B5 考点)
+永不上前端:币价/M&A/估值/退出、YZi Labs、渠道隔离(叔叔·Kiki)、硬件作为板
+块、"给代理商忽悠客户"式文案、内部 substrate(金刚经/见山是山/AI Renaissance
+字样)。
+Kairma · 前端叙事 v2 —— FDE 框架版
+6
+
+---PAGE BREAK---
+Part E · 给你确认的开放项
+1. FDE 这个词要不要直接出现在前端? 我建议保留(对技术+投资受众是信用信号),但每
+处翻成价值。你也可以选择前端只讲"forward-deployed / we deploy it with
+you"、把 "FDE" 留给 deck。
+2. ACV 考点(B5)是整个故事的命门。 你心里 Kairma 单客户年付费量级大概多少?这决
+定"产品化 FDE"叙事要做多硬。
+3. 开发者 pilot vs 运营方 design-partner——前端同时上两个受众,还是先只上一个?
+我建议首屏只占"forward deployment"一个立场,pilot 区再分两侧。
+4. 下一步交付:要我把这套做成 (a) 可点的前端 HTML mockup、(b) 投资人 deck(FDE
+论题版)、还是 (c) 继续精修文档?
+VI compliance: wordmark Kairma(r 断口保留)· Matrix Mode 暗色 · token=用量品质非
+币圈 · substrate 仅内部未泄漏 · Microsoft 经 Web3Labs 框架协议口径 · YZi Labs 未对
+外列 · 硬件未作板块展示。Palantir/OpenAI/Anthropic 数据引自用户提供文章,未独立核
+实。
+Kairma · 前端叙事 v2 —— FDE 框架版
+7
+
+---PAGE BREAK---

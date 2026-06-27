@@ -287,6 +287,8 @@ export interface FDEHeroCopy {
   state: string;
   ctaPilot: string;
   ctaWorks: string;
+  canvasH1: string;
+  canvasSub: string;
 }
 
 export interface FDESectionCopy {
@@ -297,6 +299,7 @@ export interface FDESectionCopy {
 
 export interface FDEEmployeesCopy extends FDESectionCopy {
   roles: string[];
+  statuses: string[];
 }
 
 export interface FDEPilotCopy {
@@ -798,7 +801,9 @@ export const siteCopy: SiteCopyType = {
     sub: "Kairma is a forward-deployed platform for the AI workforce. The first category: AI digital employees for cross-border brand operations.",
     state: "Agent OS — the orchestration layer. Open access in development.",
     ctaPilot: "Apply to the pilot",
-    ctaWorks: "How forward deployment works"
+    ctaWorks: "How forward deployment works",
+    canvasH1: "Global ambition requires more than just talent.",
+    canvasSub: "Bottlenecked operations, scattered data, and linear headcount costs limit scaling. We build autonomous workflows that grow without constraints."
   },
   fdeShift: {
     title: "Section 1 — The shift",
@@ -809,7 +814,8 @@ export const siteCopy: SiteCopyType = {
     title: "Section 2 — AI digital employees",
     heading: "Your first AI digital employees, deployed — not downloaded.",
     desc: "open access in development",
-    roles: ["KOL BD", "content ops", "customer care", "compliance"]
+    roles: ["KOL BD", "content ops", "customer care", "compliance"],
+    statuses: ["Pilot-ready", "FDE configured", "In development", "Private runtime"]
   },
   fdeDeployment: {
     title: "Section 3 — Forward deployment",
