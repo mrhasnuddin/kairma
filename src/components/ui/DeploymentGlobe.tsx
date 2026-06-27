@@ -62,15 +62,12 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     let startX = 0;
     let dragOffset = 0;
 
-    // Create markers array including hub
-    const markers = [
-      { location: [data.hub.lat, data.hub.lng], size: 0.08, id: 'hub' },
-      ...data.routes.map(r => ({
-        location: [r.marker.lat, r.marker.lng],
-        size: 0.05,
-        id: r.id
-      }))
-    ];
+    // Create markers array mapping only the active routes (no static hub marker to prevent overlapping / buggy ocean dot)
+    const markers = data.routes.map(r => ({
+      location: [r.marker.lat, r.marker.lng],
+      size: 0.05,
+      id: r.id
+    }));
 
     const isLight = theme === "xuan-mode";
     const GLOBE_RESOLUTION = 720; // 360 * 2
@@ -252,6 +249,10 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
         .anchor-route-1 { position-anchor: --cobe-route-1; }
         .anchor-route-2 { position-anchor: --cobe-route-2; }
         .anchor-route-3 { position-anchor: --cobe-route-3; }
+        .anchor-route-4 { position-anchor: --cobe-route-4; }
+        .anchor-route-5 { position-anchor: --cobe-route-5; }
+        .anchor-route-6 { position-anchor: --cobe-route-6; }
+        .anchor-route-7 { position-anchor: --cobe-route-7; }
 
         @supports not (position-anchor: --test) {
           .cobe-globe-wrapper .group {

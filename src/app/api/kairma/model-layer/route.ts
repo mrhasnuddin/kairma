@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export const revalidate = 60; // Cache for 60 seconds
 
@@ -14,7 +14,11 @@ export async function GET() {
     { id: "anthropic/claude-3.5-sonnet", context_length: 200000, pricing: { prompt: "0.000003" } },
     { id: "openai/gpt-4o", context_length: 128000, pricing: { prompt: "0.000005" } },
     { id: "google/gemini-1.5-flash", context_length: 1000000, pricing: { prompt: "0.00000035" } },
-    { id: "meta-llama/llama-3-70b-instruct", context_length: 8192, pricing: { prompt: "0.0000006" } }
+    { id: "meta-llama/llama-3-70b-instruct", context_length: 8192, pricing: { prompt: "0.0000006" } },
+    { id: "mistralai/mistral-large", context_length: 128000, pricing: { prompt: "0.000002" } },
+    { id: "cohere/command-r-plus", context_length: 128000, pricing: { prompt: "0.0000025" } },
+    { id: "qwen/qwen-2.5-72b-instruct", context_length: 32768, pricing: { prompt: "0.0000004" } },
+    { id: "deepseek/deepseek-chat", context_length: 64000, pricing: { prompt: "0.00000014" } }
   ];
 
   let openrouterStatus = "offline";
@@ -40,13 +44,18 @@ export async function GET() {
           "openai/gpt-4o",
           "google/gemini-1.5-flash",
           "meta-llama/llama-3-70b-instruct",
-          "mistralai/mistral-large"
+          "mistralai/mistral-large",
+          "cohere/command-r-plus",
+          "qwen/qwen-2.5-72b-instruct",
+          "deepseek/deepseek-chat",
+          "databricks/dbrx-instruct",
+          "perplexity/sonar-reasoning"
         ];
         
-        const foundModels = allModels.filter((m: any) => targetIds.includes(m.id)).slice(0, 4);
+        const foundModels = allModels.filter((m: any) => targetIds.includes(m.id));
         
         if (foundModels.length > 0) {
-          selectedModels = foundModels;
+          selectedModels = foundModels.slice(0, 8); // Keep up to 8 models to populate the globe
           openrouterStatus = "live";
           modelLayer = "synced";
         }
@@ -60,19 +69,23 @@ export async function GET() {
 
   // Map the models to our global nodes
   const deploymentNodes = [
-    { role: "KOL BD", lat: 35.6762, lng: 139.6503, city: "Tokyo, JP" }, // Tokyo
-    { role: "Content Ops", lat: 37.7749, lng: -122.4194, city: "SF, USA" }, // SF
-    { role: "Customer Care", lat: 51.5072, lng: -0.1276, city: "London, UK" }, // London
-    { role: "Compliance", lat: -23.5505, lng: -46.6333, city: "São Paulo, BR" } // São Paulo
+    { role: "KOL BD", lat: 35.6762, lng: 139.6503, city: "Tokyo, JP" },
+    { role: "Content Ops", lat: 37.7749, lng: -122.4194, city: "SF, USA" },
+    { role: "Customer Care", lat: 51.5072, lng: -0.1276, city: "London, UK" },
+    { role: "Compliance", lat: -23.5505, lng: -46.6333, city: "São Paulo, BR" },
+    { role: "FDE Agent", lat: -33.8688, lng: 151.2093, city: "Sydney, AU" },
+    { role: "Data Routing", lat: 1.3521, lng: 103.8198, city: "Singapore, SG" },
+    { role: "Security Ops", lat: -33.9249, lng: 18.4241, city: "Cape Town, ZA" },
+    { role: "Translation", lat: 48.8566, lng: 2.3522, city: "Paris, FR" }
   ];
 
-  const routes = selectedModels.slice(0, 4).map((model: any, idx) => {
+  const routes = selectedModels.map((model: any, idx) => {
     const node = deploymentNodes[idx % deploymentNodes.length];
     
     // Assign visual state based on model
     let visualState = "active";
     if (model.id.includes("claude-3.5") || model.id.includes("gpt-4o")) {
-      visualState = "in-progress"; // Let's use this for "heavy reasoning" routes
+      visualState = "in-progress"; // Heavy reasoning routes
     }
 
     return {
