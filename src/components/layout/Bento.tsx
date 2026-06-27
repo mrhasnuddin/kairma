@@ -51,18 +51,6 @@ export const BentoBox = ({
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Track position for 3D tilt
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  // Smooth springs for tilt
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-
-  // Transform values for rotation (max 2 degrees for subtlety)
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["2deg", "-2deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-2deg", "2deg"]);
-
   useEffect(() => {
     // Check if device is desktop
     const checkMobile = () => {
@@ -81,19 +69,6 @@ export const BentoBox = ({
     // For Glow
     mouseX.set(e.clientX - rect.left);
     mouseY.set(e.clientY - rect.top);
-
-    // For Tilt
-    const width = rect.width;
-    const height = rect.height;
-
-    const mouseXPos = e.clientX - rect.left;
-    const mouseYPos = e.clientY - rect.top;
-
-    const xPct = mouseXPos / width - 0.5;
-    const yPct = mouseYPos / height - 0.5;
-
-    x.set(xPct);
-    y.set(yPct);
   };
 
   const handleMouseEnter = () => {
@@ -102,8 +77,6 @@ export const BentoBox = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    x.set(0);
-    y.set(0);
   };
 
   if (invisible) {
@@ -120,11 +93,6 @@ export const BentoBox = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={isDesktop ? {
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-      } : {}}
       className={cx(
         "relative rounded-3xl overflow-hidden flex flex-col group",
         "bg-theme-void text-theme-text transition-all duration-300",
@@ -146,10 +114,9 @@ export const BentoBox = ({
         />
       )}
       
-      {/* Content wrapper with base transformZ to enable 3D popping */}
+      {/* Content wrapper */}
       <div 
         className="relative z-10 w-full h-full flex flex-col"
-        style={isDesktop ? { transform: "translateZ(10px)" } : {}}
       >
         {children}
       </div>

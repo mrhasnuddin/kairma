@@ -17,16 +17,6 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
   const [isHovered, setIsHovered] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
 
-  // Framer motion values for 3D tilt
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
-  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
-
   useEffect(() => {
     // Check if device supports hover (desktop)
     const checkHover = () => {
@@ -46,24 +36,12 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       const mouseY = e.clientY - rect.top;
       
       setMousePosition({ x: mouseX, y: mouseY });
-
-      const width = rect.width;
-      const height = rect.height;
-      
-      // Values for tilt (-0.5 to 0.5)
-      const xPct = mouseX / width - 0.5;
-      const yPct = mouseY / height - 0.5;
-      
-      x.set(xPct);
-      y.set(yPct);
     }
   };
 
   const handleMouseLeave = () => {
     if (!isDesktop || disableEffects) return;
     setIsHovered(false);
-    x.set(0);
-    y.set(0);
   };
 
   const handleMouseEnter = () => {
@@ -77,11 +55,6 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      style={{
-        rotateX: isDesktop && !disableEffects ? rotateX : 0,
-        rotateY: isDesktop && !disableEffects ? rotateY : 0,
-        transformStyle: "preserve-3d",
-      }}
       className={`relative rounded-3xl border border-theme-border/30 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 overflow-hidden ${className}`}
     >
       {/* Background glow effect that follows mouse */}
@@ -111,12 +84,9 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
         />
       )}
 
-      {/* Content wrapper with translateZ for depth */}
+      {/* Content wrapper */}
       <motion.div 
         className="h-full w-full relative z-10"
-        style={{
-          transform: isDesktop && !disableEffects && isHovered ? "translateZ(20px)" : "translateZ(0px)",
-        }}
       >
         {children}
       </motion.div>
