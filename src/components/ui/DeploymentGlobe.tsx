@@ -30,8 +30,6 @@ interface ModelLayerData {
 
 export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pointerInteracting = useRef<number | null>(null);
-  const pointerInteractionMovement = useRef(0);
   const [data, setData] = useState<ModelLayerData | null>(null);
   const [hoveredRoute, setHoveredRoute] = useState<RouteData | null>(null);
 
@@ -49,13 +47,18 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     fetchData();
   }, []);
 
-  // Initialize Cobe
+  // Initialize Cobe & Event Listeners
   useEffect(() => {
     if (!canvasRef.current || !data) return;
 
-    // Center the globe initially on Singapore (hub)
     let currentPhi = -(data.hub.lng * Math.PI) / 180 + 0.5;
+    let currentTheta = 0;
     
+    // Drag state variables
+    let isDragging = false;
+    let startX = 0;
+    let dragOffset = 0;
+
     // Create markers array including hub
     const markers = [
       { location: [data.hub.lat, data.hub.lng], size: 0.08, id: 'hub' },
@@ -68,7 +71,6 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
 
     // Create arcs array from hub to deployment nodes
     const arcs = data.routes.map(r => {
-      // In-progress = Amber, Active = Green
       const isAmber = r.visualState === "in-progress";
       const color = isAmber ? [0.96, 0.62, 0.04] : [0.12, 0.67, 0.41]; // rgb(245,158,11) vs rgb(31,170,104)
       
@@ -86,8 +88,8 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       devicePixelRatio: 2,
       width: 800,
       height: 800,
-      phi: 0,
-      theta: 0,
+      phi: currentPhi,
+      theta: currentTheta,
       dark: isLight ? 0 : 1,
       diffuse: 1.2,
       mapSamples: 16000,
@@ -100,16 +102,64 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       arcWidth: 1.5,
       arcHeight: 0.25,
       markers: markers as any,
-      onRender: (state: any) => {
-        // Continuous auto-rotation (faster now that React overhead is gone)
-        if (pointerInteracting.current === null) {
-          currentPhi += 0.005;
-        }
-        state.phi = currentPhi + pointerInteractionMovement.current;
-      },
-    } as any);
+    });
+
+    const canvasContainer = canvasRef.current.parentElement;
+    if (!canvasContainer) return;
+
+    // Pointer events for dragging
+    const onPointerDown = (e: PointerEvent) => {
+      canvasContainer.setPointerCapture(e.pointerId);
+      isDragging = true;
+      startX = e.clientX;
+      dragOffset = 0;
+      canvasContainer.style.cursor = 'grabbing';
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!isDragging) return;
+      const delta = e.clientX - startX;
+      dragOffset = delta / 200;
+      globe.update({
+        phi: currentPhi + dragOffset,
+        theta: currentTheta
+      });
+    };
+
+    const onPointerUp = (e: PointerEvent) => {
+      if (!isDragging) return;
+      canvasContainer.releasePointerCapture(e.pointerId);
+      isDragging = false;
+      currentPhi += dragOffset;
+      canvasContainer.style.cursor = 'grab';
+    };
+
+    canvasContainer.addEventListener('pointerdown', onPointerDown);
+    canvasContainer.addEventListener('pointermove', onPointerMove);
+    canvasContainer.addEventListener('pointerup', onPointerUp);
+    canvasContainer.addEventListener('pointercancel', onPointerUp);
+
+    // Animation loop
+    let animationFrameId: number;
+    const animate = () => {
+      if (!isDragging) {
+        currentPhi += 0.005; // Continuous auto-rotation speed
+        globe.update({
+          phi: currentPhi,
+          theta: currentTheta
+        });
+      }
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
+      canvasContainer.removeEventListener('pointerdown', onPointerDown);
+      canvasContainer.removeEventListener('pointermove', onPointerMove);
+      canvasContainer.removeEventListener('pointerup', onPointerUp);
+      canvasContainer.removeEventListener('pointercancel', onPointerUp);
       globe.destroy();
     };
   }, [data, theme]);
@@ -129,26 +179,6 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       <div 
         className="relative cursor-grab active:cursor-grabbing cobe-globe-wrapper" 
         style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, touchAction: "none" }}
-        onPointerDown={(e) => {
-          e.currentTarget.setPointerCapture(e.pointerId);
-          pointerInteracting.current = e.clientX - pointerInteractionMovement.current * 200;
-          if (canvasRef.current) canvasRef.current.style.cursor = 'grabbing';
-        }}
-        onPointerUp={(e) => {
-          e.currentTarget.releasePointerCapture(e.pointerId);
-          pointerInteracting.current = null;
-          if (canvasRef.current) canvasRef.current.style.cursor = 'grab';
-        }}
-        onPointerOut={(e) => {
-          pointerInteracting.current = null;
-          if (canvasRef.current) canvasRef.current.style.cursor = 'grab';
-        }}
-        onPointerMove={(e) => {
-          if (pointerInteracting.current !== null) {
-            const delta = e.clientX - pointerInteracting.current;
-            pointerInteractionMovement.current = delta / 200;
-          }
-        }}
       >
         <canvas
           ref={canvasRef}
@@ -174,7 +204,6 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                 left: "anchor(center)",
                 transform: "translate(-50%, -50%)",
                 opacity: `var(--cobe-visible-${route.id}, 0)`,
-                // Make unclickable when on back of globe
                 pointerEvents: "auto",
                 zIndex: 20
               } as any}
