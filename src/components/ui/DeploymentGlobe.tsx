@@ -125,12 +125,19 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     canvasContainer.addEventListener('pointerup', onPointerUp);
     canvasContainer.addEventListener('pointercancel', onPointerUp);
 
-    // Animation loop
+    // Delta-time based animation loop to fix frame-rate jitter
+    let lastTime = performance.now();
     let animationFrameId: number;
-    const animate = () => {
+    
+    const animate = (time: number) => {
+      const delta = time - lastTime;
+      lastTime = time;
+
       // Pause rotation if dragging OR if the user is hovering over a dot
       if (!isDragging && !isHoveredRef.current) {
-        currentPhi += 0.005; // Continuous auto-rotation speed
+        // 0.00012 radians per millisecond (approx 0.002 radians per frame at 60fps)
+        // This is slightly slower and buttery smooth regardless of monitor refresh rate
+        currentPhi += 0.00012 * delta; 
         globe.update({
           phi: currentPhi,
           theta: currentTheta
@@ -139,7 +146,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationFrameId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
