@@ -162,6 +162,7 @@ export const SiteShellV3: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [time, setTime] = useState<Date | null>(null);
   const [crtFlash, setCrtFlash] = useState(false);
+  const [pilotOpen, setPilotOpen] = useState(false);
 
   const SHOW_LINEAGE = false;
 
