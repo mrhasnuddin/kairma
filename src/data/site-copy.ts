@@ -281,6 +281,36 @@ export interface PartnerMarqueeCopy extends SectionCopy {
   marqueeLabel: string;
 }
 
+export interface FDEHeroCopy {
+  h1: string;
+  sub: string;
+  state: string;
+  ctaPilot: string;
+  ctaWorks: string;
+}
+
+export interface FDESectionCopy {
+  title: string;
+  heading: string;
+  desc: string;
+}
+
+export interface FDEEmployeesCopy extends FDESectionCopy {
+  roles: string[];
+}
+
+export interface FDEPilotCopy {
+  title: string;
+  developers: {
+    heading: string;
+    desc: string;
+  };
+  operators: {
+    heading: string;
+    desc: string;
+  };
+}
+
 export interface SiteCopyType {
   hero: HeroCopy;
   problem: ProblemCopy;
@@ -303,6 +333,13 @@ export interface SiteCopyType {
   pilotModal: PilotModalCopy;
   ecosystemModels: EcosystemModelsCopy;
   partnersBox: PartnerMarqueeCopy;
+  fdeHero: FDEHeroCopy;
+  fdeShift: FDESectionCopy;
+  fdeEmployees: FDEEmployeesCopy;
+  fdeDeployment: FDESectionCopy;
+  fdeBox: FDESectionCopy;
+  fdeFlywheel: FDESectionCopy;
+  fdePilot: FDEPilotCopy;
 }
 
 export const siteCopy: SiteCopyType = {
@@ -754,6 +791,50 @@ export const siteCopy: SiteCopyType = {
       output: "Output:",
       modality: "Modality:",
       benchmarkScores: "Benchmark Scores"
+    }
+  },
+  fdeHero: {
+    h1: "We don't ship you AI. We deploy it into your operations.",
+    sub: "Kairma is a forward-deployed platform for the AI workforce. The first category: AI digital employees for cross-border brand operations.",
+    state: "Agent OS — the orchestration layer. Open access in development.",
+    ctaPilot: "Apply to the pilot",
+    ctaWorks: "How forward deployment works"
+  },
+  fdeShift: {
+    title: "Section 1 — The shift",
+    heading: "The bottleneck moved from model capability to deployment.",
+    desc: "Tools make people faster. A workforce does the work. We deploy the second kind."
+  },
+  fdeEmployees: {
+    title: "Section 2 — AI digital employees",
+    heading: "Your first AI digital employees, deployed — not downloaded.",
+    desc: "open access in development",
+    roles: ["KOL BD", "content ops", "customer care", "compliance"]
+  },
+  fdeDeployment: {
+    title: "Section 3 — Forward deployment",
+    heading: "We sit on your side until it produces outcomes.",
+    desc: "Our forward-deployed team lands the workforce inside your operations, tunes it to your data and your processes, and makes sure every token your workforce spends produces a business result — not idle usage."
+  },
+  fdeBox: {
+    title: "Section 4 — The Box",
+    heading: "Your workforce runs in a sealed runtime you control.",
+    desc: "Closed by design. Your agents, your data, and the playbooks we build together stay in a private runtime — they don't leak into a shared cloud, and they don't become someone else's training data."
+  },
+  fdeFlywheel: {
+    title: "Section 5 — Gets cheaper every deployment",
+    heading: "Every deployment makes the next one faster.",
+    desc: "What we learn on your operations becomes reusable in the platform. The work compounds."
+  },
+  fdePilot: {
+    title: "Section 6 — The pilot",
+    developers: {
+      heading: "For developers",
+      desc: "Build AI digital employees on Kairma. Your agent logic runs in a sealed, closed-source runtime — it stays yours."
+    },
+    operators: {
+      heading: "For operators",
+      desc: "Get a workforce deployed into your cross-border brand ops. We land it with you."
     }
   }
 };

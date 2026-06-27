@@ -451,6 +451,50 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       heading: "全球野心需要的不仅仅是人才。",
       description: "最雄心勃勃的品牌往往受制于陈旧的运营模式、分散的数据和线性的人力成本。我们来解决这个问题。KAIRMA 提供顶级的 SOP 引擎、智能体工作流和基础设施，在不增加工资支出的前提下，助力品牌全球扩张。我们将运营摩擦转化为自动化的复利优势。",
       marqueeLabel: "生态合作伙伴"
+    },
+    fdeHero: {
+      h1: "我们不向您推销 AI。我们将它部署到您的运营中。",
+      sub: "Kairma 是专为 AI 劳动力打造的前端部署平台。首个品类：跨境品牌运营的 AI 数字员工。",
+      state: "Agent OS — 编排层。开放接入开发中。",
+      ctaPilot: "申请试点项目",
+      ctaWorks: "前端部署如何运作"
+    },
+    fdeShift: {
+      title: "Section 1 — The shift",
+      heading: "瓶颈已从模型能力转移到了部署阶段。",
+      desc: "工具让人变快。但劳动力能直接完成工作。我们部署的是后者。"
+    },
+    fdeEmployees: {
+      title: "Section 2 — AI 数字员工",
+      heading: "您的首批 AI 数字员工，是部署进来的 — 而不是下载的。",
+      desc: "开放接入开发中",
+      roles: ["网红 BD", "内容运营", "客户服务", "合规审计"]
+    },
+    fdeDeployment: {
+      title: "Section 3 — 前端部署 (FDE)",
+      heading: "我们驻守在您这边，直到产出结果为止。",
+      desc: "我们的前置部署团队将 AI 劳动力直接空降到您的业务运营中，根据您的数据和流程进行调优，并确保您的劳动力消耗的每一个 token 都能产生业务结果 —— 拒绝无效消耗。"
+    },
+    fdeBox: {
+      title: "Section 4 — 边缘魔盒",
+      heading: "您的数字劳动力运行在一个由您完全掌控的封闭环境中。",
+      desc: "设计即安全。您的智能体、您的数据以及我们共建的运营手册（Playbooks），都会留在私有的运行环境中 —— 它们不会泄露到共享云端，也不会成为别人的训练数据。"
+    },
+    fdeFlywheel: {
+      title: "Section 5 — 每次部署都让成本更低",
+      heading: "每一次部署都让下一次变得更快。",
+      desc: "我们在您运营中沉淀的经验，将转化为平台中可复用的能力。工作效能不断产生复利。"
+    },
+    fdePilot: {
+      title: "Section 6 — 试点申请",
+      developers: {
+        heading: "面向开发者",
+        desc: "在 Kairma 上构建 AI 数字员工。您的智能体逻辑运行在封闭闭源的运行环境中 —— 知识产权完全属于您。"
+      },
+      operators: {
+        heading: "面向运营方",
+        desc: "将 AI 劳动力部署到您的跨境品牌运营中。我们与您共同落地。"
+      }
     }
   },
   "zh-TW": {
@@ -900,6 +944,50 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       heading: "全球野心需要的不僅僅是人才。",
       description: "最雄心勃勃的品牌往往受制於陳舊的營運模式、分散的數據和線性的人力成本。我們來解決這個問題。KAIRMA 提供頂級的 SOP 引擎、智能體工作流和基礎設施，在不增加工資支出的前提下，助力品牌全球擴張。我們將營運摩擦轉化為自動化的複利優勢。",
       marqueeLabel: "生態合作夥伴"
+    },
+    fdeHero: {
+      h1: "我們不向您推銷 AI。我們將它部署到您的營運中。",
+      sub: "Kairma 是專為 AI 勞動力打造的前端部署平台。首個品類：跨境品牌營運的 AI 數位員工。",
+      state: "Agent OS — 編排層。開放接入開發中。",
+      ctaPilot: "申請試點專案",
+      ctaWorks: "前端部署如何運作"
+    },
+    fdeShift: {
+      title: "Section 1 — The shift",
+      heading: "瓶頸已從模型能力轉移到了部署階段。",
+      desc: "工具讓人變快。但勞動力能直接完成工作。我們部署的是後者。"
+    },
+    fdeEmployees: {
+      title: "Section 2 — AI 數位員工",
+      heading: "您的首批 AI 數位員工，是部署進來的 — 而不是下載的。",
+      desc: "開放接入開發中",
+      roles: ["網紅 BD", "內容營運", "客戶服務", "合規審計"]
+    },
+    fdeDeployment: {
+      title: "Section 3 — 前端部署 (FDE)",
+      heading: "我們駐守在您這邊，直到產出結果為止。",
+      desc: "我們的前置部署團隊將 AI 勞動力直接空降到您的業務營運中，根據您的數據和流程進行調優，並確保您的勞動力消耗的每一個 token 都能產生業務結果 —— 拒絕無效消耗。"
+    },
+    fdeBox: {
+      title: "Section 4 — 邊緣魔盒",
+      heading: "您的數位勞動力運行在一個由您完全掌控的封閉環境中。",
+      desc: "設計即安全。您的智能體、您的數據以及我們共建的營運手冊（Playbooks），都會留在私有的運行環境中 —— 它們不會洩露到共享雲端，也不會成為別人的訓練數據。"
+    },
+    fdeFlywheel: {
+      title: "Section 5 — 每次部署都讓成本更低",
+      heading: "每一次部署都讓下一次變得更快。",
+      desc: "我們在您營運中沉澱的經驗，將轉化為平台中可複用的能力。工作效能不斷產生複利。"
+    },
+    fdePilot: {
+      title: "Section 6 — 試點申請",
+      developers: {
+        heading: "面向開發者",
+        desc: "在 Kairma 上構建 AI 數位員工。您的智能體邏輯運行在封閉閉源的運行環境中 —— 知識產權完全屬於您。"
+      },
+      operators: {
+        heading: "面向營運方",
+        desc: "將 AI 勞動力部署到您的跨境品牌營運中。我們與您共同落地。"
+      }
     }
   },
   vi: {
@@ -974,7 +1062,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
           title: "Phần cứng là kênh tiếp cận doanh nghiệp rẻ nhất.",
           desc: "Một thiết bị phần cứng tại biên mang lại triển khai một lần + phí bảo đảm chủ quyền dữ liệu + khóa chân khách hàng 36 tháng."
         }
-      ].map((item, idx) => ({ ...item, anchor: siteCopy.insight.insights[idx].anchor }))
+      ]
     },
     whatKairmaIs: {
       title: "§ 04 · KAIRMA LÀ GÌ",
@@ -1349,6 +1437,50 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
       heading: "THAM VỌNG TOÀN CẦU ĐÒI HỎI NHIỀU HƠN CHỈ LÀ NHÂN TÀI.",
       description: "Những thương hiệu tham vọng nhất bị cản trở bởi hoạt động cũ kỹ, dữ liệu phân tán và chi phí nhân sự tuyến tính. Chúng tôi khắc phục điều đó. KAIRMA mang đến công cụ SOP, quy trình làm việc tự chủ và cơ sở hạ tầng tốt nhất để mở rộng thương hiệu toàn cầu mà không tăng bảng lương. Chúng tôi biến ma sát vận hành thành lợi thế tự động.",
       marqueeLabel: "ĐỐI TÁC HỆ SINH THÁI"
+    },
+    fdeHero: {
+      h1: "Chúng tôi không bán AI cho bạn. Chúng tôi triển khai nó vào hoạt động của bạn.",
+      sub: "Kairma là một nền tảng triển khai tiền phương (FDE) cho lực lượng lao động AI. Hạng mục đầu tiên: Nhân viên kỹ thuật số AI cho hoạt động thương hiệu xuyên biên giới.",
+      state: "Agent OS — Lớp điều phối. Quyền truy cập mở đang được phát triển.",
+      ctaPilot: "Đăng ký dự án thí điểm",
+      ctaWorks: "Cách thức triển khai tiền phương hoạt động"
+    },
+    fdeShift: {
+      title: "Section 1 — Sự chuyển dịch",
+      heading: "Điểm nghẽn đã chuyển từ năng lực mô hình sang việc triển khai.",
+      desc: "Công cụ giúp con người nhanh hơn. Nhưng lực lượng lao động thực sự làm công việc đó. Chúng tôi triển khai loại thứ hai."
+    },
+    fdeEmployees: {
+      title: "Section 2 — Nhân viên kỹ thuật số AI",
+      heading: "Những nhân viên AI kỹ thuật số đầu tiên của bạn, được triển khai — không phải tải xuống.",
+      desc: "Quyền truy cập mở đang được phát triển",
+      roles: ["KOL BD", "vận hành nội dung", "chăm sóc khách hàng", "kiểm toán tuân thủ"]
+    },
+    fdeDeployment: {
+      title: "Section 3 — Triển khai tiền phương",
+      heading: "Chúng tôi luôn đồng hành cùng bạn cho đến khi tạo ra kết quả.",
+      desc: "Đội ngũ triển khai tiền phương của chúng tôi đưa lực lượng lao động vào thẳng hoạt động kinh doanh của bạn, tinh chỉnh theo dữ liệu và quy trình của bạn, đảm bảo mỗi token mà lực lượng lao động tiêu thụ đều tạo ra kết quả kinh doanh — không lãng phí."
+    },
+    fdeBox: {
+      title: "Section 4 — The Box",
+      heading: "Lực lượng lao động của bạn chạy trong một môi trường khép kín do bạn kiểm soát.",
+      desc: "Thiết kế khép kín. Các agent, dữ liệu và playbooks mà chúng ta cùng xây dựng sẽ ở trong một môi trường vận hành riêng tư — không rò rỉ lên đám mây chung và không trở thành dữ liệu huấn luyện của người khác."
+    },
+    fdeFlywheel: {
+      title: "Section 5 — Chi phí giảm sau mỗi lần triển khai",
+      heading: "Mỗi lần triển khai làm cho lần tiếp theo nhanh hơn.",
+      desc: "Những gì chúng tôi học được từ hoạt động của bạn trở thành khả năng tái sử dụng trên nền tảng. Hiệu suất công việc tạo ra lãi kép."
+    },
+    fdePilot: {
+      title: "Section 6 — Thí điểm",
+      developers: {
+        heading: "Dành cho nhà phát triển",
+        desc: "Xây dựng nhân viên AI kỹ thuật số trên Kairma. Logic agent của bạn chạy trong môi trường mã nguồn đóng, khép kín — quyền sở hữu trí tuệ thuộc về bạn."
+      },
+      operators: {
+        heading: "Dành cho nhà vận hành",
+        desc: "Triển khai lực lượng lao động AI vào hoạt động thương hiệu xuyên biên giới của bạn. Chúng tôi cùng bạn đưa nó vào thực tế."
+      }
     }
   }
 };

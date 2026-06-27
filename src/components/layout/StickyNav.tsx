@@ -49,15 +49,7 @@ export const StickyNav = () => {
             }}
           />
           
-          {navLinks.map((link) => (
-            <a 
-              key={link.label}
-              href={link.href}
-              className="text-xs font-mono uppercase tracking-widest hover:text-theme-accent transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
+          {/* Navigation links removed as per user request */}
           
           <div className="w-px h-4 bg-theme-border mx-2" />
           
@@ -100,16 +92,7 @@ export const StickyNav = () => {
         }`}
       >
         <div className="flex flex-col gap-8 text-center">
-          {navLinks.map((link) => (
-            <a 
-              key={link.label}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-2xl font-mono uppercase tracking-widest text-theme-text hover:text-theme-accent transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
+          {/* Navigation links removed as per user request */}
           <button 
             className="mt-4 text-xl font-mono font-bold uppercase tracking-widest text-theme-void bg-theme-accent px-8 py-3 rounded-full transition-colors opacity-90 hover:opacity-100"
           >

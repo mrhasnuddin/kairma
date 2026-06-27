@@ -22,7 +22,8 @@ const InteractiveBootBox: React.FC<{
   siteCopy: any;
   triggerCrt: () => void;
   getLangLabel: (lang: Language) => string;
-}> = ({ language, setLanguage, siteCopy, triggerCrt, getLangLabel }) => {
+  className?: string;
+}> = ({ language, setLanguage, siteCopy, triggerCrt, getLangLabel, className }) => {
   const [step, setStep] = useState<"LANGUAGE" | "BOOTING" | "READY" | "STORY">("LANGUAGE");
   const [visibleLines, setVisibleLines] = useState<number>(0);
 
@@ -55,7 +56,7 @@ const InteractiveBootBox: React.FC<{
   };
 
   return (
-    <BentoBox className="col-span-1 md:col-span-2 row-span-1 relative flex flex-col p-8 min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden">
+    <BentoBox className={`relative flex flex-col p-8 min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none z-10" />
       
       <div className="relative z-20 flex-1 flex flex-col w-full max-w-lg mx-auto">
@@ -253,11 +254,13 @@ export const SiteShellV3: React.FC = () => {
       {/* --- Main Bento Grid --- */}
       <main className="relative z-10 w-full pt-6 md:pt-12 pb-32 transition-opacity duration-1000 opacity-100">
         <BentoGrid>
-          {/* 00: The Anchor (Invisible Box) */}
-          <BentoBox invisible className="col-span-1 row-span-1 flex flex-col justify-between p-2">
-            <div>
+          {/* Row 1 */}
+          {/* 00: The Anchor (Hero) */}
+          <BentoBox className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative overflow-hidden group border-theme-accent/20 hover:border-theme-accent/50 transition-colors">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-50" />
+            <div className="relative z-10">
               <div 
-                className="w-48 md:w-64 h-16 mb-6 bg-theme-text"
+                className="w-48 md:w-56 h-12 mb-6 bg-theme-text"
                 style={{
                   WebkitMaskImage: 'url(/kairma-logo.svg)',
                   WebkitMaskSize: 'contain',
@@ -269,16 +272,26 @@ export const SiteShellV3: React.FC = () => {
                   maskPosition: 'left center',
                 }}
               />
-              <div className="flex gap-4 font-mono text-sm mb-12">
-                <a href="#" className="hover:text-theme-accent transition-colors">X</a>
-                <a href="#" className="hover:text-theme-accent transition-colors">in</a>
-              </div>
+              <p className="font-mono text-sm tracking-tight text-theme-text font-bold mb-4">
+                {siteCopy.fdeHero.h1}
+              </p>
+              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
+                {siteCopy.fdeHero.sub}
+              </p>
             </div>
             
-            <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-theme-text-muted mb-6 leading-relaxed">
-                {siteCopy.hero.anchorBio}
-              </p>
+            <div className="mt-8 relative z-10 flex flex-col justify-between h-full">
+              <div>
+                <button 
+                  onClick={() => setPilotOpen(true)}
+                  className="w-full py-3 mb-2 bg-theme-accent text-[#0B0E0B] font-mono text-xs font-bold uppercase tracking-widest rounded group-hover:bg-white transition-colors"
+                >
+                  {siteCopy.fdeHero.ctaPilot}
+                </button>
+                <button className="w-full py-2 border border-theme-border text-theme-text font-mono text-xs uppercase tracking-widest rounded hover:border-theme-accent transition-colors mb-6">
+                  {siteCopy.fdeHero.ctaWorks}
+                </button>
+              </div>
               <div className="flex gap-3">
                 <button 
                   onClick={handleThemeToggle}
@@ -312,7 +325,7 @@ export const SiteShellV3: React.FC = () => {
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-mono font-bold uppercase tracking-tight mb-4 leading-[1.2]">
                   {siteCopy.partnersBox.heading}
                 </h2>
-                <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed">
+                <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-2xl">
                   {siteCopy.partnersBox.description}
                 </p>
               </div>
@@ -349,34 +362,42 @@ export const SiteShellV3: React.FC = () => {
             )}
           </BentoBox>
 
-          {/* 02: The Boot (Interactive Box) - 1x1 */}
+          {/* Row 2 */}
+          {/* 02: The Boot (Interactive Box) - 2x1 */}
           <InteractiveBootBox 
             language={language}
             setLanguage={setLanguage}
             siteCopy={siteCopy}
             triggerCrt={triggerCrt}
             getLangLabel={getLangLabel}
+            className="col-span-1 md:col-span-2 row-span-1"
           />
 
-          {/* 02A: The Core Problem - 1x1 */}
-          <BentoBox className="col-span-1 md:col-span-1 row-span-1 p-5 md:p-6 flex flex-col justify-between min-h-[250px] md:min-h-[300px]">
+          {/* Section 1: The Shift */}
+          <BentoBox className="col-span-1 md:col-span-1 row-span-1 p-6 flex flex-col justify-between group gap-6">
             <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-theme-text-muted mb-2">{siteCopy.problem.heading}</p>
+              <h2 className="text-2xl md:text-3xl font-mono font-bold leading-tight mb-2 tracking-tight text-theme-text text-balance">
+                {siteCopy.fdeShift.heading}
+              </h2>
             </div>
-            <BurnStream />
-            <div className="flex flex-col">
-              <span className={`text-4xl md:text-5xl font-mono font-bold tracking-tighter ${theme === "matrix-mode" ? "text-theme-accent" : "text-[#af3621]"}`}>
-                {siteCopy.problem.stat.value}
-              </span>
-              <span className="font-mono text-xs uppercase text-theme-text-muted mt-2 max-w-[200px] leading-relaxed">
-                {siteCopy.problem.stat.label}
-              </span>
-            </div>
+            <p className="font-mono text-sm text-theme-text-muted leading-relaxed text-balance">{siteCopy.fdeShift.desc}</p>
           </BentoBox>
 
+          {/* Section 3: Forward Deployment */}
+          <BentoBox className="col-span-1 md:col-span-1 row-span-1 p-6 flex flex-col justify-between min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
+            <img 
+              src={theme === "xuan-mode" ? "/Bentos/d2-xuan.png" : "/Bentos/d2.png"} 
+              alt="Deployment" 
+              className={`absolute inset-0 w-full h-full object-cover object-center pointer-events-none transition-opacity group-hover:opacity-70 ${theme === "xuan-mode" ? "opacity-60 mix-blend-multiply" : "opacity-40 mix-blend-screen"}`} 
+            />
+            <div className="relative z-10">
+              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.fdeDeployment.heading}</h2>
+            </div>
+            <p className="font-mono text-xs text-theme-text-muted leading-relaxed relative z-10">{siteCopy.fdeDeployment.desc}</p>
+          </BentoBox>
 
-
-          {/* 03: The Foundry */}
+          {/* Row 3 */}
+          {/* 03: The Foundry (Radar Chart) */}
           <BentoBox className="col-span-1 row-span-2 p-6 flex flex-col overflow-hidden min-h-[500px] md:min-h-[600px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.ecosystemModels.title}</h3>
@@ -477,123 +498,73 @@ export const SiteShellV3: React.FC = () => {
             </div>
           </BentoBox>
 
-          {/* 04: The OS */}
-          <BentoBox className="col-span-1 md:col-span-2 row-span-1 p-6">
-            <h3 className="font-mono font-bold uppercase tracking-widest mb-2 text-sm">{siteCopy.whatKairmaIs.layers[2].title}</h3>
-            <p className="font-mono text-xs text-theme-text-muted mb-4 uppercase">{siteCopy.architecture.heading}</p>
-            <div className="w-full h-32 border border-theme-border bg-black/5 flex items-center justify-center">
-              <span className="font-mono text-theme-accent/40 text-xs">{language === "en" ? "[ DIAGRAM ]" : "[ 架构图 ]"}</span>
+          {/* Section 2: AI Digital Employees */}
+          <BentoBox className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 flex flex-col justify-between bg-theme-text/5 transition-colors border-theme-border/50">
+            <div className="mb-10">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight max-w-lg text-theme-text text-balance">
+                {siteCopy.fdeEmployees.heading}
+              </h2>
             </div>
-          </BentoBox>
-
-          {/* 05: For Builders */}
-          <BentoBox className="col-span-1 row-span-1 p-0 overflow-hidden group cursor-pointer relative min-h-[250px] md:min-h-[300px]">
-            <img 
-              src="/Bentos/d1.png" 
-              alt="Apply for Builders" 
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-          </BentoBox>
-
-          {/* 08: Dispatches (The Story Carousel) */}
-          <BentoBox className="col-span-1 row-span-2 flex flex-col overflow-hidden min-h-[500px] relative group">
-            {/* Background Image */}
-            <img 
-              src="/Bentos/d2.png" 
-              alt="The Story" 
-              className="absolute inset-0 w-full h-full object-cover object-center z-0 opacity-40 mix-blend-screen pointer-events-none"
-            />
             
-            {/* Header overlay */}
-            <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-start z-20 pointer-events-none">
-              <div>
-                <h3 className="font-mono font-bold uppercase tracking-widest text-sm mb-1">{siteCopy.story.title}</h3>
-                <p className="font-mono text-xs text-theme-text-muted uppercase max-w-[200px] leading-tight">{siteCopy.story.heading}</p>
-              </div>
-              
-              {/* Arrows */}
-              <div className="flex gap-2 pointer-events-auto">
-                <button 
-                  onClick={() => scrollToSlide(Math.max(0, currentSlide - 1))}
-                  className="w-8 h-8 rounded-full border border-theme-border flex items-center justify-center hover:bg-theme-accent/10 hover:border-theme-accent transition-colors"
-                >
-                  <span className="text-xs">←</span>
-                </button>
-                <button 
-                  onClick={() => scrollToSlide(Math.min(3, currentSlide + 1))}
-                  className="w-8 h-8 rounded-full border border-theme-border flex items-center justify-center hover:bg-theme-accent/10 hover:border-theme-accent transition-colors"
-                >
-                  <span className="text-xs">→</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Scroll Container */}
-            <div 
-              ref={carouselRef}
-              onScroll={handleScroll}
-              className="flex-1 w-full h-full overflow-x-auto snap-x snap-mandatory no-scrollbar flex"
-            >
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="min-w-full h-full snap-center flex flex-col justify-end p-8 bg-black/10 relative">
-                  <div className="absolute inset-0 border border-transparent group-hover:border-theme-accent/20 transition-colors pointer-events-none" />
-                  <span className="font-serif italic text-4xl mb-4 text-theme-accent/50">00{i}</span>
-                  <p className="font-mono text-sm text-theme-text-muted mb-6 max-w-[250px] leading-relaxed">
-                    {language === "en" ? "A deeper look into our ecosystem projects and how they leverage the Kairma OS." : "深入了解我们的生态项目及它们如何利用 Kairma OS。"}
-                  </p>
-                  <span className="text-xs font-mono uppercase tracking-widest text-theme-accent">
-                    {language === "en" ? "Read Case Study" : "阅读案例"} →
-                  </span>
+            <div className="flex flex-col border-t border-theme-border/30">
+              {siteCopy.fdeEmployees.roles.map((role: string, idx: number) => (
+                <div key={idx} className="flex justify-between items-center py-5 border-b border-theme-border/30 group/row hover:bg-theme-text/5 transition-colors cursor-default px-2 -mx-2">
+                  <div className="flex items-center gap-6 md:gap-12">
+                    <span className="font-mono text-xs text-theme-text-muted">0{idx + 1}</span>
+                    <span className="font-mono text-sm md:text-base font-bold uppercase tracking-widest text-theme-text group-hover/row:translate-x-2 transition-transform duration-300">
+                      {role}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-theme-accent opacity-0 group-hover/row:opacity-100 transition-opacity duration-300" />
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-theme-text-muted">Deployed</span>
+                  </div>
                 </div>
               ))}
             </div>
+          </BentoBox>
 
-            {/* Pagination Dots */}
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
-              {[0, 1, 2, 3].map(i => (
-                <div 
-                  key={i} 
-                  className={`h-1 rounded-full transition-all duration-300 ${currentSlide === i ? 'w-6 bg-theme-accent' : 'w-2 bg-theme-text-muted/30'}`}
-                />
-              ))}
+          {/* Section 4: The Box */}
+          <BentoBox className="col-span-1 md:col-span-1 row-span-1 p-6 flex flex-col justify-between gap-6 relative overflow-hidden group border-theme-border/50 hover:border-theme-accent/50 transition-colors">
+            <div className="relative z-10">
+              <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-2 text-theme-text text-balance">
+                {siteCopy.fdeBox.heading}
+              </h2>
             </div>
+            <p className="font-mono text-sm text-theme-text-muted leading-relaxed relative z-10 text-balance">{siteCopy.fdeBox.desc}</p>
           </BentoBox>
 
-          {/* 06: The Belief */}
-          <BentoBox className="col-span-1 row-span-2 p-8 md:p-12 flex flex-col justify-center items-center text-center min-h-[500px]">
-            <h2 className={`text-2xl md:text-4xl font-serif ${language === 'en' ? 'italic' : ''} mb-8 max-w-sm leading-[1.2]`}>
-              {siteCopy.insight.heading}
-            </h2>
-            <p className="font-sans text-xs md:text-sm max-w-sm opacity-80 leading-relaxed">
-              {siteCopy.insight.insights[0].desc}
-            </p>
-          </BentoBox>
-
-          {/* 07A: Kairma 3D Hero */}
-          <BentoBox className="col-span-1 row-span-2 min-h-[500px] relative p-0 overflow-hidden bg-[#05060A]">
-            <KairmaHero />
+          {/* Row 4 */}
+          {/* Section 5: Flywheel */}
+          <BentoBox className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-10 flex flex-col justify-between relative overflow-hidden group border-theme-border/50 hover:border-theme-accent/30 transition-colors bg-theme-text/5">
+            <div className="relative z-10 max-w-xl">
+              <h2 className="text-2xl md:text-4xl font-mono font-bold leading-tight mb-6 text-theme-text group-hover:text-theme-accent transition-colors text-balance">
+                {siteCopy.fdeFlywheel.heading}
+              </h2>
+            </div>
+            <p className="font-mono text-sm md:text-base text-theme-text-muted leading-relaxed text-balance relative z-10">{siteCopy.fdeFlywheel.desc}</p>
           </BentoBox>
 
           {/* 07C: Local Time / Analog Clock */}
-          <BentoBox className="col-span-1 row-span-1 min-h-[250px] p-6 flex flex-col items-center justify-between group">
+          <BentoBox className="col-span-1 row-span-1 min-h-[300px] p-6 flex flex-col items-center justify-between group">
             {mounted && time ? (
               <>
                 {/* Analog Clock */}
-                <div className="relative w-20 h-20 rounded-full border-[1.5px] border-theme-border flex items-center justify-center bg-black/5">
+                <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full border-[1.5px] border-theme-border/50 flex items-center justify-center bg-theme-text/5 shadow-inner">
                   {/* Clock ticks */}
                   {[...Array(12)].map((_, i) => (
                     <div key={i} className="absolute w-full h-full" style={{ transform: `rotate(${i * 30}deg)` }}>
-                      <div className={`w-[1px] ${i % 3 === 0 ? 'h-2 bg-theme-text-muted/60' : 'h-1 bg-theme-text-muted/30'} mx-auto mt-[2px]`} />
+                      <div className={`w-[1.5px] ${i % 3 === 0 ? 'h-3 bg-theme-text-muted/60' : 'h-2 bg-theme-text-muted/30'} mx-auto mt-1`} />
                     </div>
                   ))}
                   {/* Hour Hand */}
-                  <div className="absolute w-[2px] h-5 bg-theme-text-muted origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((time.getHours() % 12 + time.getMinutes() / 60) / 12) * 360}deg)` }} />
+                  <div className="absolute w-[3px] h-10 md:h-12 bg-theme-text-muted origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((time.getHours() % 12 + time.getMinutes() / 60) / 12) * 360}deg)` }} />
                   {/* Minute Hand */}
-                  <div className="absolute w-[1.5px] h-7 bg-theme-text origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((time.getMinutes() + time.getSeconds() / 60) / 60) * 360}deg)` }} />
+                  <div className="absolute w-[2px] h-14 md:h-16 bg-theme-text origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((time.getMinutes() + time.getSeconds() / 60) / 60) * 360}deg)` }} />
                   {/* Second Hand */}
-                  <div className="absolute w-[1px] h-8 bg-theme-accent origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${(time.getSeconds() / 60) * 360}deg)` }} />
+                  <div className="absolute w-[1px] h-16 md:h-20 bg-theme-accent origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${(time.getSeconds() / 60) * 360}deg)` }} />
                   {/* Center dot */}
-                  <div className="absolute w-1.5 h-1.5 rounded-full bg-theme-accent" />
+                  <div className="absolute w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_10px_var(--color-theme-accent-glow)]" />
                 </div>
 
                 <div className="flex flex-col items-center text-center mt-auto w-full">
@@ -619,14 +590,41 @@ export const SiteShellV3: React.FC = () => {
             )}
           </BentoBox>
 
-          {/* 09: The Invitation (Get In Touch) */}
-          <BentoBox className="col-span-1 row-span-1 p-6 flex flex-col items-center justify-center text-center bg-theme-accent/5 hover:bg-theme-accent/10 transition-colors group cursor-pointer border-theme-accent/20">
-            <h2 className="text-base font-mono font-bold uppercase tracking-widest mb-6 leading-relaxed">
-              {siteCopy.closing.text}
-            </h2>
-            <button className="w-full py-4 bg-theme-accent text-[#0B0E0B] font-mono font-bold uppercase tracking-widest rounded-full group-hover:bg-white transition-colors flex items-center justify-center gap-2">
-              {siteCopy.begin.enterprise.cta} <span className="text-xl leading-none">→</span>
-            </button>
+          {/* Row 5 */}
+          {/* Section 6: The Pilot (Developers & Operators Dual CTA) */}
+          <BentoBox className="col-span-1 md:col-span-4 row-span-1 p-0 flex flex-col md:flex-row min-h-[300px]">
+            {/* Developers Side */}
+            <div className="flex-1 p-8 md:p-12 flex flex-col justify-between border-b md:border-b-0 md:border-r border-theme-border hover:bg-theme-text/5 transition-colors group cursor-pointer relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-theme-text/5 rounded-bl-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 ease-out pointer-events-none" />
+              <div className="relative z-10">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text">{siteCopy.fdePilot.developers.heading}</h2>
+                <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md">{siteCopy.fdePilot.developers.desc}</p>
+              </div>
+              <button className="self-start mt-8 px-6 py-3 border border-theme-text text-theme-text font-mono text-sm uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
+                {language === "en" ? "View Docs" : "查看文档"} <span>→</span>
+              </button>
+            </div>
+            
+            {/* Operators Side */}
+            <div 
+              className="flex-1 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
+              onClick={() => setPilotOpen(true)}
+            >
+              <img 
+                src={theme === "xuan-mode" ? "/Bentos/d1-xuan.png" : "/Bentos/d1.png"} 
+                alt="Operators" 
+                className={`absolute inset-0 w-full h-full object-cover object-center z-0 transition-opacity duration-700 group-hover:opacity-70 group-hover:scale-105 pointer-events-none ${theme === "xuan-mode" ? "opacity-60 mix-blend-multiply" : "opacity-30 mix-blend-screen"}`} 
+              />
+              <div className="relative z-10">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.fdePilot.operators.heading}</h2>
+                <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md mb-8">{siteCopy.fdePilot.operators.desc}</p>
+              </div>
+              <div className="relative z-10">
+                <button className="self-start px-6 py-3 bg-theme-accent text-[#0B0E0B] font-mono text-sm font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
+                  {siteCopy.fdeHero.ctaPilot} <span>→</span>
+                </button>
+              </div>
+            </div>
           </BentoBox>
         </BentoGrid>
       </main>
