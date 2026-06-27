@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import createGlobe from "cobe";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -32,12 +33,14 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<ModelLayerData | null>(null);
   const [hoveredRoute, setHoveredRoute] = useState<RouteData | null>(null);
+  const [mounted, setMounted] = useState(false);
   
   // Track hovered state in ref so the animation loop can read it instantly on every frame
   const isHoveredRef = useRef(false);
 
   // Fetch data
   useEffect(() => {
+    setMounted(true);
     const fetchData = async () => {
       try {
         const res = await fetch("/api/kairma/model-layer");
@@ -136,7 +139,6 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       // Pause rotation if dragging OR if the user is hovering over a dot
       if (!isDragging && !isHoveredRef.current) {
         // 0.00018 radians per millisecond (approx 0.003 radians per frame at 60fps)
-        // This is the sweet spot: slightly faster but buttery smooth
         currentPhi += 0.00018 * delta; 
         globe.update({
           phi: currentPhi,
@@ -168,25 +170,9 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
 
   const GLOBE_SIZE = 360;
 
-  return (
-    <div className="relative w-full h-full flex items-center justify-center min-h-[360px]">
-      <div 
-        className="relative cursor-grab active:cursor-grabbing cobe-globe-wrapper" 
-        style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, touchAction: "none" }}
-      >
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: GLOBE_SIZE,
-            height: GLOBE_SIZE,
-            contain: "layout paint size",
-            opacity: 1,
-            transition: "opacity 1s ease",
-            cursor: "inherit"
-          }}
-        />
-
-        {/* CSS Anchor Positioned Markers */}
+  const tooltipPortalContent = (
+    <div className="cobe-portaled-labels pointer-events-none fixed inset-0 z-[9999]">
+      <div className="relative w-full h-full">
         {data.routes.map((route) => {
           return (
             <div
@@ -200,7 +186,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                 opacity: `var(--cobe-visible-${route.id}, 0)`,
                 // CSS Hack: makes pointer events none on the back side of the globe
                 pointerEvents: `var(--cobe-visible-${route.id}, none)`, 
-                zIndex: 20
+                zIndex: 9999
               } as any}
               onMouseEnter={() => {
                 setHoveredRoute(route);
@@ -249,9 +235,39 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
           );
         })}
       </div>
+    </div>
+  );
+
+  return (
+    <div className="relative w-full h-full flex items-center justify-center min-h-[360px]">
+      <div 
+        className="relative cursor-grab active:cursor-grabbing cobe-globe-wrapper" 
+        style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, touchAction: "none" }}
+      >
+        <canvas
+          ref={canvasRef}
+          style={{
+            width: GLOBE_SIZE,
+            height: GLOBE_SIZE,
+            contain: "layout paint size",
+            opacity: 1,
+            transition: "opacity 1s ease",
+            cursor: "inherit"
+          }}
+        />
+      </div>
+
+      {/* Render tooltips via React Portal to prevent overflow-hidden clipping from parent OSCards */}
+      {mounted && typeof document !== "undefined" && createPortal(
+        tooltipPortalContent,
+        document.body
+      )}
       
       {/* Dynamic positioning classes for CSS Anchors to bypass React's style validator */}
       <style dangerouslySetInnerHTML={{__html: `
+        .cobe-portaled-labels .group {
+          pointer-events: auto;
+        }
         .anchor-route-0 { position-anchor: --cobe-route-0; }
         .anchor-route-1 { position-anchor: --cobe-route-1; }
         .anchor-route-2 { position-anchor: --cobe-route-2; }
@@ -262,7 +278,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
         .anchor-route-7 { position-anchor: --cobe-route-7; }
 
         @supports not (position-anchor: --test) {
-          .cobe-globe-wrapper .group {
+          .cobe-portaled-labels {
             display: none !important;
           }
         }
