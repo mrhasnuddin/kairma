@@ -63,7 +63,7 @@ export async function GET() {
     { role: "KOL BD", lat: 35.6762, lng: 139.6503, city: "Tokyo, JP" }, // Tokyo
     { role: "Content Ops", lat: 37.7749, lng: -122.4194, city: "SF, USA" }, // SF
     { role: "Customer Care", lat: 51.5072, lng: -0.1276, city: "London, UK" }, // London
-    { role: "Compliance", lat: 48.8566, lng: 2.3522, city: "Paris, FR" } // Paris
+    { role: "Compliance", lat: -23.5505, lng: -46.6333, city: "São Paulo, BR" } // São Paulo
   ];
 
   const routes = selectedModels.slice(0, 4).map((model: any, idx) => {

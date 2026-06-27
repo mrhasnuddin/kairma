@@ -32,6 +32,9 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<ModelLayerData | null>(null);
   const [hoveredRoute, setHoveredRoute] = useState<RouteData | null>(null);
+  
+  // Track hovered state in ref so the animation loop can read it instantly on every frame
+  const isHoveredRef = useRef(false);
 
   // Fetch data
   useEffect(() => {
@@ -128,7 +131,8 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     // Animation loop
     let animationFrameId: number;
     const animate = () => {
-      if (!isDragging) {
+      // Pause rotation if dragging OR if the user is hovering over a dot
+      if (!isDragging && !isHoveredRef.current) {
         currentPhi += 0.005; // Continuous auto-rotation speed
         globe.update({
           phi: currentPhi,
@@ -190,11 +194,18 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                 left: "anchor(center)",
                 transform: "translate(-50%, -50%)",
                 opacity: `var(--cobe-visible-${route.id}, 0)`,
-                pointerEvents: "auto",
+                // CSS Hack: makes pointer events none on the back side of the globe
+                pointerEvents: `var(--cobe-visible-${route.id}, none)`, 
                 zIndex: 20
               } as any}
-              onMouseEnter={() => setHoveredRoute(route)}
-              onMouseLeave={() => setHoveredRoute(null)}
+              onMouseEnter={() => {
+                setHoveredRoute(route);
+                isHoveredRef.current = true;
+              }}
+              onMouseLeave={() => {
+                setHoveredRoute(null);
+                isHoveredRef.current = false;
+              }}
             >
               {/* Visible pulsing marker dot to match Cobe official style with pulse */}
               <div className="relative flex items-center justify-center">
