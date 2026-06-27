@@ -163,10 +163,25 @@ export const SiteShellV3: React.FC = () => {
   const [time, setTime] = useState<Date | null>(null);
   const [crtFlash, setCrtFlash] = useState(false);
   const [pilotOpen, setPilotOpen] = useState(false);
+  const [ipLocation, setIpLocation] = useState<{city: string, region: string, timezone: string} | null>(null);
 
   const SHOW_LINEAGE = false;
 
   useEffect(() => {
+    // Fetch IP-based location
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.timezone) {
+          setIpLocation({
+            city: data.city || data.region,
+            region: data.continent_code || data.country_name,
+            timezone: data.timezone
+          });
+        }
+      })
+      .catch(e => console.error('IP location fetch failed:', e));
+      
     setMounted(true);
     setTime(new Date());
     const interval = setInterval(() => setTime(new Date()), 1000);
@@ -549,41 +564,55 @@ export const SiteShellV3: React.FC = () => {
           {/* 07C: Local Time / Analog Clock */}
           <BentoBox className="col-span-1 row-span-1 min-h-[300px] p-6 flex flex-col items-center justify-between group">
             {mounted && time ? (
-              <>
-                {/* Analog Clock */}
-                <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full border-[1.5px] border-theme-border/50 flex items-center justify-center bg-theme-text/5 shadow-inner">
-                  {/* Clock ticks */}
-                  {[...Array(12)].map((_, i) => (
-                    <div key={i} className="absolute w-full h-full" style={{ transform: `rotate(${i * 30}deg)` }}>
-                      <div className={`w-[1.5px] ${i % 3 === 0 ? 'h-3 bg-theme-text-muted/60' : 'h-2 bg-theme-text-muted/30'} mx-auto mt-1`} />
-                    </div>
-                  ))}
-                  {/* Hour Hand */}
-                  <div className="absolute w-[3px] h-10 md:h-12 bg-theme-text-muted origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((time.getHours() % 12 + time.getMinutes() / 60) / 12) * 360}deg)` }} />
-                  {/* Minute Hand */}
-                  <div className="absolute w-[2px] h-14 md:h-16 bg-theme-text origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((time.getMinutes() + time.getSeconds() / 60) / 60) * 360}deg)` }} />
-                  {/* Second Hand */}
-                  <div className="absolute w-[1px] h-16 md:h-20 bg-theme-accent origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${(time.getSeconds() / 60) * 360}deg)` }} />
-                  {/* Center dot */}
-                  <div className="absolute w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_10px_var(--color-theme-accent-glow)]" />
-                </div>
+              (() => {
+                const tz = ipLocation?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const dStr = time.toLocaleString('en-US', { timeZone: tz });
+                const localDate = new Date(dStr);
+                const h = localDate.getHours();
+                const m = localDate.getMinutes();
+                const s = localDate.getSeconds();
+                
+                const displayCity = ipLocation?.city ? ipLocation.city.toUpperCase() : tz.split('/')[1]?.replace(/_/g, ' ') || 'LOCAL';
+                const displayRegion = ipLocation?.region ? ipLocation.region.toUpperCase() : tz.split('/')[0]?.toUpperCase() || 'TIMEZONE';
 
-                <div className="flex flex-col items-center text-center mt-auto w-full">
-                  <p className="font-mono text-xs text-theme-text-muted uppercase mb-3 tracking-widest">
-                    {language === "en" ? "System Synchronized" : "系统已同步"}
-                  </p>
-                  
-                  {/* Huge Text: TIME */}
-                  <h2 className="font-mono text-3xl font-bold tracking-tighter mb-2 text-theme-text">
-                    {time.getHours().toString().padStart(2, '0')}:{time.getMinutes().toString().padStart(2, '0')}:{time.getSeconds().toString().padStart(2, '0')}
-                  </h2>
-                  
-                  {/* Bottom Text: Location & Timezone */}
-                  <p className="font-mono text-xs text-theme-text uppercase tracking-widest">
-                    {Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[1]?.replace(/_/g, ' ') || 'LOCAL'}, {Intl.DateTimeFormat().resolvedOptions().timeZone.split('/')[0] || 'TIMEZONE'}
-                  </p>
-                </div>
-              </>
+                return (
+                  <>
+                    {/* Analog Clock */}
+                    <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full border-[1.5px] border-theme-border/50 flex items-center justify-center bg-theme-text/5 shadow-inner">
+                      {/* Clock ticks */}
+                      {[...Array(12)].map((_, i) => (
+                        <div key={i} className="absolute w-full h-full" style={{ transform: `rotate(${i * 30}deg)` }}>
+                          <div className={`w-[1.5px] ${i % 3 === 0 ? 'h-3 bg-theme-text-muted/60' : 'h-2 bg-theme-text-muted/30'} mx-auto mt-1`} />
+                        </div>
+                      ))}
+                      {/* Hour Hand */}
+                      <div className="absolute w-[3px] h-10 md:h-12 bg-theme-text-muted origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((h % 12 + m / 60) / 12) * 360}deg)` }} />
+                      {/* Minute Hand */}
+                      <div className="absolute w-[2px] h-14 md:h-16 bg-theme-text origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((m + s / 60) / 60) * 360}deg)` }} />
+                      {/* Second Hand */}
+                      <div className="absolute w-[1px] h-16 md:h-20 bg-theme-accent origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${(s / 60) * 360}deg)` }} />
+                      {/* Center dot */}
+                      <div className="absolute w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_10px_var(--color-theme-accent-glow)]" />
+                    </div>
+
+                    <div className="flex flex-col items-center text-center mt-auto w-full">
+                      <p className="font-mono text-xs text-theme-text-muted uppercase mb-3 tracking-widest">
+                        {language === "en" ? "System Synchronized" : "系统已同步"}
+                      </p>
+                      
+                      {/* Huge Text: TIME */}
+                      <h2 className="font-mono text-3xl font-bold tracking-tighter mb-2 text-theme-text">
+                        {h.toString().padStart(2, '0')}:{m.toString().padStart(2, '0')}:{s.toString().padStart(2, '0')}
+                      </h2>
+                      
+                      {/* Bottom Text: Location & Timezone */}
+                      <p className="font-mono text-xs text-theme-text uppercase tracking-widest">
+                        {displayCity}, {displayRegion}
+                      </p>
+                    </div>
+                  </>
+                );
+              })()
             ) : (
               <div className="w-full h-full flex items-center justify-center opacity-50">
                 <span className="font-mono text-xs uppercase text-theme-text-muted">Syncing...</span>
