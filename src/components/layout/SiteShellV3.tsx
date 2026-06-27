@@ -442,21 +442,17 @@ export const SiteShellV3: React.FC = () => {
               <div className="w-full md:w-[40%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <div className="inline-flex items-center gap-2 mb-6 text-theme-text-muted">
-                    <span className="font-mono text-[9px] uppercase tracking-widest opacity-80">KAIRMA OS · DEPLOYMENT CANVAS</span>
-                  </div>
-
                   <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl">
                     {siteCopy.fdeHero.canvasH1}
                   </h1>
                   
-                  <p className="font-mono text-xs text-theme-text-muted leading-relaxed drop-shadow-md mb-8">
+                  <p className="font-mono text-sm text-theme-text-muted leading-relaxed drop-shadow-md mb-8">
                     {siteCopy.fdeHero.canvasSub}
                   </p>
                 </div>
 
                 {/* Status List */}
-                <div className="mt-auto space-y-2 font-mono text-[10px] uppercase tracking-widest">
+                <div className="mt-auto space-y-2.5 font-mono text-xs uppercase tracking-widest">
                   <div className="flex items-center gap-2">
                     <div className="w-1 h-1 bg-theme-accent rounded-full" />
                     <span className="text-theme-accent">Agent OS online</span>
