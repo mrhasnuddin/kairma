@@ -226,14 +226,14 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -5, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-[220px] p-3 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-[280px] p-4 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none"
                   >
-                    <div className="font-mono text-[10px] uppercase tracking-wider mb-2 pb-1 border-b border-theme-border/50 text-theme-accent flex justify-between">
+                    <div className="font-mono text-xs uppercase tracking-wider mb-2.5 pb-1.5 border-b border-theme-border/50 text-theme-accent flex justify-between">
                       <span>{route.role}</span>
                       <span className="opacity-70">{route.location}</span>
                     </div>
-                    <div className="space-y-1 font-mono text-[9px] text-theme-text-muted">
-                      <div className="flex justify-between"><span className="opacity-70">Model:</span> <span className="text-theme-accent/90 truncate ml-2">{route.modelId}</span></div>
+                    <div className="space-y-1.5 font-mono text-xs text-theme-text-muted">
+                      <div className="flex justify-between"><span className="opacity-70">Model:</span> <span className="text-theme-accent/90 truncate ml-4 max-w-[180px]">{route.modelId}</span></div>
                       <div className="flex justify-between"><span className="opacity-70">Context:</span> <span>{route.contextLimit}</span></div>
                       <div className="flex justify-between"><span className="opacity-70">Cost/M:</span> <span>{route.promptCost}</span></div>
                       <div className="flex justify-between"><span className="opacity-70">Status:</span> <span>{route.visualState === 'in-progress' ? 'Heavy Reasoning' : 'Fast Active'}</span></div>
