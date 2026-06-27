@@ -69,19 +69,6 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       }))
     ];
 
-    // Create arcs array from hub to deployment nodes
-    const arcs = data.routes.map(r => {
-      const isAmber = r.visualState === "in-progress";
-      const color = isAmber ? [0.96, 0.62, 0.04] : [0.12, 0.67, 0.41]; // rgb(245,158,11) vs rgb(31,170,104)
-      
-      return {
-        from: [data.hub.lat, data.hub.lng],
-        to: [r.marker.lat, r.marker.lng],
-        color,
-        id: r.id
-      };
-    });
-
     const isLight = theme === "xuan-mode";
     const GLOBE_RESOLUTION = 720; // 360 * 2
 
@@ -100,10 +87,6 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       baseColor: isLight ? [0.95, 0.95, 0.95] : [0.3, 0.8, 0.4], 
       markerColor: [0.12, 0.67, 0.41], // theme-accent green
       glowColor: [0.12, 0.67, 0.41],
-      arcs: arcs as any,
-      arcColor: [0.12, 0.67, 0.41],
-      arcWidth: 1.5,
-      arcHeight: 0.25,
       markers: markers as any,
     });
 
@@ -175,7 +158,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     );
   }
 
-  const GLOBE_SIZE = 360; // Shrink slightly to prevent top/bottom clipping in OSCard
+  const GLOBE_SIZE = 360;
 
   return (
     <div className="relative w-full h-full flex items-center justify-center min-h-[360px]">
@@ -200,10 +183,9 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
           return (
             <div
               key={route.id}
-              className="absolute group cursor-pointer"
+              className={`absolute group cursor-pointer anchor-${route.id}`}
               style={{
                 position: "absolute",
-                "position-anchor": `--cobe-${route.id}`,
                 top: "anchor(center)",
                 left: "anchor(center)",
                 transform: "translate(-50%, -50%)",
@@ -214,21 +196,26 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
               onMouseEnter={() => setHoveredRoute(route)}
               onMouseLeave={() => setHoveredRoute(null)}
             >
-              {/* Visible marker dot to match Cobe official style */}
-              <div className="w-2.5 h-2.5 bg-theme-accent rounded-full border border-theme-void shadow-[0_0_8px_rgba(31,170,104,0.8)] transition-transform duration-200 group-hover:scale-125" />
+              {/* Visible pulsing marker dot to match Cobe official style with pulse */}
+              <div className="relative flex items-center justify-center">
+                {/* Outer pulsing ring */}
+                <div className="absolute w-5 h-5 bg-theme-accent/40 rounded-full animate-ping pointer-events-none" />
+                {/* Inner solid dot */}
+                <div className="relative w-2.5 h-2.5 bg-theme-accent rounded-full border border-theme-void shadow-[0_0_8px_rgba(31,170,104,0.8)] transition-transform duration-200 group-hover:scale-125" />
+              </div>
               
               {/* Invisible larger hit area for easier hover */}
               <div className="absolute w-8 h-8 -top-3 -left-3 rounded-full" />
               
-              {/* Tooltip */}
+              {/* Tooltip positioned below the dot to prevent clipping */}
               <AnimatePresence>
                 {hoveredRoute === route && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                    initial={{ opacity: 0, y: -10, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                    exit={{ opacity: 0, y: -5, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-[220px] p-3 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-[220px] p-3 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none"
                   >
                     <div className="font-mono text-[10px] uppercase tracking-wider mb-2 pb-1 border-b border-theme-border/50 text-theme-accent flex justify-between">
                       <span>{route.role}</span>
@@ -248,8 +235,13 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
         })}
       </div>
       
-      {/* Fallback for browsers without Anchor Positioning support */}
+      {/* Dynamic positioning classes for CSS Anchors to bypass React's style validator */}
       <style dangerouslySetInnerHTML={{__html: `
+        .anchor-route-0 { position-anchor: --cobe-route-0; }
+        .anchor-route-1 { position-anchor: --cobe-route-1; }
+        .anchor-route-2 { position-anchor: --cobe-route-2; }
+        .anchor-route-3 { position-anchor: --cobe-route-3; }
+
         @supports not (position-anchor: --test) {
           .cobe-globe-wrapper .group {
             display: none !important;
