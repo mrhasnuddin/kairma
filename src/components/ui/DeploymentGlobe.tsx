@@ -76,7 +76,10 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
   useEffect(() => {
     if (!canvasRef.current || !data) return;
 
-    let currentPhi = 0;
+    // Center the globe initially on Singapore (hub)
+    // Singapore lng is ~103.8. phi = -lngR aligns it to the center.
+    // We add a small offset so it looks good.
+    let currentPhi = -(data.hub.lng * Math.PI) / 180 + 0.5;
     
     // Create markers array including hub
     const markers = [
@@ -105,7 +108,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       markers: markers as any,
       onRender: (state: any) => {
         // Slow auto-rotation, but add drag movement
-        if (!pointerInteracting.current) {
+        if (pointerInteracting.current === null) {
           currentPhi += 0.003;
         }
         state.phi = currentPhi + pointerInteractionMovement.current;
@@ -133,38 +136,34 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     <div className="relative w-full h-full flex items-center justify-center min-h-[400px]">
       <div 
         className="relative cursor-grab active:cursor-grabbing" 
-        style={{ width: GLOBE_SIZE, height: GLOBE_SIZE }}
+        style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, touchAction: "none" }}
         onPointerDown={(e) => {
+          e.currentTarget.setPointerCapture(e.pointerId);
           pointerInteracting.current = e.clientX - pointerInteractionMovement.current * 200;
           if (canvasRef.current) {
             canvasRef.current.style.cursor = 'grabbing';
           }
         }}
-        onPointerUp={() => {
+        onPointerUp={(e) => {
+          e.currentTarget.releasePointerCapture(e.pointerId);
           pointerInteracting.current = null;
           if (canvasRef.current) {
             canvasRef.current.style.cursor = 'grab';
           }
         }}
-        onPointerOut={() => {
+        onPointerOut={(e) => {
+          // Only release if we actually lost capture or left entirely
           pointerInteracting.current = null;
           if (canvasRef.current) {
             canvasRef.current.style.cursor = 'grab';
           }
         }}
-        onMouseMove={(e) => {
+        onPointerMove={(e) => {
           if (pointerInteracting.current !== null) {
             const delta = e.clientX - pointerInteracting.current;
             pointerInteractionMovement.current = delta / 200;
           }
         }}
-        onTouchMove={(e) => {
-          if (pointerInteracting.current !== null && e.touches[0]) {
-            const delta = e.touches[0].clientX - pointerInteracting.current;
-            pointerInteractionMovement.current = delta / 200;
-          }
-        }}
-      >
         
         <canvas
           ref={canvasRef}
