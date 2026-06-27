@@ -439,7 +439,7 @@ export const SiteShellV3: React.FC = () => {
               </div>
 
               {/* Left 40%: Copy and System Status */}
-              <div className="w-full md:w-[40%] p-6 md:p-8 flex flex-col justify-between relative z-20 border-b md:border-b-0 md:border-r border-theme-border/30 bg-gradient-to-r from-theme-void to-theme-void/80 backdrop-blur-sm">
+              <div className="w-full md:w-[40%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
                   <div className="inline-flex items-center gap-2 mb-6 text-theme-text-muted">
@@ -477,8 +477,8 @@ export const SiteShellV3: React.FC = () => {
               </div>
 
               {/* Right 60%: Globe */}
-              <div className="w-full md:w-[60%] h-[300px] md:h-auto relative z-10 overflow-hidden bg-[#0B0E0B]">
-                <DeploymentGlobe />
+              <div className="w-full md:w-[60%] h-[300px] md:h-auto relative z-10 overflow-hidden">
+                <DeploymentGlobe theme={theme} />
               </div>
             </div>
           </OSCard>

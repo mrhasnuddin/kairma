@@ -50,8 +50,10 @@ const project = (lat: number, lng: number, phi: number, size: number) => {
   };
 };
 
-export const DeploymentGlobe = () => {
+export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pointerInteracting = useRef<number | null>(null);
+  const pointerInteractionMovement = useRef(0);
   const [data, setData] = useState<ModelLayerData | null>(null);
   const [phi, setPhi] = useState(0);
   const [hoveredRoute, setHoveredRoute] = useState<RouteData | null>(null);
@@ -85,32 +87,36 @@ export const DeploymentGlobe = () => {
       }))
     ];
 
+    const isLight = theme === "xuan-mode";
+
     const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 2,
       width: 800,
       height: 800,
       phi: 0,
       theta: 0,
-      dark: 1,
+      dark: isLight ? 0 : 1,
       diffuse: 1.2,
       mapSamples: 16000,
-      mapBrightness: 6,
-      baseColor: [0.04, 0.05, 0.04],
+      mapBrightness: 2,
+      baseColor: isLight ? [0.95, 0.95, 0.95] : [0.04, 0.05, 0.04],
       markerColor: [0.12, 0.67, 0.41], // theme-accent
       glowColor: [0.12, 0.67, 0.41],
       markers: markers as any,
       onRender: (state: any) => {
-        // Slow auto-rotation
-        state.phi = currentPhi;
-        currentPhi += 0.003;
-        setPhi(currentPhi);
+        // Slow auto-rotation, but add drag movement
+        if (!pointerInteracting.current) {
+          currentPhi += 0.003;
+        }
+        state.phi = currentPhi + pointerInteractionMovement.current;
+        setPhi(state.phi);
       },
     } as any);
 
     return () => {
       globe.destroy();
     };
-  }, [data]);
+  }, [data, theme]);
 
   if (!data) {
     return (
@@ -125,7 +131,40 @@ export const DeploymentGlobe = () => {
 
   return (
     <div className="relative w-full h-full flex items-center justify-center min-h-[400px]">
-      <div className="relative" style={{ width: GLOBE_SIZE, height: GLOBE_SIZE }}>
+      <div 
+        className="relative cursor-grab active:cursor-grabbing" 
+        style={{ width: GLOBE_SIZE, height: GLOBE_SIZE }}
+        onPointerDown={(e) => {
+          pointerInteracting.current = e.clientX - pointerInteractionMovement.current * 200;
+          if (canvasRef.current) {
+            canvasRef.current.style.cursor = 'grabbing';
+          }
+        }}
+        onPointerUp={() => {
+          pointerInteracting.current = null;
+          if (canvasRef.current) {
+            canvasRef.current.style.cursor = 'grab';
+          }
+        }}
+        onPointerOut={() => {
+          pointerInteracting.current = null;
+          if (canvasRef.current) {
+            canvasRef.current.style.cursor = 'grab';
+          }
+        }}
+        onMouseMove={(e) => {
+          if (pointerInteracting.current !== null) {
+            const delta = e.clientX - pointerInteracting.current;
+            pointerInteractionMovement.current = delta / 200;
+          }
+        }}
+        onTouchMove={(e) => {
+          if (pointerInteracting.current !== null && e.touches[0]) {
+            const delta = e.touches[0].clientX - pointerInteracting.current;
+            pointerInteractionMovement.current = delta / 200;
+          }
+        }}
+      >
         
         <canvas
           ref={canvasRef}
@@ -135,6 +174,7 @@ export const DeploymentGlobe = () => {
             contain: "layout paint size",
             opacity: 1,
             transition: "opacity 1s ease",
+            cursor: "inherit"
           }}
         />
 
@@ -177,7 +217,7 @@ export const DeploymentGlobe = () => {
               strokeColor = "rgba(245, 158, 11, 0.8)"; // amber
               animateClass = "animate-pulse";
             } else if (route.visualState === "inactive") {
-              strokeColor = "rgba(255, 255, 255, 0.2)";
+              strokeColor = theme === "xuan-mode" ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.2)";
             }
 
             return (
