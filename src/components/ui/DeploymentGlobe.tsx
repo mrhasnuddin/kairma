@@ -5,11 +5,12 @@ import createGlobe from "cobe";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface RouteData {
+  id: string;
   role: string;
-  status: string;
-  routeType: string;
-  runtime: string;
-  dataBoundary: string;
+  location: string;
+  modelId: string;
+  contextLimit: string;
+  promptCost: string;
   marker: { lat: number; lng: number };
   visualState: string;
 }
@@ -27,35 +28,11 @@ interface ModelLayerData {
   };
 }
 
-// Math helper for cobe projection
-const project = (lat: number, lng: number, phi: number, size: number) => {
-  const r = size / 2;
-  const latR = (lat * Math.PI) / 180;
-  // Cobe's internal map puts lng=0 at the center when phi=0. 
-  // It rotates around Y. We subtract PI to align with Cobe's texture offset if needed, or maybe no offset.
-  // Actually Cobe's markers use: 
-  // x = cos(lat) * sin(lng + phi)
-  // y = -sin(lat)
-  // z = cos(lat) * cos(lng + phi)
-  const lngR = (lng * Math.PI) / 180;
-  
-  const x = Math.cos(latR) * Math.sin(lngR + phi);
-  const y = -Math.sin(latR);
-  const z = Math.cos(latR) * Math.cos(lngR + phi);
-  
-  return {
-    x: r + x * r,
-    y: r + y * r,
-    isFront: z > 0
-  };
-};
-
 export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerInteracting = useRef<number | null>(null);
   const pointerInteractionMovement = useRef(0);
   const [data, setData] = useState<ModelLayerData | null>(null);
-  const [phi, setPhi] = useState(0);
   const [hoveredRoute, setHoveredRoute] = useState<RouteData | null>(null);
 
   // Fetch data
@@ -77,18 +54,31 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     if (!canvasRef.current || !data) return;
 
     // Center the globe initially on Singapore (hub)
-    // Singapore lng is ~103.8. phi = -lngR aligns it to the center.
-    // We add a small offset so it looks good.
     let currentPhi = -(data.hub.lng * Math.PI) / 180 + 0.5;
     
     // Create markers array including hub
     const markers = [
-      { location: [data.hub.lat, data.hub.lng], size: 0.08 },
+      { location: [data.hub.lat, data.hub.lng], size: 0.08, id: 'hub' },
       ...data.routes.map(r => ({
         location: [r.marker.lat, r.marker.lng],
-        size: 0.05
+        size: 0.05,
+        id: r.id
       }))
     ];
+
+    // Create arcs array from hub to deployment nodes
+    const arcs = data.routes.map(r => {
+      // In-progress = Amber, Active = Green
+      const isAmber = r.visualState === "in-progress";
+      const color = isAmber ? [0.96, 0.62, 0.04] : [0.12, 0.67, 0.41]; // rgb(245,158,11) vs rgb(31,170,104)
+      
+      return {
+        from: [data.hub.lat, data.hub.lng],
+        to: [r.marker.lat, r.marker.lng],
+        color,
+        id: r.id
+      };
+    });
 
     const isLight = theme === "xuan-mode";
 
@@ -105,14 +95,17 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       baseColor: isLight ? [0.95, 0.95, 0.95] : [0.04, 0.05, 0.04],
       markerColor: [0.12, 0.67, 0.41], // theme-accent
       glowColor: [0.12, 0.67, 0.41],
+      arcs: arcs as any,
+      arcColor: [0.12, 0.67, 0.41],
+      arcWidth: 1.5,
+      arcHeight: 0.25,
       markers: markers as any,
       onRender: (state: any) => {
-        // Slow auto-rotation, but add drag movement
+        // Continuous auto-rotation (faster now that React overhead is gone)
         if (pointerInteracting.current === null) {
-          currentPhi += 0.003;
+          currentPhi += 0.005;
         }
         state.phi = currentPhi + pointerInteractionMovement.current;
-        setPhi(state.phi);
       },
     } as any);
 
@@ -129,34 +122,26 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     );
   }
 
-  const GLOBE_SIZE = 400; // Logical pixels (width/2 of 800 physical pixels)
-  const hubPos = project(data.hub.lat, data.hub.lng, phi, GLOBE_SIZE);
+  const GLOBE_SIZE = 400;
 
   return (
     <div className="relative w-full h-full flex items-center justify-center min-h-[400px]">
       <div 
-        className="relative cursor-grab active:cursor-grabbing" 
+        className="relative cursor-grab active:cursor-grabbing cobe-globe-wrapper" 
         style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, touchAction: "none" }}
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
           pointerInteracting.current = e.clientX - pointerInteractionMovement.current * 200;
-          if (canvasRef.current) {
-            canvasRef.current.style.cursor = 'grabbing';
-          }
+          if (canvasRef.current) canvasRef.current.style.cursor = 'grabbing';
         }}
         onPointerUp={(e) => {
           e.currentTarget.releasePointerCapture(e.pointerId);
           pointerInteracting.current = null;
-          if (canvasRef.current) {
-            canvasRef.current.style.cursor = 'grab';
-          }
+          if (canvasRef.current) canvasRef.current.style.cursor = 'grab';
         }}
         onPointerOut={(e) => {
-          // Only release if we actually lost capture or left entirely
           pointerInteracting.current = null;
-          if (canvasRef.current) {
-            canvasRef.current.style.cursor = 'grab';
-          }
+          if (canvasRef.current) canvasRef.current.style.cursor = 'grab';
         }}
         onPointerMove={(e) => {
           if (pointerInteracting.current !== null) {
@@ -164,7 +149,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
             pointerInteractionMovement.current = delta / 200;
           }
         }}
-        
+      >
         <canvas
           ref={canvasRef}
           style={{
@@ -177,84 +162,26 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
           }}
         />
 
-        {/* SVG Arcs Overlay */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 10 }}>
-          {data.routes.map((route, idx) => {
-            const destPos = project(route.marker.lat, route.marker.lng, phi, GLOBE_SIZE);
-            
-            // Only draw arc if both points are at least partially on the front, or just let them fade out
-            const isVisible = destPos.isFront || hubPos.isFront;
-            if (!isVisible) return null;
-
-            // Simple cubic bezier curve sticking out slightly from the globe surface
-            const dx = destPos.x - hubPos.x;
-            const dy = destPos.y - hubPos.y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            
-            // Control points pull outward from the center of the globe (GLOBE_SIZE/2)
-            const cx = GLOBE_SIZE / 2;
-            const cy = GLOBE_SIZE / 2;
-            
-            const midX = (hubPos.x + destPos.x) / 2;
-            const midY = (hubPos.y + destPos.y) / 2;
-            
-            // Push middle point outwards from center
-            const pushOut = dist * 0.3;
-            const angleFromCenter = Math.atan2(midY - cy, midX - cx);
-            
-            const cpX = midX + Math.cos(angleFromCenter) * pushOut;
-            const cpY = midY + Math.sin(angleFromCenter) * pushOut;
-
-            let strokeColor = "rgba(31, 170, 104, 0.8)"; // green
-            let strokeDasharray = "none";
-            let animateClass = "";
-
-            if (route.visualState === "in-progress") {
-              strokeDasharray = "4 4";
-              animateClass = "animate-[dash_2s_linear_infinite]";
-            } else if (route.visualState === "in-development") {
-              strokeColor = "rgba(245, 158, 11, 0.8)"; // amber
-              animateClass = "animate-pulse";
-            } else if (route.visualState === "inactive") {
-              strokeColor = theme === "xuan-mode" ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.2)";
-            }
-
-            return (
-              <path
-                key={idx}
-                d={`M ${hubPos.x} ${hubPos.y} Q ${cpX} ${cpY} ${destPos.x} ${destPos.y}`}
-                fill="none"
-                stroke={strokeColor}
-                strokeWidth={1.5}
-                strokeDasharray={strokeDasharray}
-                className={`transition-opacity duration-500 ${animateClass}`}
-                style={{ opacity: (destPos.isFront && hubPos.isFront) ? 1 : 0.2 }}
-              />
-            );
-          })}
-        </svg>
-
-        {/* HTML Markers and Tooltips */}
-        {data.routes.map((route, idx) => {
-          const destPos = project(route.marker.lat, route.marker.lng, phi, GLOBE_SIZE);
-          
-          if (!destPos.isFront) return null;
-
+        {/* CSS Anchor Positioned Markers */}
+        {data.routes.map((route) => {
           return (
             <div
-              key={idx}
+              key={route.id}
               className="absolute group cursor-pointer"
               style={{
-                left: destPos.x,
-                top: destPos.y,
-                transform: 'translate(-50%, -50%)',
+                positionAnchor: `--cobe-${route.id}`,
+                top: "anchor(center)",
+                left: "anchor(center)",
+                transform: "translate(-50%, -50%)",
+                opacity: `var(--cobe-visible-${route.id}, 0)`,
+                // Make unclickable when on back of globe
+                pointerEvents: "auto",
                 zIndex: 20
-              }}
+              } as any}
               onMouseEnter={() => setHoveredRoute(route)}
               onMouseLeave={() => setHoveredRoute(null)}
             >
-              {/* Invisible hit area for easier hover */}
-              <div className="w-6 h-6 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full" />
+              <div className="w-8 h-8 rounded-full" />
               
               {/* Tooltip */}
               <AnimatePresence>
@@ -264,16 +191,17 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 5, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none"
+                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-[220px] p-3 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none"
                   >
-                    <div className="font-mono text-[10px] uppercase tracking-wider mb-2 pb-1 border-b border-theme-border/50 text-theme-accent">
-                      {route.role}
+                    <div className="font-mono text-[10px] uppercase tracking-wider mb-2 pb-1 border-b border-theme-border/50 text-theme-accent flex justify-between">
+                      <span>{route.role}</span>
+                      <span className="opacity-70">{route.location}</span>
                     </div>
                     <div className="space-y-1 font-mono text-[9px] text-theme-text-muted">
-                      <div className="flex justify-between"><span className="opacity-70">Status:</span> <span>{route.status}</span></div>
-                      <div className="flex justify-between"><span className="opacity-70">Route:</span> <span>{route.routeType}</span></div>
-                      <div className="flex justify-between"><span className="opacity-70">Runtime:</span> <span>{route.runtime}</span></div>
-                      <div className="flex justify-between"><span className="opacity-70">Data:</span> <span>{route.dataBoundary}</span></div>
+                      <div className="flex justify-between"><span className="opacity-70">Model:</span> <span className="text-theme-accent/90 truncate ml-2">{route.modelId}</span></div>
+                      <div className="flex justify-between"><span className="opacity-70">Context:</span> <span>{route.contextLimit}</span></div>
+                      <div className="flex justify-between"><span className="opacity-70">Cost/M:</span> <span>{route.promptCost}</span></div>
+                      <div className="flex justify-between"><span className="opacity-70">Status:</span> <span>{route.visualState === 'in-progress' ? 'Heavy Reasoning' : 'Fast Active'}</span></div>
                     </div>
                   </motion.div>
                 )}
@@ -283,9 +211,12 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
         })}
       </div>
       
+      {/* Fallback for browsers without Anchor Positioning support */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes dash {
-          to { stroke-dashoffset: -8; }
+        @supports not (position-anchor: --test) {
+          .cobe-globe-wrapper .group {
+            display: none !important;
+          }
         }
       `}} />
     </div>
