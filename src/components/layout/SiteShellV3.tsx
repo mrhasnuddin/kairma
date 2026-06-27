@@ -504,7 +504,7 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 3: Forward Deployment */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 flex flex-col justify-between min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
+          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
             <div className="absolute inset-0 pointer-events-none z-0">
               <img 
                 src={theme === "xuan-mode" ? "/Bentos/d2-xuan.png" : "/Bentos/d2.png"} 
@@ -520,10 +520,12 @@ export const SiteShellV3: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-theme-void via-transparent to-transparent opacity-80" />
             </div>
             
-            <div className="relative z-10">
-              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.fdeDeployment.heading}</h2>
+            <div className="relative z-10 p-6 flex flex-col justify-between h-full w-full">
+              <div>
+                <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.fdeDeployment.heading}</h2>
+                <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.fdeDeployment.desc}</p>
+              </div>
             </div>
-            <p className="font-mono text-xs text-theme-text-muted leading-relaxed relative z-10">{siteCopy.fdeDeployment.desc}</p>
           </OSCard>
 
           {/* Row 3 */}
@@ -792,37 +794,39 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 5 */}
           {/* Section 6: The Pilot (Developers & Operators Dual CTA) */}
-          <BentoBox className="col-span-1 md:col-span-4 row-span-1 p-0 flex flex-col md:flex-row min-h-[300px]">
-            {/* Developers Side */}
-            <div className="flex-1 p-8 md:p-12 flex flex-col justify-between border-b md:border-b-0 md:border-r border-theme-border hover:bg-theme-text/5 transition-colors group cursor-pointer relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-theme-text/5 rounded-bl-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 ease-out pointer-events-none" />
-              <div className="relative z-10">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text">{siteCopy.fdePilot.developers.heading}</h2>
-                <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md">{siteCopy.fdePilot.developers.desc}</p>
-              </div>
-              <button className="self-start mt-8 px-6 py-3 border border-theme-text text-theme-text font-mono text-sm uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
-                {language === "en" ? "View Docs" : "查看文档"} <span>→</span>
-              </button>
-            </div>
-            
-            {/* Operators Side */}
-            <div 
-              className="flex-1 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
-              onClick={() => setPilotOpen(true)}
-            >
-              <img 
-                src={theme === "xuan-mode" ? "/Bentos/d1-xuan.png" : "/Bentos/d1.png"} 
-                alt="Operators" 
-                className={`absolute inset-0 w-full h-full object-cover object-center z-0 transition-opacity duration-700 group-hover:opacity-70 group-hover:scale-105 pointer-events-none ${theme === "xuan-mode" ? "opacity-60 mix-blend-multiply" : "opacity-30 mix-blend-screen"}`} 
-              />
-              <div className="relative z-10">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.fdePilot.operators.heading}</h2>
-                <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md mb-8">{siteCopy.fdePilot.operators.desc}</p>
-              </div>
-              <div className="relative z-10">
-                <button className="self-start px-6 py-3 bg-theme-accent text-[#0B0E0B] font-mono text-sm font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
-                  {siteCopy.fdeHero.ctaPilot} <span>→</span>
+          <BentoBox className="col-span-1 md:col-span-4 row-span-1 p-0 min-h-[300px]">
+            <div className="w-full h-full flex flex-col md:flex-row">
+              {/* Developers Side */}
+              <div className="flex-1 p-8 md:p-12 flex flex-col justify-between border-b md:border-b-0 md:border-r border-theme-border hover:bg-theme-text/5 transition-colors group cursor-pointer relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-theme-text/5 rounded-bl-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 ease-out pointer-events-none" />
+                <div className="relative z-10">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text">{siteCopy.fdePilot.developers.heading}</h2>
+                  <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md">{siteCopy.fdePilot.developers.desc}</p>
+                </div>
+                <button className="self-start mt-8 px-6 py-3 border border-theme-text text-theme-text font-mono text-sm uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
+                  {language === "en" ? "View Docs" : "查看文档"} <span>→</span>
                 </button>
+              </div>
+              
+              {/* Operators Side */}
+              <div 
+                className="flex-1 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
+                onClick={() => setPilotOpen(true)}
+              >
+                <img 
+                  src={theme === "xuan-mode" ? "/Bentos/d1-xuan.png" : "/Bentos/d1.png"} 
+                  alt="Operators" 
+                  className={`absolute inset-0 w-full h-full object-cover object-center z-0 transition-opacity duration-700 group-hover:opacity-70 group-hover:scale-105 pointer-events-none ${theme === "xuan-mode" ? "opacity-60 mix-blend-multiply" : "opacity-30 mix-blend-screen"}`} 
+                />
+                <div className="relative z-10">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.fdePilot.operators.heading}</h2>
+                  <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md mb-8">{siteCopy.fdePilot.operators.desc}</p>
+                </div>
+                <div className="relative z-10">
+                  <button className="self-start px-6 py-3 bg-theme-accent text-[#0B0E0B] font-mono text-sm font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
+                    {siteCopy.fdeHero.ctaPilot} <span>→</span>
+                  </button>
+                </div>
               </div>
             </div>
           </BentoBox>
