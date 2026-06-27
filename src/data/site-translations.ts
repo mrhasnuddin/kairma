@@ -1062,7 +1062,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
           title: "Phần cứng là kênh tiếp cận doanh nghiệp rẻ nhất.",
           desc: "Một thiết bị phần cứng tại biên mang lại triển khai một lần + phí bảo đảm chủ quyền dữ liệu + khóa chân khách hàng 36 tháng."
         }
-      ]
+      ].map((item, idx) => ({ ...item, anchor: siteCopy.insight.insights[idx].anchor }))
     },
     whatKairmaIs: {
       title: "§ 04 · KAIRMA LÀ GÌ",
