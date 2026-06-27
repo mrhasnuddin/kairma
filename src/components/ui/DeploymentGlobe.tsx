@@ -83,19 +83,22 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     });
 
     const isLight = theme === "xuan-mode";
+    const GLOBE_RESOLUTION = 720; // 360 * 2
 
     const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 2,
-      width: 800,
-      height: 800,
+      width: GLOBE_RESOLUTION,
+      height: GLOBE_RESOLUTION,
       phi: currentPhi,
       theta: currentTheta,
       dark: isLight ? 0 : 1,
       diffuse: 1.2,
       mapSamples: 16000,
-      mapBrightness: 2,
-      baseColor: isLight ? [0.95, 0.95, 0.95] : [0.04, 0.05, 0.04],
-      markerColor: [0.12, 0.67, 0.41], // theme-accent
+      mapBrightness: 6, // Match official example brightness
+      // baseColor determines the color of the land dots in dark mode.
+      // We set it to a bright green [0.3, 0.8, 0.4] so the green dots stand out.
+      baseColor: isLight ? [0.95, 0.95, 0.95] : [0.3, 0.8, 0.4], 
+      markerColor: [0.12, 0.67, 0.41], // theme-accent green
       glowColor: [0.12, 0.67, 0.41],
       arcs: arcs as any,
       arcColor: [0.12, 0.67, 0.41],
@@ -172,10 +175,10 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     );
   }
 
-  const GLOBE_SIZE = 400;
+  const GLOBE_SIZE = 360; // Shrink slightly to prevent top/bottom clipping in OSCard
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center min-h-[400px]">
+    <div className="relative w-full h-full flex items-center justify-center min-h-[360px]">
       <div 
         className="relative cursor-grab active:cursor-grabbing cobe-globe-wrapper" 
         style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, touchAction: "none" }}
@@ -199,7 +202,8 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
               key={route.id}
               className="absolute group cursor-pointer"
               style={{
-                positionAnchor: `--cobe-${route.id}`,
+                position: "absolute",
+                "position-anchor": `--cobe-${route.id}`,
                 top: "anchor(center)",
                 left: "anchor(center)",
                 transform: "translate(-50%, -50%)",
@@ -210,7 +214,11 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
               onMouseEnter={() => setHoveredRoute(route)}
               onMouseLeave={() => setHoveredRoute(null)}
             >
-              <div className="w-8 h-8 rounded-full" />
+              {/* Visible marker dot to match Cobe official style */}
+              <div className="w-2.5 h-2.5 bg-theme-accent rounded-full border border-theme-void shadow-[0_0_8px_rgba(31,170,104,0.8)] transition-transform duration-200 group-hover:scale-125" />
+              
+              {/* Invisible larger hit area for easier hover */}
+              <div className="absolute w-8 h-8 -top-3 -left-3 rounded-full" />
               
               {/* Tooltip */}
               <AnimatePresence>

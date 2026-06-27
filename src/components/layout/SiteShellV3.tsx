@@ -477,7 +477,7 @@ export const SiteShellV3: React.FC = () => {
               </div>
 
               {/* Right 60%: Globe */}
-              <div className="w-full md:w-[60%] h-[300px] md:h-auto relative z-10 overflow-hidden">
+              <div className="w-full md:w-[60%] h-[400px] relative z-10 flex items-center justify-center">
                 <DeploymentGlobe theme={theme} />
               </div>
             </div>
