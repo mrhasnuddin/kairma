@@ -9,20 +9,22 @@ export async function GET() {
     lng: 103.8198
   };
 
-  // Base fallback models in case the API fetch fails or no key
-  let selectedModels = [
-    { id: "anthropic/claude-3.5-sonnet", context_length: 200000, pricing: { prompt: "0.000003" } },
-    { id: "openai/gpt-4o", context_length: 128000, pricing: { prompt: "0.000005" } },
-    { id: "google/gemini-1.5-flash", context_length: 1000000, pricing: { prompt: "0.00000035" } },
-    { id: "meta-llama/llama-3-70b-instruct", context_length: 8192, pricing: { prompt: "0.0000006" } },
-    { id: "mistralai/mistral-large", context_length: 128000, pricing: { prompt: "0.000002" } },
-    { id: "cohere/command-r-plus", context_length: 128000, pricing: { prompt: "0.0000025" } },
-    { id: "qwen/qwen-2.5-72b-instruct", context_length: 32768, pricing: { prompt: "0.0000004" } },
-    { id: "deepseek/deepseek-chat", context_length: 64000, pricing: { prompt: "0.00000014" } }
+  // 8 static base models mapped to static geographical nodes.
+  // This guarantees we always render exactly 8 nodes on the globe, ensuring consistency.
+  const baseNodes = [
+    { role: "KOL BD", lat: 35.6762, lng: 139.6503, city: "Tokyo, JP", modelId: "anthropic/claude-3.5-sonnet", contextLimit: "200k", promptCost: "$3.00/M" },
+    { role: "Content Ops", lat: 37.7749, lng: -122.4194, city: "SF, USA", modelId: "openai/gpt-4o", contextLimit: "128k", promptCost: "$2.50/M" },
+    { role: "Customer Care", lat: 51.5072, lng: -0.1276, city: "London, UK", modelId: "google/gemini-flash-1.5", contextLimit: "1000k", promptCost: "$0.085/M" },
+    { role: "Compliance", lat: -23.5505, lng: -46.6333, city: "São Paulo, BR", modelId: "meta-llama/llama-3-70b-instruct", contextLimit: "8k", promptCost: "$0.59/M" },
+    { role: "FDE Agent", lat: -33.8688, lng: 151.2093, city: "Sydney, AU", modelId: "mistralai/mistral-large", contextLimit: "128k", promptCost: "$2.00/M" },
+    { role: "Data Routing", lat: 1.3521, lng: 103.8198, city: "Singapore, SG", modelId: "cohere/command-r-plus", contextLimit: "128k", promptCost: "$2.50/M" },
+    { role: "Security Ops", lat: -33.9249, lng: 18.4241, city: "Cape Town, ZA", modelId: "qwen/qwen-2.5-72b-instruct", contextLimit: "32k", promptCost: "$0.40/M" },
+    { role: "Translation", lat: 48.8566, lng: 2.3522, city: "Paris, FR", modelId: "deepseek/deepseek-chat", contextLimit: "64k", promptCost: "$0.14/M" }
   ];
 
   let openrouterStatus = "offline";
   let modelLayer = "sync_failed";
+  let liveModelsMap: Record<string, any> = {};
 
   try {
     const apiKey = process.env.OPENROUTER_API_KEY;
@@ -38,27 +40,13 @@ export async function GET() {
         const json = await response.json();
         const allModels = json.data || [];
         
-        // Find some specific top models if they exist
-        const targetIds = [
-          "anthropic/claude-3.5-sonnet",
-          "openai/gpt-4o",
-          "google/gemini-1.5-flash",
-          "meta-llama/llama-3-70b-instruct",
-          "mistralai/mistral-large",
-          "cohere/command-r-plus",
-          "qwen/qwen-2.5-72b-instruct",
-          "deepseek/deepseek-chat",
-          "databricks/dbrx-instruct",
-          "perplexity/sonar-reasoning"
-        ];
-        
-        const foundModels = allModels.filter((m: any) => targetIds.includes(m.id));
-        
-        if (foundModels.length > 0) {
-          selectedModels = foundModels.slice(0, 8); // Keep up to 8 models to populate the globe
-          openrouterStatus = "live";
-          modelLayer = "synced";
-        }
+        // Index live models by their ID for fast lookup
+        allModels.forEach((m: any) => {
+          liveModelsMap[m.id] = m;
+        });
+
+        openrouterStatus = "live";
+        modelLayer = "synced";
       }
     }
   } catch (error) {
@@ -67,24 +55,26 @@ export async function GET() {
     modelLayer = "sync_error";
   }
 
-  // Map the models to our global nodes
-  const deploymentNodes = [
-    { role: "KOL BD", lat: 35.6762, lng: 139.6503, city: "Tokyo, JP" },
-    { role: "Content Ops", lat: 37.7749, lng: -122.4194, city: "SF, USA" },
-    { role: "Customer Care", lat: 51.5072, lng: -0.1276, city: "London, UK" },
-    { role: "Compliance", lat: -23.5505, lng: -46.6333, city: "São Paulo, BR" },
-    { role: "FDE Agent", lat: -33.8688, lng: 151.2093, city: "Sydney, AU" },
-    { role: "Data Routing", lat: 1.3521, lng: 103.8198, city: "Singapore, SG" },
-    { role: "Security Ops", lat: -33.9249, lng: 18.4241, city: "Cape Town, ZA" },
-    { role: "Translation", lat: 48.8566, lng: 2.3522, city: "Paris, FR" }
-  ];
-
-  const routes = selectedModels.map((model: any, idx) => {
-    const node = deploymentNodes[idx % deploymentNodes.length];
+  // Build the routes by merging live OpenRouter data into the static nodes.
+  // If OpenRouter is offline or missing a model, it falls back to the static config.
+  const routes = baseNodes.map((node, idx) => {
+    const liveModel = liveModelsMap[node.modelId];
     
-    // Assign visual state based on model
+    let contextLimit = node.contextLimit;
+    let promptCost = node.promptCost;
+
+    if (liveModel) {
+      if (liveModel.context_length) {
+        contextLimit = `${Math.round(liveModel.context_length / 1000)}k`;
+      }
+      if (liveModel.pricing?.prompt) {
+        promptCost = `$${(parseFloat(liveModel.pricing.prompt) * 1000000).toFixed(2)}/M`;
+      }
+    }
+
+    // Assign visual state based on model ID
     let visualState = "active";
-    if (model.id.includes("claude-3.5") || model.id.includes("gpt-4o")) {
+    if (node.modelId.includes("claude-3.5") || node.modelId.includes("gpt-4o")) {
       visualState = "in-progress"; // Heavy reasoning routes
     }
 
@@ -92,9 +82,9 @@ export async function GET() {
       id: `route-${idx}`, // Needed for CSS anchor positioning
       role: node.role,
       location: node.city,
-      modelId: model.id,
-      contextLimit: model.context_length ? `${Math.round(model.context_length / 1000)}k` : "Unknown",
-      promptCost: model.pricing?.prompt ? `$${(parseFloat(model.pricing.prompt) * 1000000).toFixed(2)}/M` : "Unknown",
+      modelId: node.modelId,
+      contextLimit,
+      promptCost,
       marker: { lat: node.lat, lng: node.lng },
       visualState
     };
