@@ -135,9 +135,9 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
 
       // Pause rotation if dragging OR if the user is hovering over a dot
       if (!isDragging && !isHoveredRef.current) {
-        // 0.00012 radians per millisecond (approx 0.002 radians per frame at 60fps)
-        // This is slightly slower and buttery smooth regardless of monitor refresh rate
-        currentPhi += 0.00012 * delta; 
+        // 0.00018 radians per millisecond (approx 0.003 radians per frame at 60fps)
+        // This is the sweet spot: slightly faster but buttery smooth
+        currentPhi += 0.00018 * delta; 
         globe.update({
           phi: currentPhi,
           theta: currentTheta
