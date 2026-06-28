@@ -696,18 +696,12 @@ export const SiteShellV3: React.FC = () => {
           {/* Section 3: Forward Deployment */}
           <OSCard className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
             <div className="absolute inset-0 pointer-events-none z-0">
-              <img 
-                src={theme === "xuan-mode" ? "/Bentos/d2-xuan.png" : "/Bentos/d2.png"} 
-                alt="Deployment" 
-                className={`w-full h-full object-cover object-center transition-opacity duration-1000 ${theme === "xuan-mode" ? "opacity-60 mix-blend-multiply" : "opacity-40 mix-blend-screen"}`} 
-              />
               <motion.div 
-                className="absolute inset-0 h-[50px] bg-gradient-to-b from-transparent via-theme-accent/20 to-transparent mix-blend-screen"
+                className="absolute inset-0 h-[50px] bg-gradient-to-b from-transparent via-theme-accent/15 to-transparent mix-blend-screen"
                 initial={{ top: "-50px" }}
                 animate={{ top: "100%" }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-theme-void via-transparent to-transparent opacity-80" />
             </div>
             
             <div className="relative z-10 p-6 flex flex-col justify-between h-full w-full">
