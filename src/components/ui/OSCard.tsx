@@ -67,7 +67,7 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
           className="absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300"
           style={{
             opacity: isHovered ? 1 : 0,
-            background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, var(--color-theme-accent-glow), transparent 40%)`,
+            background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, var(--color-theme-accent-glow), transparent 60%)`,
             zIndex: 0
           }}
         />
@@ -76,10 +76,10 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       {/* Dynamic Border Trace */}
       {isDesktop && !disableEffects && (
         <div 
-          className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 transition-opacity duration-300 border-[1.5px] border-transparent"
+          className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 transition-opacity duration-300 border-[2.5px] border-transparent"
           style={{
             opacity: isHovered ? 1 : 0,
-            background: `radial-gradient(150px circle at ${mousePosition.x}px ${mousePosition.y}px, var(--color-theme-accent), transparent 100%) border-box`,
+            background: `radial-gradient(350px circle at ${mousePosition.x}px ${mousePosition.y}px, var(--color-theme-accent), transparent 100%) border-box`,
             WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
             WebkitMaskComposite: 'xor',
             maskComposite: 'exclude',
