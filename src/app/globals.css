@@ -153,8 +153,7 @@ body::after {
 }
 
 .xuan-mode::after, [data-theme="xuan-mode"]::after {
-  opacity: 0.12;
-  mix-blend-mode: multiply;
+  display: none;
 }
 
 /* Scrollbars */
