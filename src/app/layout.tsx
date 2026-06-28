@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kairma.vercel.app"),
   title: "KAIRMA OS · The AI workforce for cross-border brands",
   description:
     "ONE BOX. YOUR FIRST AI EMPLOYEE. Deploy a sovereign AI workforce on-premise in 48 hours. Brand data stays local, powered by Kairma Edge Appliance.",
@@ -26,6 +27,18 @@ export const metadata: Metadata = {
     title: "KAIRMA OS",
     description: "The AI workforce for cross-border brands.",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "KAIRMA OS",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.png"],
   },
 };
 
