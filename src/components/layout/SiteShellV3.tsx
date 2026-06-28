@@ -532,11 +532,9 @@ export const SiteShellV3: React.FC = () => {
                   theme === "xuan-mode" ? "opacity-65 mix-blend-multiply" : "opacity-45 mix-blend-screen"
                 }`} 
                 style={{
-                  // Combined mask: left edge fade, top edge fade, bottom edge fade
-                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%), linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 88%, rgba(0,0,0,0) 100%)",
-                  maskImage: "linear-gradient(to left, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%), linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 88%, rgba(0,0,0,0) 100%)",
-                  WebkitMaskComposite: "destination-in",
-                  maskComposite: "intersect"
+                  // Soft radial gradient mask centered near the torus to blend perfectly on all sides
+                  WebkitMaskImage: "radial-gradient(circle at 80% 70%, rgba(0,0,0,1) 15%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0) 85%)",
+                  maskImage: "radial-gradient(circle at 80% 70%, rgba(0,0,0,1) 15%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0) 85%)"
                 }}
               />
             </div>
