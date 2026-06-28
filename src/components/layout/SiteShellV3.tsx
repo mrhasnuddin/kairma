@@ -612,25 +612,24 @@ export const SiteShellV3: React.FC = () => {
                     )}
                   </div>
 
-                  {/* Node 2: Deployment (Key Bottleneck Highlighted) */}
+                  {/* Node 2: Deployment */}
                   <div className="flex flex-col items-center gap-2 z-10 relative">
-                    {/* Glowing Accent Ring */}
-                    <div className="absolute -inset-1.5 rounded-full bg-theme-accent/10 border border-theme-accent/30 animate-pulse pointer-events-none" />
-                    
                     <div 
-                      className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 shadow-[0_0_20px_rgba(31,170,104,0.3)] ${
+                      className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
                         pipelineState === 4 
-                          ? 'border-theme-accent shadow-[0_0_25px_var(--color-theme-accent)]' 
-                          : 'border-theme-accent/80'
+                          ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
+                          : 'border-theme-border/50'
                       }`}
                     >
                       <PlugConnectedIcon 
                         ref={(el) => { iconRefs.current[2] = el; }} 
                         size={20} 
-                        color="var(--theme-accent)" 
+                        color={pipelineState === 4 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                       />
                     </div>
-                    <span className="font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center text-theme-text font-bold mt-1">
+                    <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                      pipelineState === 4 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
+                    } mt-1`}>
                       Deployment
                     </span>
                   </div>
