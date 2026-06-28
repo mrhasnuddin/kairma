@@ -141,6 +141,12 @@ const InteractiveBootBox: React.FC<{
   return (
     <OSCard className={`relative flex flex-col p-8 min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none z-10" />
+      <motion.div 
+        className="absolute inset-0 h-[60px] bg-gradient-to-b from-transparent via-theme-accent/15 to-transparent mix-blend-screen pointer-events-none z-10"
+        initial={{ top: "-60px" }}
+        animate={{ top: "100%" }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+      />
       
       <div className="relative z-20 flex-1 flex flex-col w-full mx-auto overflow-y-auto no-scrollbar">
         {step === "LANGUAGE" && (
@@ -694,21 +700,10 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 3: Forward Deployment */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
-            <div className="absolute inset-0 pointer-events-none z-0">
-              <motion.div 
-                className="absolute inset-0 h-[50px] bg-gradient-to-b from-transparent via-theme-accent/15 to-transparent mix-blend-screen"
-                initial={{ top: "-50px" }}
-                animate={{ top: "100%" }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              />
-            </div>
-            
-            <div className="relative z-10 p-6 flex flex-col justify-between h-full w-full">
-              <div>
-                <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.fdeDeployment.heading}</h2>
-                <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.fdeDeployment.desc}</p>
-              </div>
+          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
+            <div>
+              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.fdeDeployment.heading}</h2>
+              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.fdeDeployment.desc}</p>
             </div>
           </OSCard>
 
