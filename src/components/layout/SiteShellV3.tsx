@@ -107,6 +107,7 @@ const InteractiveBootBox: React.FC<{
   getLangLabel: (lang: Language) => string;
   className?: string;
 }> = ({ language, setLanguage, siteCopy, triggerCrt, getLangLabel, className }) => {
+  const { theme } = useTheme();
   const [step, setStep] = useState<"LANGUAGE" | "BOOTING" | "READY" | "STORY">("LANGUAGE");
   const [visibleLines, setVisibleLines] = useState<number>(0);
 
