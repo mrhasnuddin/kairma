@@ -524,7 +524,7 @@ export const SiteShellV3: React.FC = () => {
           <OSCard className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
             
             {/* Absolute background torus image hugging the right side with fade-out masks */}
-            <div className="absolute top-0 right-0 bottom-0 w-[45%] md:w-[42%] pointer-events-none z-0 select-none">
+            <div className="absolute top-0 right-0 bottom-0 w-[50%] md:w-[46%] pointer-events-none z-0 select-none">
               <img 
                 src={theme === "xuan-mode" ? "/Bentos/d2-xuan.png" : "/Bentos/d2.png"} 
                 alt="Deployment Torus" 
@@ -533,8 +533,8 @@ export const SiteShellV3: React.FC = () => {
                 }`} 
                 style={{
                   // Soft radial gradient mask centered near the torus to blend perfectly on all sides
-                  WebkitMaskImage: "radial-gradient(circle at 80% 70%, rgba(0,0,0,1) 15%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0) 85%)",
-                  maskImage: "radial-gradient(circle at 80% 70%, rgba(0,0,0,1) 15%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0) 85%)"
+                  WebkitMaskImage: "radial-gradient(circle at 90% 75%, rgba(0,0,0,1) 10%, rgba(0,0,0,0.4) 35%, rgba(0,0,0,0) 65%)",
+                  maskImage: "radial-gradient(circle at 90% 75%, rgba(0,0,0,1) 10%, rgba(0,0,0,0.4) 35%, rgba(0,0,0,0) 65%)"
                 }}
               />
             </div>
