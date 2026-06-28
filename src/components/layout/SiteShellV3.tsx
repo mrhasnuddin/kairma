@@ -521,7 +521,7 @@ export const SiteShellV3: React.FC = () => {
           />
 
           {/* Section 1: The Shift - 2x1 */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 flex flex-col justify-between min-h-[300px] relative overflow-hidden group">
+          <OSCard className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
             
             {/* Absolute background torus image hugging the right side with fade-out masks */}
             <div className="absolute top-0 right-0 bottom-0 w-[45%] md:w-[42%] pointer-events-none z-0 select-none">
@@ -541,8 +541,8 @@ export const SiteShellV3: React.FC = () => {
               />
             </div>
 
-            {/* Left Column Content: 65% width to overlay on top of bg */}
-            <div className="w-full md:w-[65%] flex flex-col justify-between h-full relative z-10">
+            {/* Left Column Content: 65% width to overlay on top of bg with padding */}
+            <div className="w-full md:w-[65%] p-6 md:p-8 flex flex-col justify-between min-h-[300px] relative z-10">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
