@@ -7,6 +7,10 @@ import { BentoGrid, BentoBox } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
+import CpuIcon from "@/components/ui/cpu-icon";
+import GearIcon from "@/components/ui/gear-icon";
+import PlugConnectedIcon from "@/components/ui/plug-connected-icon";
+import DoubleCheckIcon from "@/components/ui/double-check-icon";
 import { useTheme } from "@/lib/theme";
 import { useLanguage, useSiteCopy } from "@/lib/language";
 import { Language } from "@/data/site-translations";
@@ -254,6 +258,32 @@ export const SiteShellV3: React.FC = () => {
   const [isDeployHovered, setIsDeployHovered] = useState(false);
   const handleBootComplete = useCallback(() => setIsBooted(true), []);
 
+  const [pipelineState, setPipelineState] = useState<number>(0);
+  const iconRefs = useRef<any[]>([]);
+
+  // Loop for the Shift pipeline beam animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPipelineState((prev) => (prev + 1) % 8);
+    }, 1500); // 1.5 seconds per state
+    return () => clearInterval(interval);
+  }, []);
+
+  // Sync icon animations with pipeline state
+  useEffect(() => {
+    if (pipelineState === 0) iconRefs.current[0]?.startAnimation();
+    else iconRefs.current[0]?.stopAnimation();
+
+    if (pipelineState === 2) iconRefs.current[1]?.startAnimation();
+    else iconRefs.current[1]?.stopAnimation();
+
+    if (pipelineState === 4) iconRefs.current[2]?.startAnimation();
+    else iconRefs.current[2]?.stopAnimation();
+
+    if (pipelineState === 6) iconRefs.current[3]?.startAnimation();
+    else iconRefs.current[3]?.stopAnimation();
+  }, [pipelineState]);
+
   const SHOW_LINEAGE = false;
 
   useEffect(() => {
@@ -480,61 +510,195 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Row 2 */}
-          {/* 02: The Boot (Interactive Box) - 2x1 */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-0">
-            <InteractiveBootBox 
-              language={language}
-              setLanguage={setLanguage}
-              siteCopy={siteCopy}
-              triggerCrt={triggerCrt}
-              getLangLabel={getLangLabel}
-            />
-          </OSCard>
+          {/* 02: The Boot (Interactive Box) - 1x1 */}
+          <InteractiveBootBox 
+            language={language}
+            setLanguage={setLanguage}
+            siteCopy={siteCopy}
+            triggerCrt={triggerCrt}
+            getLangLabel={getLangLabel}
+            className="col-span-1 md:col-span-1 row-span-1"
+          />
 
-          {/* Section 1: The Shift */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 flex flex-col justify-between min-h-[250px] md:min-h-[300px]">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                <span className="font-mono text-[10px] text-theme-accent uppercase tracking-widest">
-                  {language === 'en' ? 'Pipeline Active' : '管道激活'}
-                </span>
-              </div>
-              <h2 className="text-xl font-mono font-bold leading-tight text-theme-text mb-4">
-                {siteCopy.fdeShift.heading}
-              </h2>
-            </div>
-            
-            {/* The Pipeline SVG */}
-            <div className="relative flex-1 w-full flex items-center justify-center my-4 overflow-hidden rounded-lg bg-theme-accent/5 border border-theme-border/30">
-              <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(var(--color-theme-text) 1px, transparent 1px)", backgroundSize: "10px 10px" }} />
+          {/* Section 1: The Shift - 2x1 */}
+          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 flex flex-col justify-between min-h-[300px] relative overflow-hidden group">
+            {/* Grid structure to separate content on left (65%) and Torus image on right (35%) */}
+            <div className="flex flex-col md:flex-row gap-6 h-full w-full relative z-10">
               
-              <div className="relative w-full px-4 py-8 flex items-center justify-between z-10">
-                {['MODEL', 'WF', 'DEPLOY', 'OUTCOME'].map((node, idx, arr) => (
-                  <React.Fragment key={node}>
-                    <div className="flex flex-col items-center gap-2 z-10">
-                      <div className="w-8 h-8 rounded border border-theme-accent bg-theme-void flex items-center justify-center relative">
-                        {idx === arr.length - 1 && <div className="absolute inset-0 rounded bg-theme-accent/20 animate-pulse" />}
-                        <div className="w-2 h-2 rounded-sm bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]" />
-                      </div>
-                      <span className="font-mono text-[8px] md:text-[9px] text-theme-text-muted uppercase tracking-widest">{node}</span>
-                    </div>
-                    {idx < arr.length - 1 && (
-                      <div className="flex-1 h-[1px] bg-theme-border relative flex items-center">
-                        <motion.div 
-                          className="absolute h-[1px] bg-theme-accent shadow-[0_0_5px_var(--color-theme-accent)]"
-                          initial={{ left: "0%", right: "100%", opacity: 0 }}
-                          animate={{ left: ["0%", "100%", "100%"], right: ["100%", "0%", "0%"], opacity: [0, 1, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity, delay: idx * 0.5, ease: "linear" }}
-                        />
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
+              {/* Left Column: 65% width */}
+              <div className="w-full md:w-[65%] flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                    <span className="font-mono text-[10px] text-theme-accent uppercase tracking-widest">
+                      {language === 'en' ? 'The Shift' : '转移'}
+                    </span>
+                  </div>
+                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text mb-6">
+                    {siteCopy.fdeShift.heading}
+                  </h2>
+                </div>
 
-            <p className="font-mono text-sm text-theme-text-muted leading-relaxed text-balance mt-2">{siteCopy.fdeShift.desc}</p>
+                {/* Pipeline Node Flow Layout */}
+                <div className="relative w-full flex items-center justify-between my-6 py-2 px-1">
+                  
+                  {/* Node 0: Model Capability */}
+                  <div className="flex flex-col items-center gap-2 z-10 relative">
+                    <div 
+                      className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
+                        pipelineState === 0 
+                          ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
+                          : 'border-theme-border/50'
+                      }`}
+                    >
+                      <CpuIcon 
+                        ref={(el) => { iconRefs.current[0] = el; }} 
+                        size={20} 
+                        color={pipelineState === 0 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      />
+                    </div>
+                    <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                      pipelineState === 0 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
+                    } mt-1`}>
+                      Model
+                    </span>
+                  </div>
+
+                  {/* Connector Line 0 */}
+                  <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
+                    <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 1 ? 'opacity-100' : 'opacity-0'}`} />
+                    {pipelineState === 1 && (
+                      <motion.div
+                        className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
+                        initial={{ left: "-40px" }}
+                        animate={{ left: "100%" }}
+                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Node 1: Workflow */}
+                  <div className="flex flex-col items-center gap-2 z-10 relative">
+                    <div 
+                      className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
+                        pipelineState === 2 
+                          ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
+                          : 'border-theme-border/50'
+                      }`}
+                    >
+                      <GearIcon 
+                        ref={(el) => { iconRefs.current[1] = el; }} 
+                        size={20} 
+                        color={pipelineState === 2 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      />
+                    </div>
+                    <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                      pipelineState === 2 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
+                    } mt-1`}>
+                      Workflow
+                    </span>
+                  </div>
+
+                  {/* Connector Line 1 */}
+                  <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
+                    <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 3 || pipelineState === 4 ? 'opacity-100' : 'opacity-0'}`} />
+                    {pipelineState === 3 && (
+                      <motion.div
+                        className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
+                        initial={{ left: "-40px" }}
+                        animate={{ left: "100%" }}
+                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Node 2: Deployment (Key Bottleneck Highlighted) */}
+                  <div className="flex flex-col items-center gap-2 z-10 relative">
+                    {/* Glowing Accent Ring */}
+                    <div className="absolute -inset-1.5 rounded-full bg-theme-accent/10 border border-theme-accent/30 animate-pulse pointer-events-none" />
+                    
+                    <div 
+                      className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 shadow-[0_0_20px_rgba(31,170,104,0.3)] ${
+                        pipelineState === 4 
+                          ? 'border-theme-accent shadow-[0_0_25px_var(--color-theme-accent)]' 
+                          : 'border-theme-accent/80'
+                      }`}
+                    >
+                      <PlugConnectedIcon 
+                        ref={(el) => { iconRefs.current[2] = el; }} 
+                        size={20} 
+                        color="var(--theme-accent)" 
+                      />
+                    </div>
+                    <span className="font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center text-theme-text font-bold mt-1">
+                      Deployment
+                    </span>
+                  </div>
+
+                  {/* Connector Line 2 */}
+                  <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
+                    <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 5 || pipelineState === 6 ? 'opacity-100' : 'opacity-0'}`} />
+                    {pipelineState === 5 && (
+                      <motion.div
+                        className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
+                        initial={{ left: "-40px" }}
+                        animate={{ left: "100%" }}
+                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Node 3: Outcome */}
+                  <div className="flex flex-col items-center gap-2 z-10 relative">
+                    <div 
+                      className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
+                        pipelineState === 6 
+                          ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
+                          : 'border-theme-border/50'
+                      }`}
+                    >
+                      <DoubleCheckIcon 
+                        ref={(el) => { iconRefs.current[3] = el; }} 
+                        size={20} 
+                        color={pipelineState === 6 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      />
+                    </div>
+                    <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                      pipelineState === 6 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
+                    } mt-1`}>
+                      Outcome
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4 font-mono text-sm text-theme-text-muted leading-relaxed whitespace-pre-line">
+                  {language === 'en' 
+                    ? "Models got better.\nBut deployment velocity is\nwhere outcomes compound." 
+                    : "模型变得更好了。\n但是部署速度才是\n业务成果产生复利的地方。"}
+                </div>
+              </div>
+
+              {/* Right Column: 35% Torus Image with glow and scanlines */}
+              <div className="w-full md:w-[35%] relative flex items-center justify-center min-h-[200px] md:min-h-0 border-l border-theme-border/10 md:pl-6 overflow-hidden select-none">
+                <div className="absolute inset-0 pointer-events-none z-0">
+                  <img 
+                    src={theme === "xuan-mode" ? "/Bentos/d2-xuan.png" : "/Bentos/d2.png"} 
+                    alt="Deployment Torus" 
+                    className={`w-full h-full object-contain object-center transition-opacity duration-1000 ${
+                      theme === "xuan-mode" ? "opacity-60 mix-blend-multiply" : "opacity-40 mix-blend-screen"
+                    }`} 
+                  />
+                  <motion.div 
+                    className="absolute inset-0 h-[40px] bg-gradient-to-b from-transparent via-theme-accent/20 to-transparent mix-blend-screen"
+                    initial={{ top: "-40px" }}
+                    animate={{ top: "100%" }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-theme-void via-transparent to-transparent opacity-45" />
+                </div>
+              </div>
+
+            </div>
           </OSCard>
 
           {/* Section 3: Forward Deployment */}
