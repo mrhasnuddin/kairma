@@ -528,7 +528,7 @@ export const SiteShellV3: React.FC = () => {
               <img 
                 src={theme === "xuan-mode" ? "/Bentos/d2-xuan.png" : "/Bentos/d2.png"} 
                 alt="Deployment Torus" 
-                className={`w-full h-full object-cover object-right transition-opacity duration-1000 ${
+                className={`w-full h-full object-fill transition-opacity duration-1000 ${
                   theme === "xuan-mode" ? "opacity-65 mix-blend-multiply" : "opacity-45 mix-blend-screen"
                 }`} 
                 style={{
