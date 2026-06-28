@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/models?order=top-weekly', {
+    const response = await fetch('https://openrouter.ai/api/v1/models?order=top-daily', {
       headers: {
         ...(process.env.OPENROUTER_API_KEY ? { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}` } : {})
       },

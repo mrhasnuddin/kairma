@@ -3,14 +3,21 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { StickyNav } from "./StickyNav";
 import { BurnStream } from "@/components/ui/BurnStream";
-import { BentoGrid, BentoBox } from "./Bento";
+import { BentoGrid } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import CpuIcon from "@/components/ui/cpu-icon";
 import GearIcon from "@/components/ui/gear-icon";
 import PlugConnectedIcon from "@/components/ui/plug-connected-icon";
 import DoubleCheckIcon from "@/components/ui/double-check-icon";
+import UserIcon from "@/components/ui/user-icon";
+import LinkIcon from "@/components/ui/link-icon";
+import HeadsetIcon from "@/components/ui/headset-icon";
+import ShieldCheck from "@/components/ui/shield-check";
+import CodeXmlIcon from "@/components/ui/code-xml-icon";
+import { AnimatedIconHandle } from "@/components/ui/types";
 import { useTheme } from "@/lib/theme";
 import { useLanguage, useSiteCopy } from "@/lib/language";
 import { Language } from "@/data/site-translations";
@@ -256,13 +263,29 @@ export const SiteShellV3: React.FC = () => {
   const [langOpen, setLangOpen] = useState(false);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
   const [compareModel, setCompareModel] = useState<string>("gpt4o");
+  const [selectedModelForModal, setSelectedModelForModal] = useState<any | null>(null);
+  
+  // Live OpenRouter models state
+  const [openRouterModels, setOpenRouterModels] = useState<any[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(true);
+  const [modelsError, setModelsError] = useState<string | null>(null);
+  const [chartMetric, setChartMetric] = useState<"intelligence_index" | "coding_index" | "agentic_index">("intelligence_index");
+
+  // AI Employees icon refs
+  const kolIconRef = useRef<AnimatedIconHandle>(null);
+  const contentIconRef = useRef<AnimatedIconHandle>(null);
+  const customerIconRef = useRef<AnimatedIconHandle>(null);
+  const complianceIconRef = useRef<AnimatedIconHandle>(null);
+  const codeIconRef = useRef<AnimatedIconHandle>(null);
+  const shieldCtaIconRef = useRef<AnimatedIconHandle>(null);
+
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [time, setTime] = useState<Date | null>(null);
   const [crtFlash, setCrtFlash] = useState(false);
   const [pilotOpen, setPilotOpen] = useState(false);
-  const [ipLocation, setIpLocation] = useState<{city: string, region: string, timezone: string} | null>(null);
+  const [ipLocation, setIpLocation] = useState<{city: string, region: string, country: string, timezone: string} | null>(null);
   const [isBooted, setIsBooted] = useState(false);
   const [isDeployHovered, setIsDeployHovered] = useState(false);
   const handleBootComplete = useCallback(() => setIsBooted(true), []);
@@ -304,6 +327,7 @@ export const SiteShellV3: React.FC = () => {
           setIpLocation({
             city: data.city || data.region,
             region: data.continent_code || data.country_name,
+            country: data.country_name || '',
             timezone: data.timezone
           });
         }
@@ -325,60 +349,225 @@ export const SiteShellV3: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    async function getModels() {
+      try {
+        setModelsLoading(true);
+        const res = await fetch("/api/openrouter");
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        if (active) {
+          setOpenRouterModels(data.data || []);
+          if (data.data && data.data.length > 0) {
+            // Find first model with benchmarks for the default baseline
+            const hasBenchmarks = data.data.find((m: any) => m.benchmarks && m.benchmarks.intelligence_index != null);
+            if (hasBenchmarks) {
+              setExpandedModel(hasBenchmarks.id);
+            }
+            // Set comparison model to the second model with benchmarks if available
+            const secondBenchmark = data.data.filter((m: any) => m.benchmarks && m.benchmarks.intelligence_index != null)[1];
+            if (secondBenchmark) {
+              setCompareModel(secondBenchmark.id);
+            }
+          }
+        }
+      } catch (err) {
+        if (active) {
+          setModelsError(err instanceof Error ? err.message : "Error");
+        }
+      } finally {
+        if (active) {
+          setModelsLoading(false);
+        }
+      }
+    }
+    getModels();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const triggerCrt = () => {
     window.dispatchEvent(new CustomEvent('crt-flash'));
   };
-
   const handleThemeToggle = () => {
     triggerCrt();
     toggleTheme();
   };
 
-  const mockModels = [
-    { id: "claude", name: "Claude 3.5 Sonnet", score: 96, context: "200K", desc: language === 'en' ? "Top-tier coding and complex reasoning." : "顶级的代码与复杂推理能力。" },
-    { id: "gpt4o", name: "GPT-4o", score: 92, context: "128K", desc: language === 'en' ? "Fastest multimodal flagship model." : "最快的多模态旗舰大模型。" },
-    { id: "gemini", name: "Gemini 1.5 Pro", score: 88, context: "2M", desc: language === 'en' ? "Massive context window for large data." : "超大上下文窗口，适合海量数据。" },
-    { id: "deepseek", name: "DeepSeek Coder V2", score: 82, context: "128K", desc: language === 'en' ? "Leading open-weight coding model." : "领先的开源代码模型。" },
-    { id: "qwen", name: "Qwen 2.5 Max", score: 76, context: "32K", desc: language === 'en' ? "State-of-the-art multilingual model." : "业界领先的多语言模型。" },
-    { id: "llama", name: "Llama 3.1 405B", score: 68, context: "128K", desc: language === 'en' ? "Meta's frontier open-source model." : "Meta前沿开源大模型。" },
-    { id: "kimi", name: "Kimi", score: 55, context: "200K", desc: language === 'en' ? "Optimized for long-context Chinese." : "专注长上下文的中文理解。" },
-    { id: "mistral", name: "Mistral Large 2", score: 45, context: "128K", desc: language === 'en' ? "Highly efficient reasoning model." : "高效的推理模型。" },
+  const staticFallbackModels = [
+    { 
+      id: "sakana-fugu-ultra", 
+      name: "Sakana: Fugu Ultra", 
+      score: 96, 
+      context_length: 1000000, 
+      modality: "text+image->text", 
+      pricing: { prompt: "0.000005", completion: "0.00003" }, 
+      description: language === 'en' ? "Top-tier agentic routing model." : "顶级的Agentic路由调度模型。", 
+      benchmarks: { intelligence_index: 85, coding_index: 80, agentic_index: 92 },
+      provider: "Sakana AI",
+      model_id: "sakana/fugu-ultra",
+      max_output: 4096,
+      ttft: 110,
+      throughput: 145,
+      reliability: "99.99%",
+      use_cases: language === 'en' ? ["Agentic Routing", "Vision BD Outreach"] : ["Agentic 路由", "视觉 BD 拓展"],
+      verdict: language === 'en' ? "Recommended for fast-path routing and multi-modal pipeline operations." : "推荐用于快路径路由和多模态流水线操作。"
+    },
+    { 
+      id: "google-gemini-3.1-flash-image", 
+      name: "Gemini 3.1 Flash Image", 
+      score: 92, 
+      context_length: 1000000, 
+      modality: "text+image->text", 
+      pricing: { prompt: "0.000000075", completion: "0.0000003" }, 
+      description: language === 'en' ? "Superfast multimodal vision model." : "超快的多模态视觉大模型。", 
+      benchmarks: { intelligence_index: 88, coding_index: 85, agentic_index: 78 },
+      provider: "Google",
+      model_id: "google/gemini-3.1-flash-image",
+      max_output: 8192,
+      ttft: 85,
+      throughput: 220,
+      reliability: "99.98%",
+      use_cases: language === 'en' ? ["Vision Verification", "High-frequency Scraping"] : ["视觉验证", "高频爬取"],
+      verdict: language === 'en' ? "Highly recommended for vision checks and high-volume background tasks due to its speed and low pricing." : "由于其极高的速度和极低的价格，强烈推荐用于视觉校验和海量后台任务。"
+    },
+    { 
+      id: "cohere-north-mini-code-free", 
+      name: "Cohere: North Mini Code", 
+      score: 88, 
+      context_length: 128000, 
+      modality: "text->text", 
+      pricing: { prompt: "0", completion: "0" }, 
+      description: language === 'en' ? "Highly efficient coding model (free)." : "高效的开源代码模型 (免费)。", 
+      benchmarks: { intelligence_index: 80, coding_index: 95, agentic_index: 84 },
+      provider: "Cohere",
+      model_id: "cohere/north-mini-code",
+      max_output: 4096,
+      ttft: 95,
+      throughput: 180,
+      reliability: "99.99%",
+      use_cases: language === 'en' ? ["Automated Coding", "Syntax Lints"] : ["自动代码生成", "语法校验"],
+      verdict: language === 'en' ? "Perfect for code linting and standard text-based agent loops." : "非常适合代码规范校验和标准的文本智能体循环操作。"
+    },
+    { 
+      id: "z-ai-glm-5.2", 
+      name: "Z.ai: GLM 5.2", 
+      score: 85, 
+      context_length: 128000, 
+      modality: "text->text", 
+      pricing: { prompt: "0.0000001", completion: "0.0000002" }, 
+      description: language === 'en' ? "Leading reasoning and multilingual model." : "领先的推理与多语言大模型。", 
+      benchmarks: { intelligence_index: 90, coding_index: 88, agentic_index: 89 },
+      provider: "Z.ai",
+      model_id: "z-ai/glm-5.2",
+      max_output: 4096,
+      ttft: 120,
+      throughput: 110,
+      reliability: "99.95%",
+      use_cases: language === 'en' ? ["Bilingual Translation", "Structured Reasoning"] : ["双语翻译", "结构化推理"],
+      verdict: language === 'en' ? "Excellent balanced model for localized tasks and multi-agent coordination." : "优秀的平衡大模型，适用于本地化任务 and 多智能体协作协调。"
+    },
+    { 
+      id: "moonshotai-kimi-k2.7-code", 
+      name: "Moonshot: Kimi K2.7 Code", 
+      score: 82, 
+      context_length: 200000, 
+      modality: "text->text", 
+      pricing: { prompt: "0.000001", completion: "0.000002" }, 
+      description: language === 'en' ? "Chinese code generation benchmark leader." : "中文代码生成与长文本理解专家。", 
+      benchmarks: { intelligence_index: 82, coding_index: 91, agentic_index: 81 },
+      provider: "Moonshot",
+      model_id: "moonshot/kimi-k2.7-code",
+      max_output: 8192,
+      ttft: 130,
+      throughput: 95,
+      reliability: "99.96%",
+      use_cases: language === 'en' ? ["Chinese Dev Operations", "Long Codebases"] : ["中文开发运维", "长代码仓库解析"],
+      verdict: language === 'en' ? "Recommended for long-context analysis of complex Chinese codebases." : "推荐用于对复杂的中文长代码仓库进行深入分析与理解。"
+    },
+    { 
+      id: "anthropic-claude-fable-latest", 
+      name: "Claude Fable Latest", 
+      score: 79, 
+      context_length: 200000, 
+      modality: "text+image->text", 
+      pricing: { prompt: "0.000003", completion: "0.000015" }, 
+      description: language === 'en' ? "Anthropic's next-gen reasoning agent." : "Anthropic新一代推理Agent model。", 
+      benchmarks: { intelligence_index: 98, coding_index: 96, agentic_index: 97 },
+      provider: "Anthropic",
+      model_id: "anthropic/claude-fable-latest",
+      max_output: 8192,
+      ttft: 145,
+      throughput: 85,
+      reliability: "99.99%",
+      use_cases: language === 'en' ? ["Complex System Design", "Strategic Autonomy"] : ["复杂系统设计", "战略性自主规划"],
+      verdict: language === 'en' ? "Frontier intelligence. Ideal for high-level decision tasks and complex agent architectures." : "前沿的顶级智能。最适合高级决策任务和复杂的智能体架构设计。"
+    },
+    { 
+      id: "anthropic-claude-fable-5", 
+      name: "Claude Fable 5", 
+      score: 76, 
+      context_length: 200000, 
+      modality: "text+image->text", 
+      pricing: { prompt: "0.000003", completion: "0.000015" }, 
+      description: language === 'en' ? "Anthropic's core reasoning flagship." : "Anthropic核心推理旗舰模型。", 
+      benchmarks: { intelligence_index: 96, coding_index: 94, agentic_index: 95 },
+      provider: "Anthropic",
+      model_id: "anthropic/claude-fable-5",
+      max_output: 8192,
+      ttft: 150,
+      throughput: 90,
+      reliability: "99.99%",
+      use_cases: language === 'en' ? ["Architectural Planning", "System Evaluation"] : ["架构规划", "系统级深度评估"],
+      verdict: language === 'en' ? "Standard flagship. Delivers high logic performance and agentic reliability." : "旗舰级标准。具有极高的逻辑表现和可靠的智能体操作执行率。"
+    },
+    { 
+      id: "nex-agi-nex-n2-pro", 
+      name: "Nex AGI: Nex-N2-Pro", 
+      score: 68, 
+      context_length: 64000, 
+      modality: "text->text", 
+      pricing: { prompt: "0.0000015", completion: "0.0000045" }, 
+      description: language === 'en' ? "Frontier agentic workflow logic model." : "前沿Agentic工作流逻辑模型。", 
+      benchmarks: { intelligence_index: 70, coding_index: 68, agentic_index: 85 },
+      provider: "Nex AGI",
+      model_id: "nex-agi/nex-n2-pro",
+      max_output: 4096,
+      ttft: 165,
+      throughput: 75,
+      reliability: "99.92%",
+      use_cases: language === 'en' ? ["Workflow Execution", "Logic Branching"] : ["工作流执行", "逻辑分支决策"],
+      verdict: language === 'en' ? "Niche logic model optimized for branching workflows and direct execution commands." : "专为分支工作流和命令直接执行优化的小众逻辑模型。"
+    }
   ];
 
-  const handleScroll = () => {
-    if (carouselRef.current) {
-      const scrollLeft = carouselRef.current.scrollLeft;
-      const width = carouselRef.current.clientWidth;
-      setCurrentSlide(Math.round(scrollLeft / width));
-    }
-  };
+  const activeModels = openRouterModels.length > 0 ? openRouterModels : staticFallbackModels;
 
-  const scrollToSlide = (index: number) => {
-    if (carouselRef.current) {
-      const width = carouselRef.current.clientWidth;
-      carouselRef.current.scrollTo({ left: width * index, behavior: 'smooth' });
-    }
-  };
-  const radarData = [
-    { metric: language === 'en' ? "Coding" : "代码", claude: 95, gpt4o: 88, gemini: 82, deepseek: 98, qwen: 85, llama: 70, kimi: 60, mistral: 75 },
-    { metric: language === 'en' ? "Reasoning" : "推理", claude: 98, gpt4o: 95, gemini: 85, deepseek: 88, qwen: 82, llama: 80, kimi: 70, mistral: 85 },
-    { metric: language === 'en' ? "Context" : "上下文", claude: 90, gpt4o: 85, gemini: 100, deepseek: 85, qwen: 75, llama: 80, kimi: 95, mistral: 70 },
-    { metric: language === 'en' ? "Speed" : "速度", claude: 85, gpt4o: 98, gemini: 82, deepseek: 95, qwen: 90, llama: 88, kimi: 85, mistral: 92 },
-    { metric: language === 'en' ? "Math" : "数学", claude: 82, gpt4o: 95, gemini: 90, deepseek: 92, qwen: 96, llama: 85, kimi: 65, mistral: 80 },
-  ];
+  const getModelSpecs = (model: any) => {
+    const isFallback = staticFallbackModels.find(m => m.id === model.id);
+    
+    let provider = model.provider || "OpenRouter";
+    if (model.name.toLowerCase().includes("google") || model.id.toLowerCase().includes("google") || model.id.toLowerCase().includes("gemini")) provider = "Google";
+    else if (model.name.toLowerCase().includes("anthropic") || model.id.toLowerCase().includes("claude")) provider = "Anthropic";
+    else if (model.name.toLowerCase().includes("sakana") || model.id.toLowerCase().includes("fugu")) provider = "Sakana AI";
+    else if (model.name.toLowerCase().includes("cohere") || model.id.toLowerCase().includes("north")) provider = "Cohere";
+    else if (model.name.toLowerCase().includes("z-ai") || model.id.toLowerCase().includes("glm")) provider = "Z.ai";
+    else if (model.name.toLowerCase().includes("moonshot") || model.id.toLowerCase().includes("kimi")) provider = "Moonshot";
+    else if (model.name.toLowerCase().includes("nex")) provider = "Nex AGI";
 
-  const radarConfig = {
-    claude: { label: "Claude", colors: { light: ["var(--theme-accent)"], dark: ["var(--theme-accent)"] } },
-    gpt4o: { label: "GPT-4o", colors: { light: ["#2563eb"], dark: ["#3b82f6"] } },
-    gemini: { label: "Gemini", colors: { light: ["#2563eb"], dark: ["#3b82f6"] } },
-    deepseek: { label: "DeepSeek", colors: { light: ["#2563eb"], dark: ["#3b82f6"] } },
-    qwen: { label: "Qwen", colors: { light: ["#2563eb"], dark: ["#3b82f6"] } },
-    llama: { label: "Llama", colors: { light: ["#2563eb"], dark: ["#3b82f6"] } },
-    kimi: { label: "Kimi", colors: { light: ["#2563eb"], dark: ["#3b82f6"] } },
-    mistral: { label: "Mistral", colors: { light: ["#2563eb"], dark: ["#3b82f6"] } },
+    return {
+      provider,
+      model_id: model.model_id || model.id,
+      max_output: model.max_output || (isFallback?.max_output) || 4096,
+      ttft: model.ttft || (isFallback?.ttft) || 120,
+      throughput: model.throughput || (isFallback?.throughput) || 95,
+      reliability: model.reliability || (isFallback?.reliability) || "99.98%",
+      use_cases: model.use_cases || (isFallback?.use_cases) || (language === 'en' ? ["Reasoning Tasks", "Text Generation"] : ["推理任务", "文本生成"]),
+      verdict: model.verdict || (isFallback?.verdict) || (language === 'en' ? "Highly capable general runtime. Suitable for standard OS workflows." : "高效的通用运行环境。适用于标准OS工作流。")
+    };
   };
-
-  const modelsToRender = ["claude", compareModel];
 
   const getLangLabel = (lang: Language) => {
     if (lang === "en") return "EN";
@@ -436,7 +625,7 @@ export const SiteShellV3: React.FC = () => {
               </p>
             </div>
             
-            <div className="mt-8 relative z-10 flex flex-col justify-between h-full">
+            <div className="mt-6 relative z-10 flex flex-col justify-between flex-1">
               <div className="group/cta">
                 <button 
                   onMouseEnter={() => setIsDeployHovered(true)}
@@ -453,14 +642,12 @@ export const SiteShellV3: React.FC = () => {
                   {siteCopy.fdeHero.ctaWorks}
                 </button>
               </div>
-              <div className="flex gap-3">
-                <button 
-                  onClick={handleThemeToggle}
-                  className="px-4 py-1.5 rounded-full border border-theme-border/50 text-[10px] font-mono uppercase hover:border-theme-accent transition-colors flex items-center gap-2"
-                >
-                  <div className={`w-1.5 h-1.5 rounded-full ${theme === "matrix-mode" ? "bg-theme-accent animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" : "bg-theme-text"}`} />
-                  {language === "en" ? "System Status" : "系统状态"}
-                </button>
+              <div className="flex items-center justify-between gap-3">
+                <div className="px-4 py-1.5 rounded-full border border-theme-border/30 text-[10px] font-mono uppercase flex items-center gap-2 select-none">
+                  <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
+                  {language === "en" ? "System: Online" : "系统状态: 在线"}
+                </div>
+                <ThemeSwitcher />
               </div>
             </div>
           </OSCard>
@@ -709,309 +896,463 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Row 3 */}
-          {/* 03: The Foundry (Radar Chart) */}
-          <BentoBox className="col-span-1 row-span-2 p-6 flex flex-col overflow-hidden min-h-[500px] md:min-h-[600px]">
+          {/* 03: The Foundry (Radar Chart replaced with dynamic horizontal bar chart) */}
+          <OSCard className="col-span-1 md:col-span-3 row-span-2 p-6 flex flex-col overflow-hidden min-h-[550px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
-              <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.ecosystemModels.title}</h3>
-              <div className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-            </div>
-
-            {/* Radar Chart */}
-            <div className="w-full h-48 md:h-56 mb-4 shrink-0 -mt-4">
-              <EvilRadarChart
-                config={radarConfig}
-                data={radarData}
-                className="w-full h-full"
-              >
-                <PolarGrid strokeOpacity={0.6} stroke="var(--theme-border)" strokeDasharray="4 4" />
-                <PolarAngleAxis dataKey="metric" tick={{ fill: "var(--theme-text-muted)", fontSize: 12 }} />
-                <Tooltip />
-                {modelsToRender.map((m, idx) => (
-                  <Radar 
-                    key={m}
-                    dataKey={m}
-                    variant={idx === 0 ? "filled" : "lines"}
-                    isGlowing={idx === 0}
-                  >
-                    <Dot />
-                    <ActiveDot />
-                  </Radar>
-                ))}
-              </EvilRadarChart>
-            </div>
-
-            <p className="font-mono text-xs text-theme-text-muted mb-4 uppercase shrink-0">{siteCopy.ecosystemModels.subtitle}</p>
-            <div className="flex-1 overflow-y-auto no-scrollbar border-t border-theme-border pt-4 -mr-2 pr-2">
-              <div className="flex flex-col gap-3">
-                {mockModels.map((model, i) => {
-                  const isExpanded = expandedModel === model.id;
-                  return (
-                    <div 
-                      key={model.id} 
-                      onClick={() => setExpandedModel(isExpanded ? null : model.id)}
-                      className={`flex flex-col font-mono text-sm p-3 border border-transparent hover:border-theme-accent/30 transition-all cursor-pointer rounded-lg group ${isExpanded ? 'bg-theme-accent/5 border-theme-accent/20' : 'hover:bg-theme-accent/10'}`}
-                    >
-                      <div className="flex justify-between items-center w-full mb-2">
-                        <div className="flex items-center gap-3 flex-1">
-                          <span className={`w-4 ${i === 0 ? "text-theme-accent" : "text-theme-text-muted"}`}>#{i + 1}</span>
-                          <span className={i === 0 ? "text-theme-accent" : "text-theme-text"}>{model.name}</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm text-theme-accent/70 font-mono group-hover:text-theme-accent transition-colors">
-                            {model.score}
-                          </span>
-                          
-                          {/* Compare CTA Toggle */}
-                          {i === 0 ? (
-                            <span className="text-xs text-theme-accent uppercase px-2 py-0.5 border border-theme-accent/30 rounded bg-theme-accent/10">
-                              {language === 'en' ? 'Baseline' : '基准'}
-                            </span>
-                          ) : (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setCompareModel(model.id);
-                              }}
-                              className={`flex items-center gap-2 px-2 py-0.5 rounded border transition-all ${
-                                compareModel === model.id 
-                                  ? 'border-theme-text bg-theme-text/10 text-theme-text' 
-                                  : 'border-theme-text-muted/30 text-theme-text-muted hover:border-theme-text hover:text-theme-text'
-                              }`}
-                            >
-                              <div className={`w-2 h-2 rounded-full ${compareModel === model.id ? 'bg-theme-text' : 'bg-theme-text-muted/30'}`} />
-                              <span className="text-xs uppercase tracking-wider">
-                                {compareModel === model.id ? (language === 'en' ? 'Comparing' : '对比中') : (language === 'en' ? 'Compare' : '对比')}
-                              </span>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      
-                      {/* Mini Bar Graph */}
-                      <div className="w-full h-1 bg-theme-border/50 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${i === 0 ? "bg-theme-accent" : "bg-theme-text/40 group-hover:bg-theme-accent/60"} rounded-full transition-all duration-1000 ease-out`} 
-                          style={{ width: `${model.score}%` }}
-                        />
-                      </div>
-
-                      {/* Expanded State */}
-                      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-32 opacity-100 mt-3 pt-3 border-t border-theme-border/50' : 'max-h-0 opacity-0 mt-0 pt-0'}`}>
-                         <div className="flex justify-between text-xs text-theme-text-muted mb-2">
-                           <span className="uppercase">{language === 'en' ? 'Context Window' : '上下文窗口'}</span>
-                           <span className="text-theme-text">{model.context}</span>
-                         </div>
-                         <p className="text-xs text-theme-text/70 leading-relaxed">{model.desc}</p>
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.ecosystemModels.title}</h3>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] font-mono tracking-wider">
+                <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
+                <span className="text-theme-text-muted">
+                  {modelsLoading ? (language === 'en' ? "SYNCING..." : "同步中...") : (language === 'en' ? "OPENROUTER SYNC: LIVE" : "OPENROUTER同步: 运行中")}
+                </span>
               </div>
             </div>
-          </BentoBox>
+
+            {modelsLoading ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-theme-text-muted font-mono text-xs uppercase tracking-widest gap-2">
+                <div className="w-6 h-6 border-2 border-theme-accent border-t-transparent rounded-full animate-spin" />
+                <span>{language === 'en' ? "FETCHING LATEST RANKINGS..." : "正在获取最新排名..."}</span>
+              </div>
+            ) : (
+              <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
+                {/* Left: Bar Chart (6 cols) */}
+                <div className="lg:col-span-6 flex flex-col justify-between h-full min-h-[300px]">
+                  <div>
+                    {/* Metric Selector Tabs */}
+                    <div className="flex gap-1.5 p-1 bg-theme-void/80 border border-theme-border/20 rounded-md mb-6">
+                      {(["intelligence_index", "coding_index", "agentic_index"] as const).map((metric) => {
+                        const label = metric === "intelligence_index" 
+                          ? (language === 'en' ? "Intel" : "智能")
+                          : metric === "coding_index"
+                            ? (language === 'en' ? "Coding" : "代码")
+                            : (language === 'en' ? "Agentic" : "智能体");
+                        const isActive = chartMetric === metric;
+                        return (
+                          <button
+                            key={metric}
+                            onClick={() => setChartMetric(metric)}
+                            className={`flex-1 text-center py-2 text-xs md:text-sm font-mono font-semibold uppercase tracking-wider rounded transition-all ${
+                              isActive 
+                                ? 'text-theme-void bg-theme-text font-extrabold shadow-sm' 
+                                : 'text-theme-text-muted hover:text-theme-text hover:bg-theme-text/5'
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Horizontal Bar Chart */}
+                    <div className="flex flex-col gap-4">
+                      {activeModels
+                        .filter(m => m.benchmarks?.[chartMetric] != null)
+                        .slice(0, 7)
+                        .map((model, idx) => {
+                          const val = model.benchmarks?.[chartMetric] ?? 0;
+                          const maxVal = Math.max(...activeModels.map(m => m.benchmarks?.[chartMetric] ?? 0), 100);
+                          const percent = Math.max(10, Math.min(100, (val / maxVal) * 100));
+                          const isBaseline = activeModels.filter(m => m.benchmarks?.[chartMetric] != null)[0]?.id === model.id;
+                          const barColor = chartMetric === "intelligence_index" 
+                            ? "bg-gradient-to-r from-[#9C5AFF]/40 to-[#9C5AFF]" 
+                            : chartMetric === "coding_index" 
+                              ? "bg-gradient-to-r from-[#10A37F]/40 to-[#10A37F]" 
+                              : "bg-gradient-to-r from-[#D4783A]/40 to-[#D4783A]";
+
+                          return (
+                            <div 
+                              key={model.id}
+                              onClick={() => setSelectedModelForModal(model)}
+                              className="flex flex-col gap-1.5 transition-all cursor-pointer group/bar hover:opacity-100 opacity-90"
+                            >
+                              <div className="flex justify-between items-center text-xs md:text-sm font-mono text-theme-text-muted">
+                                <span className={`font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text"} group-hover/bar:text-theme-accent transition-colors`}>
+                                  #{idx + 1} {model.name.replace("Google: ", "").replace("Anthropic: ", "").replace("Cohere: ", "").replace("Sakana: ", "")}
+                                </span>
+                                <span className="font-bold text-theme-text group-hover/bar:text-theme-accent transition-colors">{val}%</span>
+                              </div>
+                              <div className="h-2.5 w-full bg-theme-void border border-theme-border/20 rounded-full overflow-hidden flex items-center">
+                                <motion.div 
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${percent}%` }}
+                                  transition={{ duration: 0.8, ease: "easeOut" }}
+                                  className={`h-full rounded-full ${barColor} transition-all`}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                  
+                  <div className="text-[10px] font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-6">
+                    {language === 'en' 
+                      ? "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS." 
+                      : "* 基准数据由 ARTIFICIAL ANALYSIS 排行榜标准化。"}
+                  </div>
+                </div>
+
+                {/* Right: Model list (6 cols) */}
+                <div className="lg:col-span-6 flex flex-col min-h-0 border-t lg:border-t-0 lg:border-l border-theme-border/30 pt-6 lg:pt-0 lg:pl-6">
+                  <p className="font-mono text-xs md:text-sm font-semibold text-theme-text-muted mb-4 uppercase tracking-widest shrink-0">
+                    {language === 'en' ? "TOP DAILY RUNTIMES" : "每日最热运行环境"}
+                  </p>
+                  <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
+                    <div className="flex flex-col gap-2.5">
+                      {activeModels.slice(0, 8).map((model, i) => {
+                        const isBaseline = i === 0;
+                        const specs = getModelSpecs(model);
+                        return (
+                          <div 
+                            key={model.id} 
+                            onClick={() => setSelectedModelForModal(model)}
+                            className="flex justify-between items-center font-mono text-xs md:text-sm p-3.5 border border-theme-border/30 hover:border-theme-accent/40 bg-theme-void/40 hover:bg-theme-accent/5 transition-all cursor-pointer rounded group"
+                          >
+                            <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                              <span className={`w-4 shrink-0 font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text-muted"}`}>#{i + 1}</span>
+                              <span className="truncate font-bold text-theme-text group-hover:text-theme-accent transition-colors">{model.name}</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-[10px] text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
+                                {specs.provider.toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </OSCard>
 
           {/* Section 2: AI Digital Employees */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 flex flex-col justify-between overflow-hidden">
-            <div className="mb-8">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight max-w-lg text-theme-text text-balance">
-                {siteCopy.fdeEmployees.heading}
+          <OSCard className="col-span-1 md:col-span-1 row-span-2 p-6 flex flex-col justify-between overflow-hidden">
+            <div className="mb-6">
+              <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text text-balance">
+                {language === 'en' 
+                  ? "Your first AI digital employees, deployed – not downloaded." 
+                  : "您的第一批AI数字员工，已部署，无需下载。"}
               </h2>
             </div>
             
-            <div className="flex flex-col flex-1 gap-2">
-              {siteCopy.fdeEmployees.roles.map((role: string, idx: number) => (
-                <div key={idx} className="flex justify-between items-center p-3 md:p-4 rounded border border-theme-border/30 bg-theme-void/50 group/row hover:bg-theme-accent/5 hover:border-theme-accent/30 transition-all cursor-default">
-                  <div className="flex items-center gap-4">
-                    <div className="w-6 h-6 rounded-sm bg-theme-text/10 flex items-center justify-center font-mono text-[10px] text-theme-text-muted group-hover/row:bg-theme-accent/20 group-hover/row:text-theme-accent transition-colors">
-                      0{idx + 1}
-                    </div>
-                    <span className="font-mono text-sm font-bold uppercase tracking-widest text-theme-text">
-                      {role}
-                    </span>
+            <div className="flex flex-col flex-1 gap-4 justify-center">
+              {[
+                {
+                  id: "kol",
+                  title: "KOL BD",
+                  status: language === 'en' ? "Pilot-ready" : "试点就绪",
+                  statusColor: "text-theme-accent",
+                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
+                  ref: kolIconRef
+                },
+                {
+                  id: "content",
+                  title: "Content Ops",
+                  status: language === 'en' ? "FDE configured" : "已配置FDE",
+                  statusColor: "text-theme-accent",
+                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
+                  ref: contentIconRef
+                },
+                {
+                  id: "care",
+                  title: language === 'en' ? "Customer Care" : "客户服务",
+                  status: language === 'en' ? "In development" : "开发中",
+                  statusColor: "text-amber-500",
+                  dotColor: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]",
+                  ref: customerIconRef
+                },
+                {
+                  id: "compliance",
+                  title: language === 'en' ? "Compliance" : "合规审查",
+                  status: language === 'en' ? "Private runtime" : "私有运行环境",
+                  statusColor: "text-theme-accent",
+                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
+                  ref: complianceIconRef
+                }
+              ].map((emp) => (
+                <div 
+                  key={emp.id}
+                  onMouseEnter={() => {
+                    if (emp.id === "kol") kolIconRef.current?.startAnimation();
+                    if (emp.id === "content") contentIconRef.current?.startAnimation();
+                    if (emp.id === "care") customerIconRef.current?.startAnimation();
+                    if (emp.id === "compliance") complianceIconRef.current?.startAnimation();
+                  }}
+                  onMouseLeave={() => {
+                    if (emp.id === "kol") kolIconRef.current?.stopAnimation();
+                    if (emp.id === "content") contentIconRef.current?.stopAnimation();
+                    if (emp.id === "care") customerIconRef.current?.stopAnimation();
+                    if (emp.id === "compliance") complianceIconRef.current?.stopAnimation();
+                  }}
+                  className="flex items-stretch rounded border border-theme-border/30 bg-theme-void/50 group/emp hover:bg-theme-accent/5 hover:border-theme-accent/30 transition-all cursor-default overflow-hidden"
+                >
+                  {/* Left Icon Block */}
+                  <div className="flex items-center justify-center w-16 border-r border-theme-border/30 bg-theme-void/80 py-4 shrink-0">
+                    {emp.id === "kol" && <UserIcon ref={kolIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
+                    {emp.id === "content" && <LinkIcon ref={contentIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
+                    {emp.id === "care" && <HeadsetIcon ref={customerIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-amber-500 transition-colors" />}
+                    {emp.id === "compliance" && <ShieldCheck ref={complianceIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
                   </div>
-                  <div className="flex items-center gap-2 md:gap-3">
-                    <div className="flex flex-col items-end">
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-theme-text-muted opacity-0 group-hover/row:opacity-100 transition-opacity translate-x-2 group-hover/row:translate-x-0">
-                        {language === 'en' ? 'Runtime Ready' : '运行就绪'}
+                  
+                  {/* Label & Status */}
+                  <div className="flex-1 flex justify-between items-center px-4 py-3">
+                    <div className="flex flex-col gap-1 min-w-0">
+                      <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-theme-text truncate">
+                        {emp.title}
+                      </span>
+                      <span className={`font-mono text-[10px] md:text-xs tracking-wider truncate ${emp.statusColor}`}>
+                        {emp.status}
                       </span>
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-theme-text/30 group-hover/row:bg-theme-accent transition-colors group-hover/row:shadow-[0_0_8px_var(--color-theme-accent)]" />
+                    <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${emp.dotColor}`} />
                   </div>
                 </div>
               ))}
             </div>
           </OSCard>
 
-          {/* Section 4: The Box (Sealed Runtime) */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 flex flex-col justify-between gap-6 relative overflow-hidden group min-h-[300px]">
-            <div className="absolute inset-0 bg-theme-accent/5 pointer-events-none" />
-            
-            {/* Lock Animation SVG */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none z-0">
-              <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
-                <rect x="25" y="45" width="50" height="40" rx="4" stroke="var(--color-theme-accent)" strokeWidth="2" fill="var(--color-theme-void)" />
-                <path d="M 35 45 V 30 C 35 20 65 20 65 30 V 45" stroke="var(--color-theme-accent)" strokeWidth="2" strokeLinecap="round" />
-                <circle cx="50" cy="65" r="4" fill="var(--color-theme-accent)" />
-                <path d="M 50 65 V 75" stroke="var(--color-theme-accent)" strokeWidth="2" strokeLinecap="round" />
-                
-                {/* Data Particles */}
-                <motion.circle cx="50" cy="30" r="1.5" fill="var(--color-theme-text)" initial={{ opacity: 0, y: 10 }} animate={{ opacity: [0, 1, 0], y: -10 }} transition={{ duration: 2, repeat: Infinity }} />
-                <motion.circle cx="40" cy="35" r="1" fill="var(--color-theme-text)" initial={{ opacity: 0, y: 10 }} animate={{ opacity: [0, 1, 0], y: -15 }} transition={{ duration: 2.5, delay: 0.5, repeat: Infinity }} />
-                <motion.circle cx="60" cy="35" r="2" fill="var(--color-theme-text)" initial={{ opacity: 0, y: 10 }} animate={{ opacity: [0, 1, 0], y: -8 }} transition={{ duration: 1.8, delay: 1, repeat: Infinity }} />
-              </svg>
+          {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}
+          {/* Developers Box */}
+          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-0 min-h-[280px] cursor-pointer relative overflow-hidden group"
+            onMouseEnter={() => codeIconRef.current?.startAnimation()}
+            onMouseLeave={() => codeIconRef.current?.stopAnimation()}
+          >
+            {/* Full-width container to prevent hard vertical edge cut-off */}
+            <div className="absolute inset-0 pointer-events-none z-0 select-none">
+              <img 
+                src={theme === "xuan-mode" ? "/Bentos/dev-xuan.png" : "/Bentos/dev-matrix.png"} 
+                alt="Developers" 
+                className={`w-full h-full object-cover object-right transition-opacity duration-1000 ${
+                  theme === "xuan-mode" ? "opacity-40 mix-blend-multiply" : "opacity-25 mix-blend-screen"
+                }`} 
+                style={{
+                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)",
+                  maskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)"
+                }}
+              />
             </div>
-
-            <div className="relative z-10 text-center mt-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-theme-accent/30 bg-theme-accent/10 mb-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
-                <span className="font-mono text-[9px] uppercase tracking-widest text-theme-accent">SEALED</span>
-              </div>
-              <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-2 text-theme-text text-balance">
-                {siteCopy.fdeBox.heading}
-              </h2>
-            </div>
-            <p className="font-mono text-sm text-theme-text-muted leading-relaxed relative z-10 text-center text-balance">{siteCopy.fdeBox.desc}</p>
-          </OSCard>
-
-          {/* Row 4 */}
-          {/* Section 5: Flywheel */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-10 flex flex-col md:flex-row items-center justify-between relative overflow-hidden group min-h-[300px]">
-            <div className="relative z-10 max-w-sm">
-              <h2 className="text-2xl md:text-3xl font-mono font-bold leading-tight mb-4 text-theme-text text-balance">
-                {siteCopy.fdeFlywheel.heading}
-              </h2>
-              <p className="font-mono text-sm text-theme-text-muted leading-relaxed text-balance">{siteCopy.fdeFlywheel.desc}</p>
-            </div>
-            
-            {/* Orbital Loop SVG */}
-            <div className="relative w-48 h-48 mt-8 md:mt-0 flex-shrink-0 z-10">
-              <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
-                {/* Outer Orbit */}
-                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-theme-border)" strokeWidth="1" strokeDasharray="4 4" className="opacity-50" />
-                
-                {/* Animated Dot */}
-                <motion.circle 
-                  cx="50" cy="10" r="3" fill="var(--color-theme-accent)" 
-                  className="shadow-[0_0_10px_var(--color-theme-accent)]"
-                  style={{ transformOrigin: "50px 50px" }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                />
-                
-                {/* Inner Nodes */}
-                <circle cx="50" cy="50" r="20" fill="none" stroke="var(--color-theme-text)" strokeWidth="0.5" className="opacity-20" />
-                <circle cx="50" cy="50" r="4" fill="var(--color-theme-text)" />
-                <text x="50" y="50" textAnchor="middle" dy=".3em" fontSize="6" fontFamily="monospace" fill="var(--color-theme-void)" fontWeight="bold">AI</text>
-                
-                <text x="50" y="3" textAnchor="middle" fontSize="6" fontFamily="monospace" fill="var(--color-theme-text)" opacity="0.6">DEPLOY</text>
-                <text x="95" y="52" textAnchor="start" fontSize="6" fontFamily="monospace" fill="var(--color-theme-text)" opacity="0.6">LEARN</text>
-                <text x="50" y="97" textAnchor="middle" fontSize="6" fontFamily="monospace" fill="var(--color-theme-text)" opacity="0.6">ENCODE</text>
-                <text x="5" y="52" textAnchor="end" fontSize="6" fontFamily="monospace" fill="var(--color-theme-text)" opacity="0.6">REUSE</text>
-              </svg>
-            </div>
-          </OSCard>
-
-          {/* 07C: Local Time / Analog Clock */}
-          <OSCard className="col-span-1 row-span-1 min-h-[300px] p-6 flex flex-col items-center justify-between group overflow-hidden">
-            {mounted && time ? (
-              (() => {
-                const tz = ipLocation?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-                const dStr = time.toLocaleString('en-US', { timeZone: tz });
-                const localDate = new Date(dStr);
-                const h = localDate.getHours();
-                const m = localDate.getMinutes();
-                const s = localDate.getSeconds();
-                
-                const displayCity = ipLocation?.city ? ipLocation.city.toUpperCase() : tz.split('/')[1]?.replace(/_/g, ' ') || 'LOCAL';
-                const displayRegion = ipLocation?.region ? ipLocation.region.toUpperCase() : tz.split('/')[0]?.toUpperCase() || 'TIMEZONE';
-
-                return (
-                  <>
-                    <div className="w-full flex justify-between items-center mb-4">
-                      <span className="font-mono text-[9px] text-theme-accent tracking-widest uppercase">SYS.TIME</span>
-                      <div className="w-1 h-3 bg-theme-accent animate-pulse" />
-                    </div>
-
-                    {/* Analog Clock */}
-                    <div className="relative w-36 h-36 md:w-40 md:h-40 rounded-full border border-theme-accent/30 flex items-center justify-center bg-theme-void shadow-[0_0_30px_rgba(31,170,104,0.1)]">
-                      {/* Clock ticks */}
-                      {[...Array(12)].map((_, i) => (
-                        <div key={i} className="absolute w-full h-full" style={{ transform: `rotate(${i * 30}deg)` }}>
-                          <div className={`w-[1px] ${i % 3 === 0 ? 'h-3 bg-theme-accent' : 'h-1.5 bg-theme-accent/40'} mx-auto mt-1`} />
-                        </div>
-                      ))}
-                      {/* Hour Hand */}
-                      <div className="absolute w-[2px] h-10 md:h-12 bg-theme-text-muted origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((h % 12 + m / 60) / 12) * 360}deg)` }} />
-                      {/* Minute Hand */}
-                      <div className="absolute w-[1.5px] h-12 md:h-14 bg-theme-text origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${((m + s / 60) / 60) * 360}deg)` }} />
-                      {/* Second Hand */}
-                      <div className="absolute w-[1px] h-14 md:h-16 bg-theme-accent origin-bottom rounded-full" style={{ transform: `translateY(-50%) rotate(${(s / 60) * 360}deg)` }} />
-                      {/* Center dot */}
-                      <div className="absolute w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_10px_var(--color-theme-accent)]" />
-                    </div>
-
-                    <div className="flex flex-col items-center text-center mt-auto w-full border-t border-theme-border/30 pt-4">
-                      {/* Huge Text: TIME */}
-                      <h2 className="font-mono text-2xl font-bold tracking-tighter mb-1 text-theme-text">
-                        {h.toString().padStart(2, '0')}:{m.toString().padStart(2, '0')}:{s.toString().padStart(2, '0')}
-                      </h2>
-                      
-                      {/* Bottom Text: Location & Timezone */}
-                      <p className="font-mono text-[10px] text-theme-text-muted uppercase tracking-widest truncate max-w-full px-2">
-                        {displayCity}, {displayRegion}
-                      </p>
-                    </div>
-                  </>
-                );
-              })()
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-4 opacity-50">
-                <div className="w-4 h-4 border-2 border-theme-accent/30 border-t-theme-accent rounded-full animate-spin" />
-                <span className="font-mono text-xs uppercase text-theme-text-muted">Syncing Time...</span>
-              </div>
-            )}
-          </OSCard>
-
-          {/* Row 5 */}
-          {/* Section 6: The Pilot (Developers & Operators Dual CTA) */}
-          <BentoBox className="col-span-1 md:col-span-4 row-span-1 p-0 min-h-[300px]">
-            <div className="w-full h-full flex flex-col md:flex-row">
-              {/* Developers Side */}
-              <div className="flex-1 p-8 md:p-12 flex flex-col justify-between border-b md:border-b-0 md:border-r border-theme-border hover:bg-theme-text/5 transition-colors group cursor-pointer relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-theme-text/5 rounded-bl-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 ease-out pointer-events-none" />
-                <div className="relative z-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text">{siteCopy.fdePilot.developers.heading}</h2>
-                  <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md">{siteCopy.fdePilot.developers.desc}</p>
+            <div className="relative z-10 h-full flex flex-col justify-between p-8 md:p-10">
+              <div>
+                {/* Eyebrow */}
+                <div className="flex items-center gap-2.5 mb-5">
+                  <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
+                    <CodeXmlIcon ref={codeIconRef} size={18} className="text-theme-accent" />
+                  </span>
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{language === 'en' ? 'For Developers' : '面向开发者'}</span>
                 </div>
-                <button className="self-start mt-8 px-6 py-3 border border-theme-text text-theme-text font-mono text-sm uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
-                  {language === "en" ? "View Docs" : "查看文档"} <span>→</span>
-                </button>
+                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.fdePilot.developers.heading}</h2>
+                <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.fdePilot.developers.desc}</p>
               </div>
-              
-              {/* Operators Side */}
-              <div 
-                className="flex-1 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
-                onClick={() => setPilotOpen(true)}
-              >
+              <button className="self-start mt-6 px-5 py-2.5 border border-theme-text text-theme-text font-mono text-xs uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
+                {language === "en" ? "View Docs" : "查看文档"} <span>→</span>
+              </button>
+            </div>
+          </OSCard>
+
+          {/* Operators Box */}
+          <OSCard 
+            className="col-span-1 md:col-span-2 row-span-1 p-0 min-h-[280px] cursor-pointer relative overflow-hidden group"
+            onMouseEnter={() => shieldCtaIconRef.current?.startAnimation()}
+            onMouseLeave={() => shieldCtaIconRef.current?.stopAnimation()}
+          >
+            <div onClick={() => setPilotOpen(true)} className="w-full h-full relative">
+              {/* Full-width container to prevent hard vertical edge cut-off */}
+              <div className="absolute inset-0 pointer-events-none z-0 select-none">
                 <img 
                   src={theme === "xuan-mode" ? "/Bentos/d1-xuan.png" : "/Bentos/d1.png"} 
                   alt="Operators" 
-                  className={`absolute inset-0 w-full h-full object-cover object-center z-0 transition-opacity duration-700 group-hover:opacity-70 group-hover:scale-105 pointer-events-none ${theme === "xuan-mode" ? "opacity-60 mix-blend-multiply" : "opacity-30 mix-blend-screen"}`} 
+                  className={`w-full h-full object-cover object-right transition-opacity duration-1000 ${
+                    theme === "xuan-mode" ? "opacity-50 mix-blend-multiply" : "opacity-30 mix-blend-screen"
+                  }`} 
+                  style={{
+                    WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)",
+                    maskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)"
+                  }}
                 />
-                <div className="relative z-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-mono font-bold leading-tight mb-4 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.fdePilot.operators.heading}</h2>
-                  <p className="font-mono text-sm text-theme-text-muted leading-relaxed max-w-md mb-8">{siteCopy.fdePilot.operators.desc}</p>
+              </div>
+              <div className="relative z-10 h-full flex flex-col justify-between p-8 md:p-10">
+                <div>
+                  {/* Eyebrow */}
+                  <div className="flex items-center gap-2.5 mb-5">
+                    <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
+                      <ShieldCheck ref={shieldCtaIconRef} size={18} className="text-theme-accent" />
+                    </span>
+                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{language === 'en' ? 'For Operators' : '面向运营者'}</span>
+                  </div>
+                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.fdePilot.operators.heading}</h2>
+                  <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.fdePilot.operators.desc}</p>
                 </div>
-                <div className="relative z-10">
-                  <button className="self-start px-6 py-3 bg-theme-accent text-[#0B0E0B] font-mono text-sm font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
+                <div className="mt-6">
+                  <button className="self-start px-5 py-2.5 bg-theme-accent text-[#0B0E0B] font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
                     {siteCopy.fdeHero.ctaPilot} <span>→</span>
                   </button>
                 </div>
               </div>
             </div>
-          </BentoBox>
+          </OSCard>
         </BentoGrid>
       </motion.main>
+
+      {/* Model Detail Popup Modal */}
+      <AnimatePresence>
+        {selectedModelForModal && (() => {
+          const model = selectedModelForModal;
+          const specs = getModelSpecs(model);
+          const baselineModel = activeModels[0];
+          const isBaseline = model.id === baselineModel.id;
+          
+          // Cost ratios
+          const modelCost = Number(model.pricing?.prompt ?? 0) + Number(model.pricing?.completion ?? 0);
+          const baseCost = Number(baselineModel.pricing?.prompt ?? 0) + Number(baselineModel.pricing?.completion ?? 0);
+          const ratioPercent = baseCost > 0 ? Math.round(((baseCost - modelCost) / baseCost) * 100) : 0;
+          
+          return (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-theme-void/85 backdrop-blur-md z-[999] flex items-center justify-center p-4"
+              onClick={() => setSelectedModelForModal(null)}
+            >
+              <motion.div 
+                initial={{ scale: 0.95, y: 15, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.95, y: 15, opacity: 0 }}
+                transition={{ type: "spring", duration: 0.5 }}
+                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-xl p-6 md:p-8 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Close Button */}
+                <button 
+                  onClick={() => setSelectedModelForModal(null)}
+                  className="absolute top-4 right-4 p-2 text-theme-text-muted hover:text-theme-accent transition-colors rounded-full border border-theme-border/40 hover:border-theme-accent/40 bg-theme-void"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+
+                {/* Header Section */}
+                <div className="mb-6 border-b border-theme-border/20 pb-4 pr-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[10px] uppercase font-bold text-theme-accent px-2 py-0.5 border border-theme-accent/30 rounded bg-theme-accent/5">
+                      {specs.provider}
+                    </span>
+                    <span className="text-[10px] uppercase font-bold text-theme-text-muted px-2 py-0.5 border border-theme-border/40 rounded bg-theme-void">
+                      {language === 'en' ? 'Runtime Module' : '运行期模块'}
+                    </span>
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold text-theme-text">{model.name}</h3>
+                  <p className="text-xs text-theme-text-muted mt-1 select-all">{specs.model_id}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {/* Left Column: Tech Specs */}
+                  <div className="space-y-4">
+                    <h4 className="text-xs uppercase tracking-widest text-theme-accent font-bold">{language === 'en' ? 'Specs & Metrics' : '规格与指标'}</h4>
+                    
+                    <div className="space-y-2.5 text-xs text-theme-text">
+                      <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
+                        <span className="text-theme-text-muted">{language === 'en' ? 'CONTEXT WINDOW' : '上下文窗口'}</span>
+                        <span className="font-bold">{(model.context_length ?? 0).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
+                        <span className="text-theme-text-muted">{language === 'en' ? 'MAX COMPLETION' : '最大输出限制'}</span>
+                        <span className="font-bold">{(specs.max_output).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
+                        <span className="text-theme-text-muted">{language === 'en' ? 'PRICING (PROMPT)' : '计费 (输入)'}</span>
+                        <span className="font-mono font-bold">${(Number(model.pricing?.prompt ?? 0) * 1000000).toFixed(2)} / 1M tkn</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
+                        <span className="text-theme-text-muted">{language === 'en' ? 'PRICING (COMP)' : '计费 (输出)'}</span>
+                        <span className="font-mono font-bold">${(Number(model.pricing?.completion ?? 0) * 1000000).toFixed(2)} / 1M tkn</span>
+                      </div>
+                    </div>
+
+                    {/* Cost efficiency badge */}
+                    {!isBaseline && ratioPercent > 0 && (
+                      <div className="p-2.5 border border-theme-accent/20 bg-theme-accent/5 rounded-lg flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                        <span className="text-[10px] text-theme-accent font-bold tracking-wide uppercase">
+                          {language === 'en' ? `${ratioPercent}% cost savings vs baseline` : `比基线模型节省 ${ratioPercent}% 成本`}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Column: Benchmarks */}
+                  <div className="space-y-4">
+                    <h4 className="text-xs uppercase tracking-widest text-theme-accent font-bold">{language === 'en' ? 'Benchmarks' : '基准测试'}</h4>
+                    
+                    <div className="space-y-3.5">
+                      {([
+                        { key: "intelligence_index", label: language === 'en' ? "Intelligence" : "智能程度", color: "bg-[#9C5AFF]" },
+                        { key: "coding_index", label: language === 'en' ? "Coding Speed" : "代码生成速度", color: "bg-[#10A37F]" },
+                        { key: "agentic_index", label: language === 'en' ? "Autonomy" : "自主执行力", color: "bg-[#D4783A]" }
+                      ] as const).map((b) => {
+                        const score = model.benchmarks?.[b.key] ?? 0;
+                        return (
+                          <div key={b.key} className="space-y-1">
+                            <div className="flex justify-between items-center text-[10px] text-theme-text-muted">
+                              <span className="uppercase">{b.label}</span>
+                              <span className="font-bold text-theme-text">{score}%</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-theme-void border border-theme-border/20 rounded-full overflow-hidden">
+                              <div className={`h-full rounded-full ${b.color}`} style={{ width: `${score}%` }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Operational Speeds */}
+                <div className="grid grid-cols-3 gap-2.5 p-3.5 bg-theme-void/50 border border-theme-border/20 rounded-xl mb-6">
+                  <div className="text-center">
+                    <span className="block text-[9px] uppercase tracking-wider text-theme-text-muted mb-1">{language === 'en' ? 'LATENCY (TTFT)' : '首字延迟 (TTFT)'}</span>
+                    <span className="text-xs md:text-sm font-bold text-theme-text">{specs.ttft}ms</span>
+                  </div>
+                  <div className="text-center border-x border-theme-border/20">
+                    <span className="block text-[9px] uppercase tracking-wider text-theme-text-muted mb-1">{language === 'en' ? 'THROUGHPUT' : '吞吐速度'}</span>
+                    <span className="text-xs md:text-sm font-bold text-theme-text">{specs.throughput} tkn/s</span>
+                  </div>
+                  <div className="text-center">
+                    <span className="block text-[9px] uppercase tracking-wider text-theme-text-muted mb-1">{language === 'en' ? 'RELIABILITY' : '稳定性/在线率'}</span>
+                    <span className="text-xs md:text-sm font-bold text-theme-accent">{specs.reliability}</span>
+                  </div>
+                </div>
+
+                {/* Verdict Section */}
+                <div className="space-y-2 border-t border-theme-border/20 pt-4 text-xs">
+                  <div className="flex gap-2">
+                    <span className="text-theme-text-muted uppercase font-bold shrink-0">{language === 'en' ? 'VERDICT:' : '运营结论:'}</span>
+                    <span className="text-theme-text leading-relaxed font-bold">{specs.verdict}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <span className="text-theme-text-muted uppercase font-bold shrink-0">{language === 'en' ? 'USE CASES:' : '建议工作流:'}</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {specs.use_cases.map((uc: string, idx: number) => (
+                        <span key={idx} className="px-2 py-0.5 border border-theme-border/40 bg-theme-void rounded text-[10px] text-theme-text font-bold">
+                          {uc}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
 
       <StickyNav />
     </div>

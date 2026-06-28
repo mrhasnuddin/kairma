@@ -7,9 +7,11 @@ interface OSCardProps {
   children: React.ReactNode;
   className?: string;
   disableEffects?: boolean;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
-export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disableEffects = false }) => {
+export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disableEffects = false, onMouseEnter, onMouseLeave }) => {
   const ref = useRef<HTMLDivElement>(null);
   
   // Track mouse for glow
@@ -42,11 +44,13 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
   const handleMouseLeave = () => {
     if (!isDesktop || disableEffects) return;
     setIsHovered(false);
+    onMouseLeave?.();
   };
 
   const handleMouseEnter = () => {
     if (!isDesktop || disableEffects) return;
     setIsHovered(true);
+    onMouseEnter?.();
   };
 
   return (
