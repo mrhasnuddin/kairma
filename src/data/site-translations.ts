@@ -1,6 +1,6 @@
 import { siteCopy, SiteCopyType } from "./site-copy";
 
-export type Language = "en" | "zh-CN" | "zh-TW" | "vi";
+export type Language = "en" | "zh-CN" | "zh-TW" | "vi" | "ms";
 
 export const siteTranslations: Record<Language, SiteCopyType> = {
   en: siteCopy,
@@ -1491,5 +1491,6 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         desc: "Triển khai lực lượng lao động AI vào hoạt động thương hiệu xuyên biên giới của bạn. Chúng tôi cùng bạn đưa nó vào thực tế."
       }
     }
-  }
+  },
+  ms: siteCopy
 };
