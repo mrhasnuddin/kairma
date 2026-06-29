@@ -479,7 +479,7 @@ export const SiteShellV3: React.FC = () => {
                 </button>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <div className="px-4 py-1.5 rounded-full border border-theme-border/30 text-[10px] font-mono uppercase flex items-center gap-2 select-none">
+                <div className="px-4 py-1.5 rounded-full border border-theme-border/30 text-[10px] md:text-xs font-mono uppercase flex items-center gap-2 select-none">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
                   {(language !== "zh-CN" && language !== "zh-TW") ? "System: Online" : "系统状态: 在线"}
                 </div>
@@ -495,7 +495,7 @@ export const SiteShellV3: React.FC = () => {
               {/* Top-Right Mini Status */}
               <div className="absolute top-4 right-6 z-30 pointer-events-none hidden md:flex items-center gap-2 px-3 py-1 bg-theme-void/80 backdrop-blur-sm border border-theme-accent/30 rounded-full">
                 <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                <span className="font-mono text-[9px] uppercase tracking-widest text-theme-accent">OPENROUTER SYNC: LIVE</span>
+                <span className="font-mono text-[9px] md:text-xs uppercase tracking-widest text-theme-accent">OPENROUTER SYNC: LIVE</span>
               </div>
 
               {/* Left 55%: Copy and System Status */}
@@ -512,21 +512,21 @@ export const SiteShellV3: React.FC = () => {
                 </div>
 
                 {/* Status List */}
-                <div className="mt-auto flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-widest">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 border border-theme-accent/30 rounded-full bg-theme-accent/5 backdrop-blur-sm">
+                <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] md:text-xs uppercase tracking-widest pt-4">
+                  <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 bg-theme-accent rounded-full animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
                     <span className="text-theme-accent font-bold">Agent OS online</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 border border-theme-border/50 rounded-full bg-theme-void/40 backdrop-blur-sm">
-                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                  <span className="text-theme-border/50 select-none">/</span>
+                  <div className="flex items-center gap-1.5">
                     <span className="text-theme-text-muted">Data routing</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 border border-theme-border/50 rounded-full bg-theme-void/40 backdrop-blur-sm">
-                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                  <span className="text-theme-border/50 select-none">/</span>
+                  <div className="flex items-center gap-1.5">
                     <span className="text-theme-text-muted">Workflow sync</span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 border border-theme-border/50 rounded-full bg-theme-void/40 backdrop-blur-sm">
-                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                  <span className="text-theme-border/50 select-none">/</span>
+                  <div className="flex items-center gap-1.5">
                     <span className="text-theme-text-muted">Runtime sealed</span>
                   </div>
                 </div>
@@ -573,7 +573,7 @@ export const SiteShellV3: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                  <span className="font-mono text-[10px] text-theme-accent uppercase tracking-widest">
+                  <span className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest">
                     {(language !== 'zh-CN' && language !== 'zh-TW') ? 'The Shift' : '转移'}
                   </span>
                 </div>
@@ -600,7 +600,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 0 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 0 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Model
@@ -635,7 +635,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 2 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 2 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Workflow
@@ -670,7 +670,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 4 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 4 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Deployment
@@ -705,7 +705,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 6 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 6 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Outcome
@@ -738,7 +738,7 @@ export const SiteShellV3: React.FC = () => {
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
                 <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.s06_moats.heading}</h3>
               </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] font-mono tracking-wider">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
                 <span className="text-theme-text-muted">
                   {modelsLoading ? ((language !== 'zh-CN' && language !== 'zh-TW') ? "SYNCING..." : "同步中...") : ((language !== 'zh-CN' && language !== 'zh-TW') ? "OPENROUTER SYNC: LIVE" : "OPENROUTER同步: 运行中")}
@@ -823,7 +823,7 @@ export const SiteShellV3: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="text-[10px] font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-6">
+                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-6">
                     {(language !== 'zh-CN' && language !== 'zh-TW') 
                       ? "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS." 
                       : "* 基准数据由 ARTIFICIAL ANALYSIS 排行榜标准化。"}
@@ -852,7 +852,7 @@ export const SiteShellV3: React.FC = () => {
                             </div>
                             
                             <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[10px] text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
+                              <span className="text-[10px] md:text-xs text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
                                 {specs.provider.toUpperCase()}
                               </span>
                             </div>
