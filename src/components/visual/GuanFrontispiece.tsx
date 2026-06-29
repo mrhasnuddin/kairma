@@ -85,24 +85,72 @@ interface ScrambleTextProps {
 
 const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, delay = 200 }) => {
   const [displayText, setDisplayText] = useState("");
-  const revealedIndices = useRef<Set<number>>(new Set());
+  const tokensRef = useRef<string[]>([]);
+  const wordIndicesRef = useRef<number[]>([]);
+  const revealOrderRef = useRef<number[]>([]);
+  const revealedWordsRef = useRef<Set<number>>(new Set());
+  const lastScrambleUpdateRef = useRef<number>(0);
+  const currentScrambledWordsRef = useRef<Record<number, string>>({});
+
+  useEffect(() => {
+    // Split text into tokens including spaces (capture group keeps delimiters)
+    const tokens = text.split(/(\s+)/);
+    tokensRef.current = tokens;
+
+    // Identify index of tokens that are actual words
+    const wordIndices: number[] = [];
+    tokens.forEach((token: string, index: number) => {
+      if (token.trim().length > 0) {
+        wordIndices.push(index);
+      }
+    });
+    wordIndicesRef.current = wordIndices;
+
+    // Generate random reveal order for the words
+    const shuffled = [...wordIndices];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    revealOrderRef.current = shuffled;
+    revealedWordsRef.current.clear();
+    currentScrambledWordsRef.current = {};
+    lastScrambleUpdateRef.current = 0;
+  }, [text]);
 
   useEffect(() => {
     let startTimestamp: number | null = null;
     let animationFrameId: number;
-    const totalChars = text.length;
+    const totalWords = wordIndicesRef.current.length;
 
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const elapsed = timestamp - startTimestamp;
 
+      // During the initial delay, keep all words scrambled
       if (elapsed < delay) {
-        // Show fully scrambled version initially
-        const scrambled = text
-          .split("")
-          .map((char) => (char === " " ? " " : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]))
+        const nowMs = Date.now();
+        if (nowMs - lastScrambleUpdateRef.current > 120) { // Slowed down from 16ms (60fps) to 120ms (~8fps)
+          lastScrambleUpdateRef.current = nowMs;
+          wordIndicesRef.current.forEach((tokenIdx) => {
+            const token = tokensRef.current[tokenIdx];
+            currentScrambledWordsRef.current[tokenIdx] = token
+              .split("")
+              .map(() => GLYPHS[Math.floor(Math.random() * GLYPHS.length)])
+              .join("");
+          });
+        }
+
+        const result = tokensRef.current
+          .map((token: string, index: number) => {
+            if (wordIndicesRef.current.includes(index)) {
+              return currentScrambledWordsRef.current[index] || token;
+            }
+            return token;
+          })
           .join("");
-        setDisplayText(scrambled);
+
+        setDisplayText(result);
         animationFrameId = requestAnimationFrame(step);
         return;
       }
@@ -110,21 +158,44 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
       const activeElapsed = elapsed - delay;
       const progress = Math.min(activeElapsed / duration, 1);
 
-      const result = text
-        .split("")
-        .map((char, index) => {
-          if (char === " ") return " ";
-          
-          // Lock from left to right as animation progresses
-          const lockProgress = index / totalChars;
-          if (progress >= lockProgress) {
-            if (!revealedIndices.current.has(index)) {
-              revealedIndices.current.add(index);
-              playKeystrokeClick();
-            }
-            return char;
+      // Determine how many words should be locked in based on current progress
+      const wordsToReveal = Math.floor(progress * totalWords);
+
+      // Lock revealed words and play keystroke click sound
+      for (let i = 0; i < wordsToReveal; i++) {
+        const tokenIdx = revealOrderRef.current[i];
+        if (tokenIdx !== undefined && !revealedWordsRef.current.has(tokenIdx)) {
+          revealedWordsRef.current.add(tokenIdx);
+          playKeystrokeClick();
+        }
+      }
+
+      // Update scrambled characters for the remaining active words at a slower rate
+      const nowMs = Date.now();
+      const shouldUpdateScramble = nowMs - lastScrambleUpdateRef.current > 120;
+      if (shouldUpdateScramble) {
+        lastScrambleUpdateRef.current = nowMs;
+        wordIndicesRef.current.forEach((tokenIdx) => {
+          if (!revealedWordsRef.current.has(tokenIdx)) {
+            const token = tokensRef.current[tokenIdx];
+            currentScrambledWordsRef.current[tokenIdx] = token
+              .split("")
+              .map(() => GLYPHS[Math.floor(Math.random() * GLYPHS.length)])
+              .join("");
           }
-          return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+        });
+      }
+
+      // Reassemble the sentence (combining locked words, scrambled words, and spaces)
+      const result = tokensRef.current
+        .map((token: string, index: number) => {
+          if (wordIndicesRef.current.includes(index)) {
+            if (revealedWordsRef.current.has(index)) {
+              return token;
+            }
+            return currentScrambledWordsRef.current[index] || token;
+          }
+          return token;
         })
         .join("");
 
@@ -146,6 +217,7 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
 
   return <span>{displayText}</span>;
 };
+
 
 export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
   const [quote, setQuote] = useState<GuanQuote | null>(null);
