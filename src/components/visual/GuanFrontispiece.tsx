@@ -86,24 +86,36 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
 
   // Split text into tokens (words and spaces)
   const tokens = useMemo(() => text.split(/(\s+)/), [text]);
-  const wordIndices = useMemo(() => {
-    return tokens.map((t: string, i: number) => (t.trim().length > 0 ? i : -1)).filter((i: number) => i !== -1);
+  
+  // Assign a global index to every non-space character
+  const { charData, charCount } = useMemo(() => {
+    let globalCharIndex = 0;
+    const data = tokens.map((token: string) => {
+      if (token.trim().length === 0) {
+        return { isWord: false, token, chars: [] };
+      }
+      const chars = token.split("").map((char: string) => {
+        const index = globalCharIndex++;
+        return { char, index };
+      });
+      return { isWord: true, token, chars };
+    });
+    return { charData: data, charCount: globalCharIndex };
   }, [tokens]);
 
   const revealOrder = useMemo(() => {
-    const shuffled = [...wordIndices];
-    for (let i = shuffled.length - 1; i > 0; i--) {
+    const indices = Array.from({ length: charCount }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      [indices[i], indices[j]] = [indices[j], indices[i]];
     }
-    return shuffled;
-  }, [wordIndices]);
+    return indices;
+  }, [charCount]);
 
   useEffect(() => {
     let startTimestamp: number | null = null;
     let animationFrameId: number;
     let lastRevealedCount = 0;
-    const totalWords = wordIndices.length;
 
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
@@ -116,23 +128,23 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
 
       const activeElapsed = elapsed - delay;
       const progress = Math.min(activeElapsed / duration, 1);
-      const wordsToReveal = Math.floor(progress * totalWords);
+      const charsToReveal = Math.floor(progress * charCount);
 
-      if (wordsToReveal > lastRevealedCount) {
-        // play click for each new word revealed
-        // const newlyRevealedCount = wordsToReveal - lastRevealedCount;
+      if (charsToReveal > lastRevealedCount) {
+        // play click sound (if we uncomment it later)
+        // const newlyRevealedCount = charsToReveal - lastRevealedCount;
         // for (let i = 0; i < newlyRevealedCount; i++) {
         //   playKeystrokeClick();
         // }
 
         setRevealedIndices(prev => {
           const next = new Set(prev);
-          for (let i = 0; i < wordsToReveal; i++) {
+          for (let i = 0; i < charsToReveal; i++) {
             next.add(revealOrder[i]);
           }
           return next;
         });
-        lastRevealedCount = wordsToReveal;
+        lastRevealedCount = charsToReveal;
       }
 
       if (progress < 1) {
@@ -143,20 +155,25 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
     animationFrameId = requestAnimationFrame(step);
 
     return () => cancelAnimationFrame(animationFrameId);
-  }, [duration, delay, revealOrder, wordIndices.length]);
+  }, [duration, delay, revealOrder, charCount]);
 
   return (
     <span>
-      {tokens.map((token: string, i: number) => {
-        const isWord = wordIndices.includes(i);
-        const isRevealed = revealedIndices.has(i);
+      {charData.map((group, i) => {
+        if (!group.isWord) {
+          return <span key={i}>{group.token}</span>;
+        }
         return (
-          <span
-            key={i}
-            className={isWord ? "transition-opacity duration-75" : ""}
-            style={{ opacity: isWord ? (isRevealed ? 1 : 0) : 1 }}
-          >
-            {token}
+          <span key={i} className="whitespace-nowrap">
+            {group.chars.map((c) => (
+              <span
+                key={c.index}
+                className="transition-opacity duration-75"
+                style={{ opacity: revealedIndices.has(c.index) ? 1 : 0 }}
+              >
+                {c.char}
+              </span>
+            ))}
           </span>
         );
       })}
