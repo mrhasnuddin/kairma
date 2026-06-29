@@ -515,7 +515,7 @@ export const SiteShellV3: React.FC = () => {
                 <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] md:text-xs uppercase tracking-widest pt-4">
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 bg-theme-accent rounded-full animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
-                    <span className="text-theme-accent font-bold">Agent OS online</span>
+                    <span className="text-theme-text-muted">Agent OS online</span>
                   </div>
                   <span className="text-theme-border/50 select-none">/</span>
                   <div className="flex items-center gap-1.5">
