@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { guanCodex, GuanQuote } from "@/data/guan-codex";
 import { useLanguage } from "@/lib/language";
 import { motion, AnimatePresence } from "framer-motion";
@@ -82,67 +82,84 @@ interface ScrambleTextProps {
 }
 
 const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, delay = 200 }) => {
-  const [displayText, setDisplayText] = useState("");
-  const [showCursor, setShowCursor] = useState(true);
+  const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set());
 
-  // Blinking cursor effect
-  useEffect(() => {
-    const cursorInterval = setInterval(() => setShowCursor((v) => !v), 530);
-    return () => clearInterval(cursorInterval);
-  }, []);
+  // Split text into tokens (words and spaces)
+  const tokens = useMemo(() => text.split(/(\s+)/), [text]);
+  const wordIndices = useMemo(() => {
+    return tokens.map((t: string, i: number) => (t.trim().length > 0 ? i : -1)).filter((i: number) => i !== -1);
+  }, [tokens]);
+
+  const revealOrder = useMemo(() => {
+    const shuffled = [...wordIndices];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }, [wordIndices]);
 
   useEffect(() => {
     let startTimestamp: number | null = null;
     let animationFrameId: number;
-    let lastLength = 0;
+    let lastRevealedCount = 0;
+    const totalWords = wordIndices.length;
 
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const elapsed = timestamp - startTimestamp;
 
       if (elapsed < delay) {
-        setDisplayText("");
         animationFrameId = requestAnimationFrame(step);
         return;
       }
 
       const activeElapsed = elapsed - delay;
       const progress = Math.min(activeElapsed / duration, 1);
-      
-      const targetLength = Math.floor(progress * text.length);
-      
-      if (targetLength > lastLength) {
-        // Play click sound only if new non-space characters are revealed
-        const newlyRevealed = text.substring(lastLength, targetLength);
-        if (newlyRevealed.trim().length > 0) {
+      const wordsToReveal = Math.floor(progress * totalWords);
+
+      if (wordsToReveal > lastRevealedCount) {
+        // play click for each new word revealed
+        const newlyRevealedCount = wordsToReveal - lastRevealedCount;
+        for (let i = 0; i < newlyRevealedCount; i++) {
           playKeystrokeClick();
         }
-        lastLength = targetLength;
-        setDisplayText(text.substring(0, targetLength));
+
+        setRevealedIndices(prev => {
+          const next = new Set(prev);
+          for (let i = 0; i < wordsToReveal; i++) {
+            next.add(revealOrder[i]);
+          }
+          return next;
+        });
+        lastRevealedCount = wordsToReveal;
       }
 
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(step);
-      } else {
-        setDisplayText(text);
       }
     };
 
     animationFrameId = requestAnimationFrame(step);
 
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [text, duration, delay]);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [duration, delay, revealOrder, wordIndices.length]);
 
   return (
     <span>
-      {displayText}
-      <span 
-        className={`inline-block ml-[2px] font-light transition-opacity duration-75 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
-      >
-        |
-      </span>
+      {tokens.map((token: string, i: number) => {
+        const isWord = wordIndices.includes(i);
+        const isRevealed = revealedIndices.has(i);
+        return (
+          <span
+            key={i}
+            className={isWord ? "transition-opacity duration-75" : ""}
+            style={{ opacity: isWord ? (isRevealed ? 1 : 0) : 1 }}
+          >
+            {token}
+          </span>
+        );
+      })}
     </span>
   );
 };
