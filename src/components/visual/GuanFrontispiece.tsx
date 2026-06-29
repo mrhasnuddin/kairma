@@ -42,7 +42,7 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
 
   if (!isVisible || !quote) return null;
 
-  const isCjk = language === "zh-CN" || language === "zh-TW";
+  const isCjk = language === "zh-TW";
   const displayQuote = (isCjk && quote.original) ? quote.original : quote.quote;
 
   return (
