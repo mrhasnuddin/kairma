@@ -120,10 +120,10 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
 
       if (wordsToReveal > lastRevealedCount) {
         // play click for each new word revealed
-        const newlyRevealedCount = wordsToReveal - lastRevealedCount;
-        for (let i = 0; i < newlyRevealedCount; i++) {
-          playKeystrokeClick();
-        }
+        // const newlyRevealedCount = wordsToReveal - lastRevealedCount;
+        // for (let i = 0; i < newlyRevealedCount; i++) {
+        //   playKeystrokeClick();
+        // }
 
         setRevealedIndices(prev => {
           const next = new Set(prev);
