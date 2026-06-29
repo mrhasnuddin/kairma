@@ -1,9 +1,151 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { guanCodex, GuanQuote } from "@/data/guan-codex";
 import { useLanguage } from "@/lib/language";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Web Audio API synthesizer for clean mechanical typewriter sound clicks (0kb downloads, works offline)
+let audioCtx: AudioContext | null = null;
+let lastClickTime = 0;
+
+function playKeystrokeClick() {
+  if (typeof window === "undefined") return;
+
+  const nowMs = Date.now();
+  if (nowMs - lastClickTime < 65) return; // Throttle to maintain typewriter rhythm and avoid digital clipping
+  lastClickTime = nowMs;
+
+  try {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    if (!audioCtx) {
+      audioCtx = new AudioContextClass();
+    }
+
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume().catch(() => {});
+    }
+
+    const ctx = audioCtx;
+    const now = ctx.currentTime;
+
+    // 1. High frequency mechanical tap (noise snap)
+    const noiseBufferSize = ctx.sampleRate * 0.015; // 15ms transient
+    const noiseBuffer = ctx.createBuffer(1, noiseBufferSize, ctx.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseBufferSize; i++) {
+      noiseData[i] = Math.random() * 2 - 1;
+    }
+    const noiseSource = ctx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = "bandpass";
+    noiseFilter.frequency.setValueAtTime(1500 + Math.random() * 400, now);
+    noiseFilter.Q.setValueAtTime(6, now);
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.06, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+
+    // 2. Platen housing impact body (low frequency resonance)
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(140 + Math.random() * 30, now);
+    osc.frequency.exponentialRampToValueAtTime(70, now + 0.035);
+
+    const oscGain = ctx.createGain();
+    oscGain.gain.setValueAtTime(0.12, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+
+    noiseSource.start(now);
+    osc.start(now);
+    osc.stop(now + 0.04);
+  } catch (e) {
+    console.warn("AudioContext failed to initialize:", e);
+  }
+}
+
+const GLYPHS = "01アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン";
+
+interface ScrambleTextProps {
+  text: string;
+  duration?: number;
+  delay?: number;
+}
+
+const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, delay = 200 }) => {
+  const [displayText, setDisplayText] = useState("");
+  const revealedIndices = useRef<Set<number>>(new Set());
+
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    let animationFrameId: number;
+    const totalChars = text.length;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const elapsed = timestamp - startTimestamp;
+
+      if (elapsed < delay) {
+        // Show fully scrambled version initially
+        const scrambled = text
+          .split("")
+          .map((char) => (char === " " ? " " : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]))
+          .join("");
+        setDisplayText(scrambled);
+        animationFrameId = requestAnimationFrame(step);
+        return;
+      }
+
+      const activeElapsed = elapsed - delay;
+      const progress = Math.min(activeElapsed / duration, 1);
+
+      const result = text
+        .split("")
+        .map((char, index) => {
+          if (char === " ") return " ";
+          
+          // Lock from left to right as animation progresses
+          const lockProgress = index / totalChars;
+          if (progress >= lockProgress) {
+            if (!revealedIndices.current.has(index)) {
+              revealedIndices.current.add(index);
+              playKeystrokeClick();
+            }
+            return char;
+          }
+          return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+        })
+        .join("");
+
+      setDisplayText(result);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      } else {
+        setDisplayText(text);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [text, duration, delay]);
+
+  return <span>{displayText}</span>;
+};
 
 export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
   const [quote, setQuote] = useState<GuanQuote | null>(null);
@@ -21,16 +163,16 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
     const t1 = setTimeout(() => setStep(1), 500); // logo flickers in
     const t2 = setTimeout(() => setStep(2), 1500); // terminal types
 
-    // Fade out after 4 seconds
+    // Fade out after 4.5 seconds to accommodate the full typing animation length
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
-    }, 4000);
+    }, 4500);
 
-    // Unmount after 5 seconds
+    // Unmount after 5.5 seconds
     const removeTimer = setTimeout(() => {
       setIsVisible(false);
       onComplete();
-    }, 5000);
+    }, 5500);
 
     return () => {
       clearTimeout(t1);
@@ -54,7 +196,7 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
       <div className="max-w-3xl w-full px-8 md:px-12 text-center flex flex-col items-center z-10 relative mt-[-10vh]">
         {/* The Quote */}
         <p className="text-theme-text text-2xl md:text-4xl font-normal md:font-medium tracking-wide md:tracking-wider leading-relaxed md:leading-loose mb-8 md:mb-12 font-serif text-balance drop-shadow-sm">
-          {displayQuote}
+          <ScrambleText text={displayQuote} duration={2500} delay={400} />
         </p>
         
         {/* Attribution & Label */}
