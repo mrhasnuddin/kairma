@@ -83,6 +83,13 @@ interface ScrambleTextProps {
 
 const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, delay = 200 }) => {
   const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set());
+  const [showCursor, setShowCursor] = useState(true);
+
+  // Blinking cursor effect
+  useEffect(() => {
+    const cursorInterval = setInterval(() => setShowCursor((v) => !v), 530);
+    return () => clearInterval(cursorInterval);
+  }, []);
 
   // Split text into tokens (words and spaces)
   const tokens = useMemo(() => text.split(/(\s+)/), [text]);
@@ -177,6 +184,11 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
           </span>
         );
       })}
+      <span 
+        className={`inline-block ml-[2px] font-light transition-opacity duration-75 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
+      >
+        |
+      </span>
     </span>
   );
 };
