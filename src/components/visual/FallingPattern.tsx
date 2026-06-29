@@ -10,7 +10,7 @@ type FallingPatternProps = React.ComponentProps<"div"> & {
   backgroundColor?: string;
   /** Speed multiplier for the falling characters (default: 1) */
   speed?: number;
-  /** Blur intensity for the overlay effect (default: '3px') */
+  /** Blur intensity for the overlay effect - ignored in optimized version for performance */
   blurIntensity?: string;
   /** Pattern density - affects spacing of grid (default: 1) */
   density?: number;
@@ -22,7 +22,7 @@ export function FallingPattern({
   color = "var(--theme-accent)",
   backgroundColor = "var(--theme-void)",
   speed = 1,
-  blurIntensity = "0.8px",
+  blurIntensity = "0.8px", // Kept prop for compatibility, but ignored in DOM to save GPU
   density = 1,
   opacity = 0.15,
   className,
@@ -36,7 +36,7 @@ export function FallingPattern({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: false }); // alpha false optimizes rendering
     if (!ctx) return;
 
     let animationId: number;
@@ -50,7 +50,6 @@ export function FallingPattern({
     interface Drop {
       y: number;
       speed: number;
-      chars: string[];
     }
     
     let drops: Drop[] = [];
@@ -70,16 +69,9 @@ export function FallingPattern({
       columns = Math.floor(width / fontSize);
       drops = [];
       for (let i = 0; i < columns; i++) {
-        const speedVal = (0.15 + Math.random() * 0.45) * speed;
-        const initialY = Math.random() * -50;
-        const charList: string[] = [];
-        for (let j = 0; j < 60; j++) {
-          charList.push(chars[Math.floor(Math.random() * chars.length)]);
-        }
         drops[i] = {
-          y: initialY,
-          speed: speedVal,
-          chars: charList,
+          y: Math.random() * -(height / fontSize), // Start randomly offscreen
+          speed: (0.15 + Math.random() * 0.45) * speed,
         };
       }
     };
@@ -93,7 +85,7 @@ export function FallingPattern({
 
     // Speed control variables
     let lastTime = 0;
-    const baseFps = 24;
+    const baseFps = 24; // Reverted back to 24fps for a more cinematic feel
     const interval = 1000 / baseFps;
 
     // Resolve color strings/variables to RGB/RGBA for Canvas operations
@@ -115,7 +107,7 @@ export function FallingPattern({
         accent: resolvedColor,
         bg: bgMatch && bgMatch.length >= 3 
           ? [parseInt(bgMatch[0]), parseInt(bgMatch[1]), parseInt(bgMatch[2])]
-          : [11, 14, 11]
+          : (theme === "matrix-mode" ? [11, 14, 11] : [240, 240, 240])
       };
     };
 
@@ -124,28 +116,15 @@ export function FallingPattern({
       if (match && match.length >= 3) {
         return [parseInt(match[0]), parseInt(match[1]), parseInt(match[2])];
       }
-      if (colorStr.startsWith("#")) {
-        const hex = colorStr.replace("#", "");
-        if (hex.length === 3) {
-          return [
-            parseInt(hex[0] + hex[0], 16),
-            parseInt(hex[1] + hex[1], 16),
-            parseInt(hex[2] + hex[2], 16)
-          ];
-        }
-        if (hex.length === 6) {
-          return [
-            parseInt(hex.slice(0, 2), 16),
-            parseInt(hex.slice(2, 4), 16),
-            parseInt(hex.slice(4, 6), 16)
-          ];
-        }
-      }
       return theme === "matrix-mode" ? [31, 170, 104] : [200, 68, 46];
     };
 
     let colors = resolveColors();
     const rgb = parseRGB(colors.accent);
+
+    // Initial fill to avoid flashing
+    ctx.fillStyle = `rgb(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]})`;
+    ctx.fillRect(0, 0, width, height);
 
     const draw = (timestamp: number) => {
       animationId = requestAnimationFrame(draw);
@@ -153,62 +132,45 @@ export function FallingPattern({
       if (timestamp - lastTime < interval) return;
       lastTime = timestamp;
 
-      // Clear the canvas on every frame to ensure perfect contrast and sharpness
-      ctx.clearRect(0, 0, width, height);
+      const isDark = theme === "matrix-mode";
+
+      // 1. HIGH PERFORMANCE FADE: Draw a semi-transparent background box over everything
+      // This creates the trails organically without clearing the canvas or keeping arrays of chars
+      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.15)`;
+      ctx.fillRect(0, 0, width, height);
 
       // Configure font
       ctx.font = `bold ${fontSize}px monospace`;
       ctx.textAlign = "center";
-      
-      const isDark = theme === "matrix-mode";
 
       for (let i = 0; i < drops.length; i++) {
         const drop = drops[i];
-        const headY = Math.floor(drop.y);
-        const tailLength = 18;
-
-        // Mutate a few characters in the drop stream occasionally for flickering effect
-        if (Math.random() > 0.94) {
-          const mutateIdx = Math.floor(Math.random() * drop.chars.length);
-          drop.chars[mutateIdx] = chars[Math.floor(Math.random() * chars.length)];
-        }
-
-        for (let j = 0; j < tailLength; j++) {
-          const charY = headY - j;
-          if (charY < 0) continue;
-
-          const yPos = charY * fontSize;
-          if (yPos > height + fontSize) continue;
-
-          const xPos = i * fontSize + fontSize / 2;
-          const charIdx = charY % drop.chars.length;
-          const text = drop.chars[charIdx];
-
-          if (j === 0) {
-            // Head character: glowing white (dark theme) or dark ink (light theme)
-            ctx.fillStyle = isDark ? "#ffffff" : "#1F1A17";
-            ctx.shadowColor = isDark ? "rgba(31, 170, 104, 0.9)" : "rgba(200, 68, 46, 0.7)";
-            ctx.shadowBlur = 8;
-          } else if (j === 1) {
-            // High-brightness head successor character
-            ctx.fillStyle = isDark ? "#a3e635" : "#ea580c"; // bright green-yellow or bright orange
-            ctx.shadowBlur = 0;
-          } else {
-            // Tail characters: fade out over distance
-            const alpha = 1 - j / tailLength;
-            ctx.fillStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha * 0.95})`;
-            ctx.shadowBlur = 0;
-          }
-
-          ctx.fillText(text, xPos, yPos);
-        }
-
-        // Increment drop y position
+        const prevY = Math.floor(drop.y);
+        
         drop.y += drop.speed;
+        
+        const currentY = Math.floor(drop.y);
 
-        // Reset drop index once it leaves bottom screen
-        if ((headY - tailLength) * fontSize > height) {
-          drop.y = -Math.random() * 20;
+        // Only draw if we've advanced to a new grid cell to avoid heavy overdraw
+        if (currentY > prevY && currentY > 0) {
+          const xPos = i * fontSize + fontSize / 2;
+          const yPos = currentY * fontSize;
+
+          // Draw the trail (re-paint the previous head position with the accent color)
+          // This covers the old white head and replaces it with green/orange
+          ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+          const tailText = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(tailText, xPos, yPos - fontSize);
+
+          // Draw the new head (bright white/dark ink)
+          ctx.fillStyle = isDark ? "#ffffff" : "#1F1A17";
+          const headText = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(headText, xPos, yPos);
+        }
+
+        // Reset drop index once it leaves bottom screen (with some randomness)
+        if (currentY * fontSize > height && Math.random() > 0.95) {
+          drop.y = 0;
           drop.speed = (0.15 + Math.random() * 0.45) * speed;
         }
       }
@@ -231,13 +193,16 @@ export function FallingPattern({
       style={{ opacity: resolvedOpacity }}
       {...props}
     >
+      {/* 
+        Removed alpha channel on canvas and removed heavy CSS blur 
+        for massive performance gains. 
+      */}
       <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full z-0" />
       
-      {/* Blurring & monitor-dot CRT overlay grid */}
+      {/* Cheap CRT overlay grid (no expensive backdrop-filter) */}
       <div
         className="absolute inset-0 pointer-events-none z-10 dark:brightness-600"
         style={{
-          backdropFilter: blurIntensity ? `blur(${blurIntensity})` : undefined,
           backgroundImage: `radial-gradient(circle at 50% 50%, transparent 0, transparent 2px, ${backgroundColor} 2px)`,
           backgroundSize: `${8 * density}px ${8 * density}px`,
           opacity: 0.12,
@@ -248,3 +213,4 @@ export function FallingPattern({
 }
 
 export default FallingPattern;
+
