@@ -71,7 +71,7 @@ export function FallingPattern({
       for (let i = 0; i < columns; i++) {
         drops[i] = {
           y: Math.random() * -(height / fontSize), // Start randomly offscreen
-          speed: (0.15 + Math.random() * 0.45) * speed,
+          speed: (0.1 + Math.random() * 0.2) * speed,
         };
       }
     };
@@ -85,7 +85,7 @@ export function FallingPattern({
 
     // Speed control variables
     let lastTime = 0;
-    const baseFps = 24; // Reverted back to 24fps for a more cinematic feel
+    const baseFps = 60; // 60fps for buttery smooth rendering (fixes perceived lag)
     const interval = 1000 / baseFps;
 
     // Resolve color strings/variables to RGB/RGBA for Canvas operations
@@ -136,7 +136,8 @@ export function FallingPattern({
 
       // 1. HIGH PERFORMANCE FADE: Draw a semi-transparent background box over everything
       // This creates the trails organically without clearing the canvas or keeping arrays of chars
-      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.15)`;
+      // Lowered alpha to 0.08 to compensate for 60fps (keeps trails long)
+      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.08)`;
       ctx.fillRect(0, 0, width, height);
 
       // Configure font
@@ -171,7 +172,7 @@ export function FallingPattern({
         // Reset drop index once it leaves bottom screen (with some randomness)
         if (currentY * fontSize > height && Math.random() > 0.95) {
           drop.y = 0;
-          drop.speed = (0.15 + Math.random() * 0.45) * speed;
+          drop.speed = (0.1 + Math.random() * 0.2) * speed;
         }
       }
     };
