@@ -15,15 +15,6 @@ const navTranslations = {
     begin: "Begin",
     os: "operating system"
   },
-  "zh-CN": {
-    solutions: "解决方案",
-    about: "关于",
-    ecosystem: "生态系统",
-    community: "社区",
-    brief: "简报",
-    begin: "开始",
-    os: "操作系统"
-  },
   "zh-TW": {
     solutions: "解決方案",
     about: "關於",

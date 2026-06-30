@@ -4,7 +4,7 @@ import SiteShellV3 from "@/components/layout/SiteShellV3";
 export default function Home() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen w-full bg-[#0B0E0B] flex items-center justify-center font-mono text-xs text-[#1FAA68]">
+      <div className="min-h-screen w-full bg-[#0B0A0C] flex items-center justify-center font-mono text-xs text-[#C9402B]">
         // CONNECTING TO KAIRMA OS...
       </div>
     }>

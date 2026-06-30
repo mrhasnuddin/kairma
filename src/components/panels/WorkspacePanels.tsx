@@ -36,32 +36,6 @@ const panelTranslations = {
       codesOnline: "▸ REACTION CODES ONLINE",
     }
   },
-  "zh-CN": {
-    solutionsTabs: {
-      overview: "概览",
-      flywheel: "增长飞轮",
-      layers: "系统层级",
-      architecture: "系统架构",
-    },
-    aboutTabs: {
-      mission: "愿景使命",
-      whynow: "时代契机",
-      insights: "深度洞察",
-      moats: "壁垒优势",
-    },
-    runtime: {
-      online: "运行中",
-      osName: "系统名称",
-      cpuLoad: "CPU 负载",
-      memory: "内存占用",
-      dataMode: "数据模式",
-      status: "运行状态",
-      localSealed: "本地化 (安全锁定)",
-      secure: "安全",
-      shaderActive: "▸ KAIRMA 矩阵渲染激活",
-      codesOnline: "▸ 反馈逻辑已就绪",
-    }
-  },
   "zh-TW": {
     solutionsTabs: {
       overview: "概覽",
@@ -499,9 +473,9 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
             >
               <span>
                 {language === "en" && "EN"}
-                {language === "zh-CN" && "简"}
                 {language === "zh-TW" && "繁"}
                 {language === "vi" && "VN"}
+                {language === "ms" && "MY"}
               </span>
               <span className={`text-[7px] md:text-[8px] transition-transform duration-150 ${langDropdownOpen ? "rotate-180" : ""}`}>▼</span>
             </button>
@@ -515,7 +489,7 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="absolute right-0 top-full mt-1.5 w-28 border border-theme-border bg-theme-void/95 backdrop-blur-md shadow-2xl rounded-sm py-1 z-50 flex flex-col font-mono text-[11px] md:text-[12px]"
                 >
-                  {(["en", "zh-CN", "zh-TW", "vi"] as const).map((lang) => (
+                  {(["en", "zh-TW", "vi", "ms"] as const).map((lang) => (
                   <button
                     key={lang}
                     onClick={() => {
@@ -529,9 +503,9 @@ export const CoreRuntimePanel: React.FC<CoreRuntimePanelProps> = ({
                     }`}
                   >
                     {lang === "en" && "English"}
-                    {lang === "zh-CN" && "简体中文"}
                     {lang === "zh-TW" && "繁體中文"}
                     {lang === "vi" && "Tiếng Việt"}
+                    {lang === "ms" && "Melayu"}
                   </button>
                 ))}
                 </motion.div>

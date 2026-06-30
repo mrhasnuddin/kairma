@@ -20,9 +20,10 @@ import CodeXmlIcon from "@/components/ui/code-xml-icon";
 import { AnimatedIconHandle } from "@/components/ui/types";
 import { FallingPattern } from "@/components/visual/FallingPattern";
 import { useTheme } from "@/lib/theme";
-import { useLanguage, useSiteCopy } from "@/lib/language";
+import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
 import { EvilRadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, Dot, ActiveDot } from "@/components/evilcharts/charts/radar-chart";
+import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -31,116 +32,17 @@ import dynamic from "next/dynamic";
 const KairmaHero = dynamic(() => import("@/components/3d/KairmaHero"), { ssr: false });
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const BootSequence: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
-  const [step, setStep] = useState(0);
 
-  useEffect(() => {
-    // 1. Black screen (step 0) -> short delay
-    const t1 = setTimeout(() => setStep(1), 500);
-    // 2. Logo flickers in (step 1)
-    const t2 = setTimeout(() => setStep(2), 1500);
-    // 3. Terminal line types (step 2)
-    const t3 = setTimeout(() => setStep(3), 3000);
-    // 4. Complete boot (step 3) -> Triggers grid assembly
-    const t4 = setTimeout(() => onComplete(), 4000);
-
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, [onComplete]);
-
-  return (
-    <motion.div 
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-theme-void"
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 1, ease: "easeInOut" } }}
-    >
-      <div className="flex flex-col items-center justify-center w-full max-w-md px-6">
-        <AnimatePresence mode="wait">
-          {step >= 1 && (
-            <motion.div
-              key="logo"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: [0, 1, 0.5, 1], scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", times: [0, 0.4, 0.6, 1] }}
-              className="w-48 h-12 bg-theme-text mb-8"
-              style={{
-                WebkitMaskImage: 'url(/kairma-logo.svg)',
-                WebkitMaskSize: 'contain',
-                WebkitMaskRepeat: 'no-repeat',
-                WebkitMaskPosition: 'center',
-                maskImage: 'url(/kairma-logo.svg)',
-                maskSize: 'contain',
-                maskRepeat: 'no-repeat',
-                maskPosition: 'center',
-              }}
-            />
-          )}
-        </AnimatePresence>
-
-        <div className="h-8 flex items-center justify-center">
-          <AnimatePresence>
-            {step >= 2 && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="font-mono text-sm tracking-widest text-theme-accent"
-              >
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ staggerChildren: 0.05 }}
-                >
-                  {"INITIALIZING KAIRMA OS...".split("").map((char, i) => (
-                    <motion.span key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{char}</motion.span>
-                  ))}
-                </motion.span>
-                <motion.span 
-                  animate={{ opacity: [1, 0] }} 
-                  transition={{ repeat: Infinity, duration: 0.8 }}
-                  className="inline-block w-2 h-4 bg-theme-accent ml-1 align-middle"
-                />
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 const InteractiveBootBox: React.FC<{
   language: Language;
   setLanguage: (lang: Language) => void;
-  siteCopy: any;
   triggerCrt: () => void;
   getLangLabel: (lang: Language) => string;
   className?: string;
-}> = ({ language, setLanguage, siteCopy, triggerCrt, getLangLabel, className }) => {
+}> = ({ language, setLanguage, triggerCrt, getLangLabel, className }) => {
   const { theme } = useTheme();
-  const [step, setStep] = useState<"LANGUAGE" | "BOOTING" | "READY" | "STORY">("LANGUAGE");
-  const [visibleLines, setVisibleLines] = useState<number>(0);
-
-  useEffect(() => {
-    if (step === "BOOTING") {
-      setVisibleLines(0);
-      const delays = [800, 1400, 1800, 2200, 2600, 3000, 3400, 4200];
-      const timers = delays.map((delay, index) => 
-        setTimeout(() => setVisibleLines(index + 1), delay)
-      );
-      return () => timers.forEach(clearTimeout);
-    }
-  }, [step]);
-
-  useEffect(() => {
-    if (visibleLines >= 8 && step === "BOOTING") {
-      setStep("READY");
-    }
-  }, [visibleLines, step]);
-
-  const handleInitialLanguage = (l: Language) => {
-    setLanguage(l);
-    setStep("BOOTING");
-    triggerCrt();
-  };
+  const siteCopy = useSiteCopyV6();
 
   const handleNormalLanguage = (l: Language) => {
     setLanguage(l);
@@ -160,98 +62,22 @@ const InteractiveBootBox: React.FC<{
       />
       
       <div className="relative z-20 flex-1 flex flex-col w-full mx-auto p-8 overflow-y-auto no-scrollbar">
-        {step === "LANGUAGE" && (
-          <div className="flex flex-col gap-6 w-full font-mono select-none my-auto animate-in fade-in duration-500">
-            <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase">
-              KAIRMA OS BIOS v1.0<br/>INITIALIZING...<br/><br/>SELECT LOCALE:
-            </div>
-            <div className="flex flex-col gap-2 text-sm md:text-base font-bold">
-              {(["en", "zh-CN", "zh-TW", "vi"] as Language[]).map(l => (
-                <button 
-                  key={l}
-                  onClick={() => handleInitialLanguage(l)}
-                  className="text-left text-theme-accent hover:text-[#2aff9b] hover:bg-theme-accent/10 p-2.5 transition-all border border-transparent hover:border-theme-accent/30 focus:outline-none"
-                >
-                  {"> [ " + getLangLabel(l).toUpperCase() + " ]"}
-                </button>
-              ))}
-            </div>
+        <div className="flex flex-col gap-6 w-full font-mono select-none my-auto animate-in fade-in duration-500">
+          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line">
+            {siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"}
           </div>
-        )}
-
-        {(step === "BOOTING" || step === "READY") && (
-          <div className="flex flex-col gap-2 w-full font-mono select-none my-auto animate-in fade-in duration-500">
-            {visibleLines >= 1 && <div className="text-xs md:text-sm uppercase tracking-widest">{siteCopy.boot.title}</div>}
-            {visibleLines >= 2 && <div className="text-xs md:text-sm">{siteCopy.boot.separator}</div>}
-            {visibleLines >= 3 && (
-              <div className="text-xs md:text-sm flex justify-between">
-                <span>{siteCopy.boot.steps[0].text}</span>
-                <span className="text-theme-accent font-bold">{siteCopy.boot.steps[0].status}</span>
-              </div>
-            )}
-            {visibleLines >= 4 && (
-              <div className="text-xs md:text-sm flex justify-between">
-                <span>{siteCopy.boot.steps[1].text}</span>
-                <span className="text-theme-accent font-bold">{siteCopy.boot.steps[1].status}</span>
-              </div>
-            )}
-            {visibleLines >= 5 && (
-              <div className="text-xs md:text-sm flex justify-between">
-                <span>{siteCopy.boot.steps[2].text}</span>
-                <span className="text-theme-accent font-bold">{siteCopy.boot.steps[2].status}</span>
-              </div>
-            )}
-            {visibleLines >= 6 && <div className="text-xs md:text-sm">{siteCopy.boot.separator}</div>}
-            {visibleLines >= 7 && (
-              <div className="text-xs md:text-sm flex items-center gap-1 leading-none mt-2">
-                <span>{siteCopy.boot.ready}</span>
-                {visibleLines < 8 && (
-                  <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }} className="inline-block w-2 h-4 bg-theme-accent select-none">█</motion.span>
-                )}
-              </div>
-            )}
-            {step === "READY" && (
-              <div className="mt-8 flex flex-col gap-2 text-sm md:text-base font-bold">
-                <button 
-                  onClick={() => setStep("STORY")}
-                  className="text-left text-theme-accent hover:text-[#2aff9b] hover:bg-theme-accent/10 p-2.5 transition-all border border-transparent hover:border-theme-accent/30 focus:outline-none"
-                >
-                  {siteCopy.boot.ctaImmerse}
-                </button>
-              </div>
-            )}
+          <div className="grid grid-cols-2 gap-2 text-sm md:text-base font-bold">
+            {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => (
+              <button 
+                key={l}
+                onClick={() => handleNormalLanguage(l)}
+                className={`text-left p-2.5 transition-all border focus:outline-none ${language === l ? 'text-theme-text bg-theme-accent/10 border-theme-accent/30' : 'text-theme-accent hover:text-theme-text hover:bg-theme-accent/10 border-transparent hover:border-theme-accent/30'}`}
+              >
+                {"> [ " + getLangLabel(l).toUpperCase() + " ]"}
+              </button>
+            ))}
           </div>
-        )}
-
-        {step === "STORY" && (
-          <div className="flex flex-col h-full w-full justify-between animate-in fade-in duration-500 py-2">
-            <div className="flex flex-col gap-4 text-sm md:text-base leading-relaxed text-theme-accent/90">
-              <p className="uppercase tracking-widest text-xs text-theme-accent/50 mb-2">{siteCopy.storyIntro.osName}</p>
-              {siteCopy.storyIntro.lines.map((line: string, i: number) => (
-                <motion.p 
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1.5, delay: i * 0.8 }}
-                >
-                  {line}
-                </motion.p>
-              ))}
-            </div>
-            
-            <div className="flex flex-wrap gap-2 mt-auto pt-8">
-              {(["en", "zh-CN", "zh-TW", "vi"] as Language[]).map(l => (
-                <button 
-                  key={l}
-                  onClick={() => handleNormalLanguage(l)}
-                  className={`px-4 py-1.5 text-xs border rounded-full transition-colors ${language === l ? 'border-theme-accent bg-theme-accent/10 text-theme-accent' : 'border-theme-accent/30 text-theme-accent/50 hover:border-theme-accent hover:text-theme-accent'}`}
-                >
-                  {getLangLabel(l)}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </OSCard>
   );
@@ -260,7 +86,7 @@ const InteractiveBootBox: React.FC<{
 export const SiteShellV3: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const siteCopy = useSiteCopy();
+  const siteCopy = useSiteCopyV6();
   const [langOpen, setLangOpen] = useState(false);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
   const [compareModel, setCompareModel] = useState<string>("gpt4o");
@@ -287,9 +113,10 @@ export const SiteShellV3: React.FC = () => {
   const [crtFlash, setCrtFlash] = useState(false);
   const [pilotOpen, setPilotOpen] = useState(false);
   const [ipLocation, setIpLocation] = useState<{city: string, region: string, country: string, timezone: string} | null>(null);
-  const [isBooted, setIsBooted] = useState(false);
+  const [bootPhase, setBootPhase] = useState<"guan" | "terminal" | "ready">("guan");
   const [isDeployHovered, setIsDeployHovered] = useState(false);
-  const handleBootComplete = useCallback(() => setIsBooted(true), []);
+  const handleGuanComplete = useCallback(() => setBootPhase("ready"), []);
+  const handleBootComplete = useCallback(() => setBootPhase("ready"), []);
 
   const [pipelineState, setPipelineState] = useState<number>(0);
   const iconRefs = useRef<any[]>([]);
@@ -397,6 +224,56 @@ export const SiteShellV3: React.FC = () => {
     toggleTheme();
   };
 
+  // Centralized UI micro-copy translations for all 5 languages
+  const uiT: Record<string, Record<string, string>> = {
+    // Hero section
+    "system_online":        { en: "System: Online",        "zh-TW": "系統狀態: 上線",     vi: "Hệ thống: Trực tuyến",           ms: "Sistem: Dalam Talian" },
+    "the_shift":            { en: "The Shift",             "zh-TW": "轉移",               vi: "Sự chuyển đổi",                  ms: "Anjakan" },
+    // Digital Employees box
+    "digital_emp_heading":  { en: "Your first AI digital employees, deployed – not downloaded.", "zh-TW": "您的第一批 AI 數位員工，已部署，無需下載。", vi: "Nhân viên kỹ thuật số AI đầu tiên — được triển khai, không phải tải xuống.", ms: "Pekerja digital AI pertama anda — ditempatkan, bukan dimuat turun." },
+    "pilot_ready":          { en: "Pilot-ready",           "zh-TW": "試點就緒",           vi: "Sẵn sàng thử nghiệm",            ms: "Sedia perintis" },
+    "fde_configured":       { en: "FDE configured",        "zh-TW": "已配置 FDE",         vi: "Đã cấu hình FDE",                ms: "FDE dikonfigurasi" },
+    "customer_care":        { en: "Customer Care",         "zh-TW": "客戶服務",           vi: "Chăm sóc khách hàng",            ms: "Khidmat Pelanggan" },
+    "in_development":       { en: "In development",        "zh-TW": "開發中",             vi: "Đang phát triển",                ms: "Dalam pembangunan" },
+    "compliance":           { en: "Compliance",            "zh-TW": "合規審查",           vi: "Tuân thủ",                       ms: "Pematuhan" },
+    "private_runtime":      { en: "Private runtime",       "zh-TW": "私有運行環境",       vi: "Môi trường riêng tư",            ms: "Persekitaran peribadi" },
+    // CTA boxes
+    "for_developers":       { en: "For Developers",        "zh-TW": "面向開發者",         vi: "Dành cho nhà phát triển",         ms: "Untuk Pembangun" },
+    "for_operators":        { en: "For Operators",         "zh-TW": "面向營運方",         vi: "Dành cho nhà vận hành",           ms: "Untuk Operator" },
+    "view_docs":            { en: "View Docs",             "zh-TW": "查看文件",           vi: "Xem tài liệu",                   ms: "Lihat Dokumen" },
+    // Quote / pipeline
+    "quote":                { en: "Models got better.\nBut deployment velocity is\nwhere outcomes compound.", "zh-TW": "模型變得更好了。\n但部署速度才是\n業務成果產生複利的地方。", vi: "Mô hình tốt hơn.\nNhưng tốc độ triển khai\nmới là nơi kết quả cộng hưởng.", ms: "Model semakin baik.\nTetapi halaju penempatan\nadalah di mana hasil berganda." },
+    // OpenRouter / Model box
+    "syncing":              { en: "SYNCING...",            "zh-TW": "同步中...",           vi: "ĐANG ĐỒNG BỘ...",                ms: "MENYEGERAK..." },
+    "openrouter_live":      { en: "OPENROUTER SYNC: LIVE", "zh-TW": "OPENROUTER 同步: 運行中", vi: "OPENROUTER ĐỒNG BỘ: TRỰC TIẾP", ms: "OPENROUTER SEGERAK: LANGSUNG" },
+    "fetching_rankings":    { en: "FETCHING LATEST RANKINGS...", "zh-TW": "正在獲取最新排名...", vi: "ĐANG TẢI BẢNG XẾP HẠNG...",   ms: "MEMUATKAN KEDUDUKAN TERKINI..." },
+    "intel":                { en: "Intel",                 "zh-TW": "智能",               vi: "Trí tuệ",                        ms: "Kepintaran" },
+    "coding":               { en: "Coding",                "zh-TW": "代碼",               vi: "Lập trình",                      ms: "Pengekodan" },
+    "agentic":              { en: "Agentic",               "zh-TW": "智能體",             vi: "Tự hành",                        ms: "Agentik" },
+    "benchmarks_note":      { en: "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS.", "zh-TW": "* 基準數據由 ARTIFICIAL ANALYSIS 排行榜標準化。", vi: "* ĐIỂM CHUẨN ĐƯỢC CHUẨN HÓA BỞI BẢNG XẾP HẠNG ARTIFICIAL ANALYSIS.", ms: "* PENANDA ARAS DINORMALISASI OLEH PAPAN PENDAHULU ARTIFICIAL ANALYSIS." },
+    "top_daily_runtimes":   { en: "TOP DAILY RUNTIMES",    "zh-TW": "每日最熱運行環境",   vi: "MÔI TRƯỜNG CHẠY HÀNG ĐẦU HÀNG NGÀY", ms: "PERSEKITARAN HARIAN TERATAS" },
+    // Model detail modal
+    "runtime_module":       { en: "Runtime Module",        "zh-TW": "運行時模組",         vi: "Mô-đun vận hành",                ms: "Modul Masa Jalan" },
+    "specs_metrics":        { en: "Specs & Metrics",       "zh-TW": "規格與指標",         vi: "Thông số & Chỉ số",              ms: "Spesifikasi & Metrik" },
+    "context_window":       { en: "CONTEXT WINDOW",        "zh-TW": "上下文窗口",         vi: "CỬA SỔ NGỮ CẢNH",               ms: "TETINGKAP KONTEKS" },
+    "max_completion":       { en: "MAX COMPLETION",        "zh-TW": "最大輸出限制",       vi: "ĐẦU RA TỐI ĐA",                 ms: "PENYELESAIAN MAKS" },
+    "pricing_prompt":       { en: "PRICING (PROMPT)",      "zh-TW": "計費 (輸入)",        vi: "GIÁ (ĐẦU VÀO)",                 ms: "HARGA (PROMPT)" },
+    "pricing_comp":         { en: "PRICING (COMP)",        "zh-TW": "計費 (輸出)",        vi: "GIÁ (ĐẦU RA)",                  ms: "HARGA (PENYELESAIAN)" },
+    "cost_savings":         { en: "cost savings vs baseline", "zh-TW": "比基線模型節省成本", vi: "tiết kiệm chi phí so với cơ sở",  ms: "penjimatan kos berbanding garis asas" },
+    "benchmarks":           { en: "Benchmarks",            "zh-TW": "基準測試",           vi: "Điểm chuẩn",                     ms: "Penanda Aras" },
+    "intelligence":         { en: "Intelligence",          "zh-TW": "智能程度",           vi: "Trí tuệ",                        ms: "Kepintaran" },
+    "coding_speed":         { en: "Coding Speed",          "zh-TW": "代碼生成速度",       vi: "Tốc độ lập trình",               ms: "Kelajuan Pengekodan" },
+    "autonomy":             { en: "Autonomy",              "zh-TW": "自主執行力",         vi: "Tự chủ",                         ms: "Autonomi" },
+    "pending_eval":         { en: "PENDING EVAL",          "zh-TW": "等待評測",           vi: "CHỜ ĐÁNH GIÁ",                  ms: "MENUNGGU PENILAIAN" },
+    "latency_ttft":         { en: "LATENCY (TTFT)",        "zh-TW": "首字延遲 (TTFT)",    vi: "ĐỘ TRỄ (TTFT)",                 ms: "KEPENDAMAN (TTFT)" },
+    "throughput":           { en: "THROUGHPUT",             "zh-TW": "吞吐速度",           vi: "THÔNG LƯỢNG",                    ms: "DAYA PEMPROSESAN" },
+    "reliability":          { en: "RELIABILITY",           "zh-TW": "穩定性/上線率",      vi: "ĐỘ TIN CẬY",                    ms: "KEBOLEHPERCAYAAN" },
+    "verdict":              { en: "VERDICT:",              "zh-TW": "運營結論:",          vi: "KẾT LUẬN:",                      ms: "KEPUTUSAN:" },
+    "use_cases":            { en: "USE CASES:",            "zh-TW": "建議工作流:",        vi: "TRƯỜNG HỢP SỬ DỤNG:",           ms: "KES PENGGUNAAN:" },
+  };
+  const t = (key: string) => uiT[key]?.[language] ?? uiT[key]?.en ?? key;
+
+
   const staticFallbackModels = [
     { 
       id: "sakana-fugu-ultra", 
@@ -405,7 +282,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 1000000, 
       modality: "text+image->text", 
       pricing: { prompt: "0.000005", completion: "0.00003" }, 
-      description: language === 'en' ? "Top-tier agentic routing model." : "顶级的Agentic路由调度模型。", 
+      description: (language !== 'zh-TW') ? "Top-tier agentic routing model." : "顶级的Agentic路由调度模型。", 
       benchmarks: { intelligence_index: 85, coding_index: 80, agentic_index: 92 },
       provider: "Sakana AI",
       model_id: "sakana/fugu-ultra",
@@ -413,8 +290,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 110,
       throughput: 145,
       reliability: "99.99%",
-      use_cases: language === 'en' ? ["Agentic Routing", "Vision BD Outreach"] : ["Agentic 路由", "视觉 BD 拓展"],
-      verdict: language === 'en' ? "Recommended for fast-path routing and multi-modal pipeline operations." : "推荐用于快路径路由和多模态流水线操作。"
+      use_cases: (language !== 'zh-TW') ? ["Agentic Routing", "Vision BD Outreach"] : ["Agentic 路由", "视觉 BD 拓展"],
+      verdict: (language !== 'zh-TW') ? "Recommended for fast-path routing and multi-modal pipeline operations." : "推荐用于快路径路由和多模态流水线操作。"
     },
     { 
       id: "google-gemini-3.1-flash-image", 
@@ -423,7 +300,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 1000000, 
       modality: "text+image->text", 
       pricing: { prompt: "0.000000075", completion: "0.0000003" }, 
-      description: language === 'en' ? "Superfast multimodal vision model." : "超快的多模态视觉大模型。", 
+      description: (language !== 'zh-TW') ? "Superfast multimodal vision model." : "超快的多模态视觉大模型。", 
       benchmarks: { intelligence_index: 88, coding_index: 85, agentic_index: 78 },
       provider: "Google",
       model_id: "google/gemini-3.1-flash-image",
@@ -431,8 +308,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 85,
       throughput: 220,
       reliability: "99.98%",
-      use_cases: language === 'en' ? ["Vision Verification", "High-frequency Scraping"] : ["视觉验证", "高频爬取"],
-      verdict: language === 'en' ? "Highly recommended for vision checks and high-volume background tasks due to its speed and low pricing." : "由于其极高的速度和极低的价格，强烈推荐用于视觉校验和海量后台任务。"
+      use_cases: (language !== 'zh-TW') ? ["Vision Verification", "High-frequency Scraping"] : ["视觉验证", "高频爬取"],
+      verdict: (language !== 'zh-TW') ? "Highly recommended for vision checks and high-volume background tasks due to its speed and low pricing." : "由于其极高的速度和极低的价格，强烈推荐用于视觉校验和海量后台任务。"
     },
     { 
       id: "cohere-north-mini-code-free", 
@@ -441,7 +318,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 128000, 
       modality: "text->text", 
       pricing: { prompt: "0", completion: "0" }, 
-      description: language === 'en' ? "Highly efficient coding model (free)." : "高效的开源代码模型 (免费)。", 
+      description: (language !== 'zh-TW') ? "Highly efficient coding model (free)." : "高效的开源代码模型 (免费)。", 
       benchmarks: { intelligence_index: 80, coding_index: 95, agentic_index: 84 },
       provider: "Cohere",
       model_id: "cohere/north-mini-code",
@@ -449,8 +326,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 95,
       throughput: 180,
       reliability: "99.99%",
-      use_cases: language === 'en' ? ["Automated Coding", "Syntax Lints"] : ["自动代码生成", "语法校验"],
-      verdict: language === 'en' ? "Perfect for code linting and standard text-based agent loops." : "非常适合代码规范校验和标准的文本智能体循环操作。"
+      use_cases: (language !== 'zh-TW') ? ["Automated Coding", "Syntax Lints"] : ["自动代码生成", "语法校验"],
+      verdict: (language !== 'zh-TW') ? "Perfect for code linting and standard text-based agent loops." : "非常适合代码规范校验和标准的文本智能体循环操作。"
     },
     { 
       id: "z-ai-glm-5.2", 
@@ -459,7 +336,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 128000, 
       modality: "text->text", 
       pricing: { prompt: "0.0000001", completion: "0.0000002" }, 
-      description: language === 'en' ? "Leading reasoning and multilingual model." : "领先的推理与多语言大模型。", 
+      description: (language !== 'zh-TW') ? "Leading reasoning and multilingual model." : "领先的推理与多语言大模型。", 
       benchmarks: { intelligence_index: 90, coding_index: 88, agentic_index: 89 },
       provider: "Z.ai",
       model_id: "z-ai/glm-5.2",
@@ -467,8 +344,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 120,
       throughput: 110,
       reliability: "99.95%",
-      use_cases: language === 'en' ? ["Bilingual Translation", "Structured Reasoning"] : ["双语翻译", "结构化推理"],
-      verdict: language === 'en' ? "Excellent balanced model for localized tasks and multi-agent coordination." : "优秀的平衡大模型，适用于本地化任务 and 多智能体协作协调。"
+      use_cases: (language !== 'zh-TW') ? ["Bilingual Translation", "Structured Reasoning"] : ["双语翻译", "结构化推理"],
+      verdict: (language !== 'zh-TW') ? "Excellent balanced model for localized tasks and multi-agent coordination." : "优秀的平衡大模型，适用于本地化任务 and 多智能体协作协调。"
     },
     { 
       id: "moonshotai-kimi-k2.7-code", 
@@ -477,7 +354,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 200000, 
       modality: "text->text", 
       pricing: { prompt: "0.000001", completion: "0.000002" }, 
-      description: language === 'en' ? "Chinese code generation benchmark leader." : "中文代码生成与长文本理解专家。", 
+      description: (language !== 'zh-TW') ? "Chinese code generation benchmark leader." : "中文代码生成与长文本理解专家。", 
       benchmarks: { intelligence_index: 82, coding_index: 91, agentic_index: 81 },
       provider: "Moonshot",
       model_id: "moonshot/kimi-k2.7-code",
@@ -485,8 +362,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 130,
       throughput: 95,
       reliability: "99.96%",
-      use_cases: language === 'en' ? ["Chinese Dev Operations", "Long Codebases"] : ["中文开发运维", "长代码仓库解析"],
-      verdict: language === 'en' ? "Recommended for long-context analysis of complex Chinese codebases." : "推荐用于对复杂的中文长代码仓库进行深入分析与理解。"
+      use_cases: (language !== 'zh-TW') ? ["Chinese Dev Operations", "Long Codebases"] : ["中文开发运维", "长代码仓库解析"],
+      verdict: (language !== 'zh-TW') ? "Recommended for long-context analysis of complex Chinese codebases." : "推荐用于对复杂的中文长代码仓库进行深入分析与理解。"
     },
     { 
       id: "anthropic-claude-fable-latest", 
@@ -495,7 +372,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 200000, 
       modality: "text+image->text", 
       pricing: { prompt: "0.000003", completion: "0.000015" }, 
-      description: language === 'en' ? "Anthropic's next-gen reasoning agent." : "Anthropic新一代推理Agent model。", 
+      description: (language !== 'zh-TW') ? "Anthropic's next-gen reasoning agent." : "Anthropic新一代推理Agent model。", 
       benchmarks: { intelligence_index: 98, coding_index: 96, agentic_index: 97 },
       provider: "Anthropic",
       model_id: "anthropic/claude-fable-latest",
@@ -503,8 +380,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 145,
       throughput: 85,
       reliability: "99.99%",
-      use_cases: language === 'en' ? ["Complex System Design", "Strategic Autonomy"] : ["复杂系统设计", "战略性自主规划"],
-      verdict: language === 'en' ? "Frontier intelligence. Ideal for high-level decision tasks and complex agent architectures." : "前沿的顶级智能。最适合高级决策任务和复杂的智能体架构设计。"
+      use_cases: (language !== 'zh-TW') ? ["Complex System Design", "Strategic Autonomy"] : ["复杂系统设计", "战略性自主规划"],
+      verdict: (language !== 'zh-TW') ? "Frontier intelligence. Ideal for high-level decision tasks and complex agent architectures." : "前沿的顶级智能。最适合高级决策任务和复杂的智能体架构设计。"
     },
     { 
       id: "anthropic-claude-fable-5", 
@@ -513,7 +390,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 200000, 
       modality: "text+image->text", 
       pricing: { prompt: "0.000003", completion: "0.000015" }, 
-      description: language === 'en' ? "Anthropic's core reasoning flagship." : "Anthropic核心推理旗舰模型。", 
+      description: (language !== 'zh-TW') ? "Anthropic's core reasoning flagship." : "Anthropic核心推理旗舰模型。", 
       benchmarks: { intelligence_index: 96, coding_index: 94, agentic_index: 95 },
       provider: "Anthropic",
       model_id: "anthropic/claude-fable-5",
@@ -521,8 +398,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 150,
       throughput: 90,
       reliability: "99.99%",
-      use_cases: language === 'en' ? ["Architectural Planning", "System Evaluation"] : ["架构规划", "系统级深度评估"],
-      verdict: language === 'en' ? "Standard flagship. Delivers high logic performance and agentic reliability." : "旗舰级标准。具有极高的逻辑表现和可靠的智能体操作执行率。"
+      use_cases: (language !== 'zh-TW') ? ["Architectural Planning", "System Evaluation"] : ["架构规划", "系统级深度评估"],
+      verdict: (language !== 'zh-TW') ? "Standard flagship. Delivers high logic performance and agentic reliability." : "旗舰级标准。具有极高的逻辑表现和可靠的智能体操作执行率。"
     },
     { 
       id: "nex-agi-nex-n2-pro", 
@@ -531,7 +408,7 @@ export const SiteShellV3: React.FC = () => {
       context_length: 64000, 
       modality: "text->text", 
       pricing: { prompt: "0.0000015", completion: "0.0000045" }, 
-      description: language === 'en' ? "Frontier agentic workflow logic model." : "前沿Agentic工作流逻辑模型。", 
+      description: (language !== 'zh-TW') ? "Frontier agentic workflow logic model." : "前沿Agentic工作流逻辑模型。", 
       benchmarks: { intelligence_index: 70, coding_index: 68, agentic_index: 85 },
       provider: "Nex AGI",
       model_id: "nex-agi/nex-n2-pro",
@@ -539,8 +416,8 @@ export const SiteShellV3: React.FC = () => {
       ttft: 165,
       throughput: 75,
       reliability: "99.92%",
-      use_cases: language === 'en' ? ["Workflow Execution", "Logic Branching"] : ["工作流执行", "逻辑分支决策"],
-      verdict: language === 'en' ? "Niche logic model optimized for branching workflows and direct execution commands." : "专为分支工作流和命令直接执行优化的小众逻辑模型。"
+      use_cases: (language !== 'zh-TW') ? ["Workflow Execution", "Logic Branching"] : ["工作流执行", "逻辑分支决策"],
+      verdict: (language !== 'zh-TW') ? "Niche logic model optimized for branching workflows and direct execution commands." : "专为分支工作流和命令直接执行优化的小众逻辑模型。"
     }
   ];
 
@@ -565,16 +442,18 @@ export const SiteShellV3: React.FC = () => {
       ttft: model.ttft || (isFallback?.ttft) || 120,
       throughput: model.throughput || (isFallback?.throughput) || 95,
       reliability: model.reliability || (isFallback?.reliability) || "99.98%",
-      use_cases: model.use_cases || (isFallback?.use_cases) || (language === 'en' ? ["Reasoning Tasks", "Text Generation"] : ["推理任务", "文本生成"]),
-      verdict: model.verdict || (isFallback?.verdict) || (language === 'en' ? "Highly capable general runtime. Suitable for standard OS workflows." : "高效的通用运行环境。适用于标准OS工作流。")
+      use_cases: model.use_cases || (isFallback?.use_cases) || ((language !== 'zh-TW') ? ["Reasoning Tasks", "Text Generation"] : ["推理任务", "文本生成"]),
+      verdict: model.verdict || (isFallback?.verdict) || ((language !== 'zh-TW') ? "Highly capable general runtime. Suitable for standard OS workflows." : "高效的通用运行环境。适用于标准OS工作流。")
     };
   };
 
   const getLangLabel = (lang: Language) => {
     if (lang === "en") return "EN";
-    if (lang === "zh-CN") return "简";
     if (lang === "zh-TW") return "繁";
+    if (lang === "ko") return "KR";
+    if (lang === "ja") return "JP";
     if (lang === "vi") return "VI";
+    if (lang === "ms") return "MY";
     return "EN";
   };
 
@@ -590,7 +469,7 @@ export const SiteShellV3: React.FC = () => {
       <div className="pointer-events-none fixed inset-0 z-[998] opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
 
       <AnimatePresence>
-        {!isBooted && <BootSequence onComplete={handleBootComplete} />}
+        {bootPhase === "guan" && <GuanFrontispiece onComplete={handleGuanComplete} />}
       </AnimatePresence>
 
       {crtFlash && (
@@ -600,10 +479,13 @@ export const SiteShellV3: React.FC = () => {
       {/* --- Main Bento Grid --- */}
       <motion.main 
         initial={{ opacity: 0, y: 20 }}
-        animate={isBooted ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        animate={bootPhase === "ready" ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="relative z-10 w-full pt-6 md:pt-12 pb-32"
+        className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32"
       >
+        
+        {bootPhase === "ready" && (
+          <div className="flex flex-col gap-12 md:gap-24 fade-in">
         <BentoGrid>
           {/* Row 1 */}
           {/* 00: The Anchor (Hero Command Card) */}
@@ -624,86 +506,74 @@ export const SiteShellV3: React.FC = () => {
                 }}
               />
               <p className="font-mono text-sm tracking-tight text-theme-text font-bold mb-4">
-                {siteCopy.fdeHero.h1}
+                {siteCopy.hero_left.h1}
               </p>
               <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
-                {siteCopy.fdeHero.sub}
+                {siteCopy.hero_left.sub}
               </p>
             </div>
             
             <div className="mt-6 relative z-10 flex flex-col justify-between flex-1">
               <div className="group/cta">
                 <button 
-                  onMouseEnter={() => setIsDeployHovered(true)}
-                  onMouseLeave={() => setIsDeployHovered(false)}
-                  onClick={() => setPilotOpen(true)}
-                  className="relative w-full py-3 mb-2 bg-theme-accent text-[#0B0E0B] font-mono text-xs font-bold uppercase tracking-widest rounded transition-all hover:scale-[1.02] hover:shadow-[0_0_15px_var(--color-theme-accent)] overflow-hidden group/btn"
+                  disabled
+                  className="relative w-full py-3 mb-6 bg-theme-accent/10 border border-theme-accent/20 text-theme-accent/40 font-mono text-xs font-bold uppercase tracking-widest rounded cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <span className="relative z-10 group-hover/btn:hidden">{siteCopy.fdeHero.ctaPilot}</span>
-                  <span className="relative z-10 hidden group-hover/btn:inline-flex items-center gap-1">
-                    DEPLOYMENT REQUEST PREPARED<span className="w-1.5 h-3 bg-[#0B0E0B] animate-pulse" />
-                  </span>
-                </button>
-                <button className="w-full py-2 border border-theme-border/50 text-theme-text font-mono text-xs uppercase tracking-widest rounded hover:border-theme-accent transition-colors mb-6">
-                  {siteCopy.fdeHero.ctaWorks}
+                  COMING SOON
                 </button>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <div className="px-4 py-1.5 rounded-full border border-theme-border/30 text-[10px] font-mono uppercase flex items-center gap-2 select-none">
-                  <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
-                  {language === "en" ? "System: Online" : "系统状态: 在线"}
-                </div>
+              <div className="flex items-center justify-end w-full">
                 <ThemeSwitcher />
               </div>
             </div>
           </OSCard>
 
           {/* 01: Main Hero Canvas */}
-          <OSCard className="col-span-1 md:col-span-3 row-span-1 p-0 overflow-hidden relative min-h-[400px]">
+          <OSCard overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
             <div className="w-full h-full flex flex-col md:flex-row relative">
               
               {/* Top-Right Mini Status */}
               <div className="absolute top-4 right-6 z-30 pointer-events-none hidden md:flex items-center gap-2 px-3 py-1 bg-theme-void/80 backdrop-blur-sm border border-theme-accent/30 rounded-full">
                 <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                <span className="font-mono text-[9px] uppercase tracking-widest text-theme-accent">OPENROUTER SYNC: LIVE</span>
+                <span className="font-mono text-[9px] md:text-xs uppercase tracking-widest text-theme-accent">OPENROUTER SYNC: LIVE</span>
               </div>
 
-              {/* Left 40%: Copy and System Status */}
-              <div className="w-full md:w-[40%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
+              {/* Left 55%: Copy and System Status */}
+              <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl">
-                    {siteCopy.fdeHero.canvasH1}
+                  <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
+                    {siteCopy.hero_center.h1}
                   </h1>
                   
-                  <p className="font-mono text-sm text-theme-text-muted leading-relaxed drop-shadow-md mb-8">
-                    {siteCopy.fdeHero.canvasSub}
+                  <p className="font-mono text-sm text-theme-text-muted leading-relaxed drop-shadow-md mb-8 max-w-xl">
+                    {siteCopy.hero_center.body}
                   </p>
                 </div>
 
                 {/* Status List */}
-                <div className="mt-auto space-y-2.5 font-mono text-xs uppercase tracking-widest">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-theme-accent rounded-full" />
-                    <span className="text-theme-accent">Agent OS online</span>
+                <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] md:text-xs uppercase tracking-widest pt-4">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 bg-theme-accent rounded-full animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
+                    <span className="text-theme-text-muted">Agent OS online</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                  <span className="text-theme-border/50 select-none">/</span>
+                  <div className="flex items-center gap-1.5">
                     <span className="text-theme-text-muted">Data routing</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                  <span className="text-theme-border/50 select-none">/</span>
+                  <div className="flex items-center gap-1.5">
                     <span className="text-theme-text-muted">Workflow sync</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-theme-text-muted rounded-full" />
+                  <span className="text-theme-border/50 select-none">/</span>
+                  <div className="flex items-center gap-1.5">
                     <span className="text-theme-text-muted">Runtime sealed</span>
                   </div>
                 </div>
               </div>
 
-              {/* Right 60%: Globe */}
-              <div className="w-full md:w-[60%] h-[400px] relative z-10 flex items-center justify-center">
+              {/* Right 45%: Globe */}
+              <div className="w-full md:w-[45%] h-[400px] relative z-10 flex items-center justify-center">
                 <DeploymentGlobe theme={theme} />
               </div>
             </div>
@@ -714,7 +584,6 @@ export const SiteShellV3: React.FC = () => {
           <InteractiveBootBox 
             language={language}
             setLanguage={setLanguage}
-            siteCopy={siteCopy}
             triggerCrt={triggerCrt}
             getLangLabel={getLangLabel}
             className="col-span-1 md:col-span-1 row-span-1"
@@ -744,12 +613,12 @@ export const SiteShellV3: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                  <span className="font-mono text-[10px] text-theme-accent uppercase tracking-widest">
-                    {language === 'en' ? 'The Shift' : '转移'}
+                  <span className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest">
+                    {t("the_shift")}
                   </span>
                 </div>
                 <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text mb-6">
-                  {siteCopy.fdeShift.heading}
+                {siteCopy.shift.h}
                 </h2>
               </div>
 
@@ -771,7 +640,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 0 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 0 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Model
@@ -806,7 +675,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 2 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 2 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Workflow
@@ -841,7 +710,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 4 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 4 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Deployment
@@ -876,7 +745,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 6 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-[9px] uppercase tracking-widest text-center transition-colors duration-500 ${
+                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
                     pipelineState === 6 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
                   } mt-1`}>
                     Outcome
@@ -885,9 +754,7 @@ export const SiteShellV3: React.FC = () => {
               </div>
 
               <div className="mt-4 font-mono text-sm text-theme-text-muted leading-relaxed whitespace-pre-line">
-                {language === 'en' 
-                  ? "Models got better.\nBut deployment velocity is\nwhere outcomes compound." 
-                  : "模型变得更好了。\n但是部署速度才是\n业务成果产生复利的地方。"}
+                {t("quote")}
               </div>
             </div>
 
@@ -896,23 +763,47 @@ export const SiteShellV3: React.FC = () => {
           {/* Section 3: Forward Deployment */}
           <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
             <div>
-              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.fdeDeployment.heading}</h2>
-              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.fdeDeployment.desc}</p>
+              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.panel_keep.h}</h2>
+              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.panel_keep.body}</p>
             </div>
           </OSCard>
 
-          {/* Row 3 */}
-          {/* 03: The Foundry (Radar Chart replaced with dynamic horizontal bar chart) */}
+          {/* Row 3: Four Moats */}
+          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 relative overflow-hidden group">
+            <div className="flex justify-between items-center mb-6 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.moats.label}</h3>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 font-mono text-sm leading-relaxed text-theme-text-muted">
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">01.</strong> {siteCopy.moats.card_1}
+              </div>
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">02.</strong> {siteCopy.moats.card_2}
+              </div>
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">03.</strong> {siteCopy.moats.card_3}
+              </div>
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">04.</strong> {siteCopy.moats.card_4}
+              </div>
+            </div>
+          </OSCard>
+
+          {/* Row 4+5 */}
+          {/* 04: The Foundry (Leaderboard) */}
           <OSCard className="col-span-1 md:col-span-3 row-span-2 p-6 flex flex-col overflow-hidden min-h-[550px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.ecosystemModels.title}</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">MODEL LEADERBOARD</h3>
               </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] font-mono tracking-wider">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
                 <span className="text-theme-text-muted">
-                  {modelsLoading ? (language === 'en' ? "SYNCING..." : "同步中...") : (language === 'en' ? "OPENROUTER SYNC: LIVE" : "OPENROUTER同步: 运行中")}
+                  {modelsLoading ? t("syncing") : t("openrouter_live")}
                 </span>
               </div>
             </div>
@@ -920,7 +811,7 @@ export const SiteShellV3: React.FC = () => {
             {modelsLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center text-theme-text-muted font-mono text-xs uppercase tracking-widest gap-2">
                 <div className="w-6 h-6 border-2 border-theme-accent border-t-transparent rounded-full animate-spin" />
-                <span>{language === 'en' ? "FETCHING LATEST RANKINGS..." : "正在获取最新排名..."}</span>
+                <span>{t("fetching_rankings")}</span>
               </div>
             ) : (
               <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
@@ -931,10 +822,10 @@ export const SiteShellV3: React.FC = () => {
                     <div className="flex gap-1.5 p-1 bg-theme-void/80 border border-theme-border/20 rounded-md mb-6">
                       {(["intelligence_index", "coding_index", "agentic_index"] as const).map((metric) => {
                         const label = metric === "intelligence_index" 
-                          ? (language === 'en' ? "Intel" : "智能")
+                          ? t("intel")
                           : metric === "coding_index"
-                            ? (language === 'en' ? "Coding" : "代码")
-                            : (language === 'en' ? "Agentic" : "智能体");
+                            ? t("coding")
+                            : t("agentic");
                         const isActive = chartMetric === metric;
                         return (
                           <button
@@ -994,17 +885,15 @@ export const SiteShellV3: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="text-[10px] font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-6">
-                    {language === 'en' 
-                      ? "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS." 
-                      : "* 基准数据由 ARTIFICIAL ANALYSIS 排行榜标准化。"}
+                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-6">
+                    {t("benchmarks_note")}
                   </div>
                 </div>
 
                 {/* Right: Model list (6 cols) */}
                 <div className="lg:col-span-6 flex flex-col min-h-0 border-t lg:border-t-0 lg:border-l border-theme-border/30 pt-6 lg:pt-0 lg:pl-6">
                   <p className="font-mono text-xs md:text-sm font-semibold text-theme-text-muted mb-4 uppercase tracking-widest shrink-0">
-                    {language === 'en' ? "TOP DAILY RUNTIMES" : "每日最热运行环境"}
+                    {t("top_daily_runtimes")}
                   </p>
                   <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
                     <div className="flex flex-col gap-2.5">
@@ -1023,7 +912,7 @@ export const SiteShellV3: React.FC = () => {
                             </div>
                             
                             <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[10px] text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
+                              <span className="text-[10px] md:text-xs text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
                                 {specs.provider.toUpperCase()}
                               </span>
                             </div>
@@ -1041,9 +930,7 @@ export const SiteShellV3: React.FC = () => {
           <OSCard className="col-span-1 md:col-span-1 row-span-2 p-6 flex flex-col justify-between overflow-hidden">
             <div className="mb-6">
               <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text text-balance">
-                {language === 'en' 
-                  ? "Your first AI digital employees, deployed – not downloaded." 
-                  : "您的第一批AI数字员工，已部署，无需下载。"}
+                {t("digital_emp_heading")}
               </h2>
             </div>
             
@@ -1052,7 +939,7 @@ export const SiteShellV3: React.FC = () => {
                 {
                   id: "kol",
                   title: "KOL BD",
-                  status: language === 'en' ? "Pilot-ready" : "试点就绪",
+                  status: t("pilot_ready"),
                   statusColor: "text-theme-accent",
                   dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
                   ref: kolIconRef
@@ -1060,23 +947,23 @@ export const SiteShellV3: React.FC = () => {
                 {
                   id: "content",
                   title: "Content Ops",
-                  status: language === 'en' ? "FDE configured" : "已配置FDE",
+                  status: t("fde_configured"),
                   statusColor: "text-theme-accent",
                   dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
                   ref: contentIconRef
                 },
                 {
                   id: "care",
-                  title: language === 'en' ? "Customer Care" : "客户服务",
-                  status: language === 'en' ? "In development" : "开发中",
+                  title: t("customer_care"),
+                  status: t("in_development"),
                   statusColor: "text-amber-500",
                   dotColor: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]",
                   ref: customerIconRef
                 },
                 {
                   id: "compliance",
-                  title: language === 'en' ? "Compliance" : "合规审查",
-                  status: language === 'en' ? "Private runtime" : "私有运行环境",
+                  title: t("compliance"),
+                  status: t("private_runtime"),
                   statusColor: "text-theme-accent",
                   dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
                   ref: complianceIconRef
@@ -1150,13 +1037,13 @@ export const SiteShellV3: React.FC = () => {
                   <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                     <CodeXmlIcon ref={codeIconRef} size={18} className="text-theme-accent" />
                   </span>
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{language === 'en' ? 'For Developers' : '面向开发者'}</span>
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_developers")}</span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.fdePilot.developers.heading}</h2>
-                <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.fdePilot.developers.desc}</p>
+                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.dev_smithy.h}</h2>
+                <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
               <button className="self-start mt-6 px-5 py-2.5 border border-theme-text text-theme-text font-mono text-xs uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
-                {language === "en" ? "View Docs" : "查看文档"} <span>→</span>
+                {t("view_docs")} <span>→</span>
               </button>
             </div>
           </OSCard>
@@ -1189,20 +1076,22 @@ export const SiteShellV3: React.FC = () => {
                     <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                       <ShieldCheck ref={shieldCtaIconRef} size={18} className="text-theme-accent" />
                     </span>
-                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{language === 'en' ? 'For Operators' : '面向运营者'}</span>
+                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_operators")}</span>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.fdePilot.operators.heading}</h2>
-                  <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.fdePilot.operators.desc}</p>
+                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.operators.h}</h2>
+                  <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">
-                  <button className="self-start px-5 py-2.5 bg-theme-accent text-[#0B0E0B] font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
-                    {siteCopy.fdeHero.ctaPilot} <span>→</span>
+                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
+                    {siteCopy.operators.cta} <span>→</span>
                   </button>
                 </div>
               </div>
             </div>
           </OSCard>
         </BentoGrid>
+          </div>
+        )}
       </motion.main>
 
       {/* Model Detail Popup Modal */}
@@ -1231,7 +1120,7 @@ export const SiteShellV3: React.FC = () => {
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.95, y: 15, opacity: 0 }}
                 transition={{ type: "spring", duration: 0.5 }}
-                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-xl p-6 md:p-8 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono"
+                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-3xl p-6 md:p-10 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Close Button */}
@@ -1246,73 +1135,78 @@ export const SiteShellV3: React.FC = () => {
                 </button>
 
                 {/* Header Section */}
-                <div className="mb-6 border-b border-theme-border/20 pb-4 pr-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[10px] uppercase font-bold text-theme-accent px-2 py-0.5 border border-theme-accent/30 rounded bg-theme-accent/5">
+                <div className="mb-8 border-b border-theme-border/20 pb-5 pr-10">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs uppercase font-bold text-theme-accent px-2 py-0.5 border border-theme-accent/30 rounded bg-theme-accent/5">
                       {specs.provider}
                     </span>
-                    <span className="text-[10px] uppercase font-bold text-theme-text-muted px-2 py-0.5 border border-theme-border/40 rounded bg-theme-void">
-                      {language === 'en' ? 'Runtime Module' : '运行期模块'}
+                    <span className="text-xs uppercase font-bold text-theme-text-muted px-2 py-0.5 border border-theme-border/40 rounded bg-theme-void">
+                      {t("runtime_module")}
                     </span>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-theme-text">{model.name}</h3>
-                  <p className="text-xs text-theme-text-muted mt-1 select-all">{specs.model_id}</p>
+                  <h3 className="text-2xl md:text-3xl font-bold text-theme-text">{model.name}</h3>
+                  <p className="text-sm text-theme-text-muted mt-1 select-all">{specs.model_id}</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-8">
                   {/* Left Column: Tech Specs */}
-                  <div className="space-y-4">
-                    <h4 className="text-xs uppercase tracking-widest text-theme-accent font-bold">{language === 'en' ? 'Specs & Metrics' : '规格与指标'}</h4>
+                  <div className="space-y-5">
+                    <h4 className="text-sm uppercase tracking-widest text-theme-accent font-bold">{t("specs_metrics")}</h4>
                     
-                    <div className="space-y-2.5 text-xs text-theme-text">
+                    <div className="space-y-3 text-sm text-theme-text">
                       <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
-                        <span className="text-theme-text-muted">{language === 'en' ? 'CONTEXT WINDOW' : '上下文窗口'}</span>
+                        <span className="text-theme-text-muted">{t("context_window")}</span>
                         <span className="font-bold">{(model.context_length ?? 0).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
-                        <span className="text-theme-text-muted">{language === 'en' ? 'MAX COMPLETION' : '最大输出限制'}</span>
+                        <span className="text-theme-text-muted">{t("max_completion")}</span>
                         <span className="font-bold">{(specs.max_output).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
-                        <span className="text-theme-text-muted">{language === 'en' ? 'PRICING (PROMPT)' : '计费 (输入)'}</span>
+                        <span className="text-theme-text-muted">{t("pricing_prompt")}</span>
                         <span className="font-mono font-bold">${(Number(model.pricing?.prompt ?? 0) * 1000000).toFixed(2)} / 1M tkn</span>
                       </div>
                       <div className="flex justify-between items-center border-b border-theme-border/10 pb-1.5">
-                        <span className="text-theme-text-muted">{language === 'en' ? 'PRICING (COMP)' : '计费 (输出)'}</span>
+                        <span className="text-theme-text-muted">{t("pricing_comp")}</span>
                         <span className="font-mono font-bold">${(Number(model.pricing?.completion ?? 0) * 1000000).toFixed(2)} / 1M tkn</span>
                       </div>
                     </div>
 
                     {/* Cost efficiency badge */}
                     {!isBaseline && ratioPercent > 0 && (
-                      <div className="p-2.5 border border-theme-accent/20 bg-theme-accent/5 rounded-lg flex items-center gap-2">
+                      <div className="p-3 border border-theme-accent/20 bg-theme-accent/5 rounded-lg flex items-center gap-2.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                        <span className="text-[10px] text-theme-accent font-bold tracking-wide uppercase">
-                          {language === 'en' ? `${ratioPercent}% cost savings vs baseline` : `比基线模型节省 ${ratioPercent}% 成本`}
+                        <span className="text-xs text-theme-accent font-bold tracking-wide uppercase">
+                          {`${ratioPercent}% ${t("cost_savings")}`}
                         </span>
                       </div>
                     )}
                   </div>
 
                   {/* Right Column: Benchmarks */}
-                  <div className="space-y-4">
-                    <h4 className="text-xs uppercase tracking-widest text-theme-accent font-bold">{language === 'en' ? 'Benchmarks' : '基准测试'}</h4>
+                  <div className="space-y-5">
+                    <h4 className="text-sm uppercase tracking-widest text-theme-accent font-bold">{t("benchmarks")}</h4>
                     
-                    <div className="space-y-3.5">
+                    <div className="space-y-4">
                       {([
-                        { key: "intelligence_index", label: language === 'en' ? "Intelligence" : "智能程度", color: "bg-[#9C5AFF]" },
-                        { key: "coding_index", label: language === 'en' ? "Coding Speed" : "代码生成速度", color: "bg-[#10A37F]" },
-                        { key: "agentic_index", label: language === 'en' ? "Autonomy" : "自主执行力", color: "bg-[#D4783A]" }
+                        { key: "intelligence_index", label: t("intelligence"), color: "bg-[#9C5AFF]" },
+                        { key: "coding_index", label: t("coding_speed"), color: "bg-[#10A37F]" },
+                        { key: "agentic_index", label: t("autonomy"), color: "bg-[#D4783A]" }
                       ] as const).map((b) => {
-                        const score = model.benchmarks?.[b.key] ?? 0;
+                        const score = model.benchmarks?.[b.key];
+                        const hasScore = score != null && score > 0;
                         return (
-                          <div key={b.key} className="space-y-1">
-                            <div className="flex justify-between items-center text-[10px] text-theme-text-muted">
+                          <div key={b.key} className={`space-y-1.5 ${!hasScore ? 'opacity-50' : ''}`}>
+                            <div className="flex justify-between items-center text-xs text-theme-text-muted">
                               <span className="uppercase">{b.label}</span>
-                              <span className="font-bold text-theme-text">{score}%</span>
+                              <span className="font-bold text-theme-text">
+                                {hasScore ? `${score}%` : t("pending_eval")}
+                              </span>
                             </div>
-                            <div className="h-1.5 w-full bg-theme-void border border-theme-border/20 rounded-full overflow-hidden">
-                              <div className={`h-full rounded-full ${b.color}`} style={{ width: `${score}%` }} />
+                            <div className="h-2 w-full bg-theme-void border border-theme-border/20 rounded-full overflow-hidden">
+                              {hasScore && (
+                                <div className={`h-full rounded-full ${b.color}`} style={{ width: `${score}%` }} />
+                              )}
                             </div>
                           </div>
                         );
@@ -1322,32 +1216,32 @@ export const SiteShellV3: React.FC = () => {
                 </div>
 
                 {/* Operational Speeds */}
-                <div className="grid grid-cols-3 gap-2.5 p-3.5 bg-theme-void/50 border border-theme-border/20 rounded-xl mb-6">
+                <div className="grid grid-cols-3 gap-2.5 p-4 md:p-5 bg-theme-void/50 border border-theme-border/20 rounded-xl mb-8">
                   <div className="text-center">
-                    <span className="block text-[9px] uppercase tracking-wider text-theme-text-muted mb-1">{language === 'en' ? 'LATENCY (TTFT)' : '首字延迟 (TTFT)'}</span>
-                    <span className="text-xs md:text-sm font-bold text-theme-text">{specs.ttft}ms</span>
+                    <span className="block text-[10px] md:text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("latency_ttft")}</span>
+                    <span className="text-sm md:text-xl font-bold text-theme-text">{specs.ttft}ms</span>
                   </div>
                   <div className="text-center border-x border-theme-border/20">
-                    <span className="block text-[9px] uppercase tracking-wider text-theme-text-muted mb-1">{language === 'en' ? 'THROUGHPUT' : '吞吐速度'}</span>
-                    <span className="text-xs md:text-sm font-bold text-theme-text">{specs.throughput} tkn/s</span>
+                    <span className="block text-[10px] md:text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("throughput")}</span>
+                    <span className="text-sm md:text-xl font-bold text-theme-text">{specs.throughput} tkn/s</span>
                   </div>
                   <div className="text-center">
-                    <span className="block text-[9px] uppercase tracking-wider text-theme-text-muted mb-1">{language === 'en' ? 'RELIABILITY' : '稳定性/在线率'}</span>
-                    <span className="text-xs md:text-sm font-bold text-theme-accent">{specs.reliability}</span>
+                    <span className="block text-[10px] md:text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("reliability")}</span>
+                    <span className="text-sm md:text-xl font-bold text-theme-accent">{specs.reliability}</span>
                   </div>
                 </div>
 
                 {/* Verdict Section */}
-                <div className="space-y-2 border-t border-theme-border/20 pt-4 text-xs">
+                <div className="space-y-3 border-t border-theme-border/20 pt-5 text-sm">
                   <div className="flex gap-2">
-                    <span className="text-theme-text-muted uppercase font-bold shrink-0">{language === 'en' ? 'VERDICT:' : '运营结论:'}</span>
+                    <span className="text-theme-text-muted uppercase font-bold shrink-0">{t("verdict")}</span>
                     <span className="text-theme-text leading-relaxed font-bold">{specs.verdict}</span>
                   </div>
-                  <div className="flex gap-2">
-                    <span className="text-theme-text-muted uppercase font-bold shrink-0">{language === 'en' ? 'USE CASES:' : '建议工作流:'}</span>
-                    <div className="flex flex-wrap gap-1.5">
+                  <div className="flex gap-2 mt-1">
+                    <span className="text-theme-text-muted uppercase font-bold shrink-0 mt-1">{t("use_cases")}</span>
+                    <div className="flex flex-wrap gap-2">
                       {specs.use_cases.map((uc: string, idx: number) => (
-                        <span key={idx} className="px-2 py-0.5 border border-theme-border/40 bg-theme-void rounded text-[10px] text-theme-text font-bold">
+                        <span key={idx} className="px-2.5 py-1 border border-theme-border/40 bg-theme-void rounded text-xs text-theme-text font-bold">
                           {uc}
                         </span>
                       ))}

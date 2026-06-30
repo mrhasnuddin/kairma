@@ -45,13 +45,13 @@ export const SealedBoxVisual: React.FC = () => {
 
       // Theme Colors
       const isDark = theme === "matrix-mode";
-      const accentColor = isDark ? "#1FAA68" : "#C8442E";
-      const accentGlow = isDark ? "rgba(31, 170, 104, 0.45)" : "rgba(200, 68, 46, 0.45)";
-      const accentDim = isDark ? "rgba(31, 170, 104, 0.15)" : "rgba(200, 68, 46, 0.15)";
+      const accentColor = isDark ? "#C9402B" : "#00492E";
+      const accentGlow = isDark ? "rgba(201, 64, 43, 0.45)" : "rgba(0, 73, 46, 0.45)";
+      const accentDim = isDark ? "rgba(201, 64, 43, 0.15)" : "rgba(0, 73, 46, 0.15)";
       const chromeColor = isDark ? "#A0A0A8" : "#55524E";
 
       // 1. Draw Abstract Background Radar Circles
-      ctx.strokeStyle = isDark ? "rgba(31, 170, 104, 0.08)" : "rgba(200, 68, 46, 0.08)";
+      ctx.strokeStyle = isDark ? "rgba(201, 64, 43, 0.08)" : "rgba(0, 73, 46, 0.08)";
       ctx.lineWidth = 0.8;
       ctx.beginPath();
       ctx.arc(cx, cy + 20, 120, 0, Math.PI * 2);

@@ -261,12 +261,6 @@ export const SiteShell: React.FC = () => {
                     {"> [ ENGLISH ]"}
                   </button>
                   <button 
-                    onClick={() => { setLanguage("zh-CN"); setBiosComplete(true); }}
-                    className="text-left hover:text-[#2aff9b] hover:bg-[#1FAA68]/10 p-2 transition-all border border-transparent hover:border-[#1FAA68]/30 focus:outline-none"
-                  >
-                    {"> [ 简体中文 ]"}
-                  </button>
-                  <button 
                     onClick={() => { setLanguage("zh-TW"); setBiosComplete(true); }}
                     className="text-left hover:text-[#2aff9b] hover:bg-[#1FAA68]/10 p-2 transition-all border border-transparent hover:border-[#1FAA68]/30 focus:outline-none"
                   >

@@ -3,6 +3,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { siteTranslations, Language } from "@/data/site-translations";
 import { SiteCopyType } from "@/data/site-copy";
+import { siteTranslationsV4 } from "@/data/site-translations-v4";
+import { SiteCopyTypeV4 } from "@/data/site-copy-v4";
+import { siteTranslationsV6 } from "@/data/site-translations-v6";
+import { SiteCopyTypeV6 } from "@/data/site-copy-v6";
 
 export const LANGUAGE_KEY = "kairma-language";
 
@@ -19,7 +23,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem(LANGUAGE_KEY) as Language | null;
-    if (saved === "en" || saved === "zh-CN" || saved === "zh-TW" || saved === "vi") {
+    if (saved === "en" || saved === "zh-TW" || saved === "vi" || saved === "ms" || saved === "ko" || saved === "ja") {
       setLanguageState(saved);
     }
     setMounted(true);
@@ -50,4 +54,14 @@ export function useLanguage() {
 export function useSiteCopy(): SiteCopyType {
   const { language } = useLanguage();
   return siteTranslations[language] || siteTranslations["en"];
+}
+
+export function useSiteCopyV4(): SiteCopyTypeV4 {
+  const { language } = useLanguage();
+  return siteTranslationsV4[language] || siteTranslationsV4["en"];
+}
+
+export function useSiteCopyV6(): SiteCopyTypeV6 {
+  const { language } = useLanguage();
+  return siteTranslationsV6[language] || siteTranslationsV6["en"];
 }

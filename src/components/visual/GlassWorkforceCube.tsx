@@ -38,8 +38,8 @@ export const GlassWorkforceCube: React.FC<GlassWorkforceCubeProps> = ({
     // Get theme colors dynamically from CSS variables
     const getThemeColors = () => {
       const style = getComputedStyle(document.documentElement);
-      const accent = style.getPropertyValue("--theme-accent").trim() || "#1FAA68";
-      const voidCol = style.getPropertyValue("--theme-void").trim() || "#0B0E0B";
+      const accent = style.getPropertyValue("--theme-accent").trim() || "#C9402B";
+      const voidCol = style.getPropertyValue("--theme-void").trim() || "#0B0A0C";
       return { accent, voidCol };
     };
 

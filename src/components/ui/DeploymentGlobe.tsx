@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import createGlobe from "cobe";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 interface RouteData {
   id: string;
@@ -32,6 +34,23 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [data, setData] = useState<ModelLayerData | null>(null);
   const [hoveredRoute, setHoveredRoute] = useState<RouteData | null>(null);
+  const [selectedRoute, setSelectedRoute] = useState<RouteData | null>(null);
+
+  const handleNextRoute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!data) return;
+    const currentIndex = data.routes.findIndex((r) => r.id === selectedRoute?.id);
+    const nextIndex = (currentIndex + 1) % data.routes.length;
+    setSelectedRoute(data.routes[nextIndex]);
+  };
+
+  const handlePrevRoute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!data) return;
+    const currentIndex = data.routes.findIndex((r) => r.id === selectedRoute?.id);
+    const prevIndex = (currentIndex - 1 + data.routes.length) % data.routes.length;
+    setSelectedRoute(data.routes[prevIndex]);
+  };
   
   // Track hovered state in ref so the animation loop can read it instantly on every frame
   const isHoveredRef = useRef(false);
@@ -73,10 +92,13 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
     const GLOBE_RESOLUTION = 720; // 360 * 2
     
     // Theme-compatible colors
-    // Xuan Mode (light) uses #af3621 -> rgb(175, 54, 33) -> [0.69, 0.21, 0.13]
-    // Matrix Mode (dark) uses #1faa68 -> rgb(31, 170, 104) -> [0.12, 0.67, 0.41]
-    const markerColor = isLight ? [0.69, 0.21, 0.13] : [0.12, 0.67, 0.41];
-    const glowColor = isLight ? [0.69, 0.21, 0.13] : [0.12, 0.67, 0.41];
+    // Light mode uses Green #00492E -> [0, 0.286, 0.18]
+    // Dark mode uses Red #C9402B -> [0.788, 0.251, 0.169]
+    const markerColor = isLight ? [0, 0.286, 0.18] : [0.788, 0.251, 0.169];
+    const glowColor = isLight ? [0, 0.286, 0.18] : [0.788, 0.251, 0.169];
+
+    // Dotted area (countries) baseColor: slightly light color to contrast background and accent
+    const baseColor = isLight ? [0.75, 0.85, 0.8] : [0.35, 0.15, 0.12];
 
     const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 2,
@@ -84,13 +106,11 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
       height: GLOBE_RESOLUTION,
       phi: currentPhi,
       theta: currentTheta,
-      dark: isLight ? 0 : 1,
+      dark: isLight ? 0 : 1, // 0 makes inner fill white, 1 makes it dark (matches background)
       diffuse: 1.2,
       mapSamples: 16000,
       mapBrightness: 6, // Match official example brightness
-      // baseColor determines the color of the land dots in dark mode.
-      // We set it to a bright green [0.3, 0.8, 0.4] so the green dots stand out.
-      baseColor: isLight ? [0.95, 0.95, 0.95] : [0.3, 0.8, 0.4], 
+      baseColor: baseColor as any, 
       markerColor: markerColor as any, 
       glowColor: glowColor as any,
       markers: markers as any,
@@ -198,6 +218,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
             <div
               key={route.id}
               className={`absolute group cursor-pointer anchor-${route.id}`}
+              onClick={() => setSelectedRoute(route)}
               style={{
                 position: "absolute",
                 top: "anchor(center)",
@@ -236,7 +257,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -5, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-[280px] p-4 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-[280px] p-4 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none z-[100]"
                   >
                     <div className="font-mono text-xs uppercase tracking-wider mb-2.5 pb-1.5 border-b border-theme-border/50 text-theme-accent flex justify-between">
                       <span>{route.role}</span>
@@ -273,6 +294,105 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
           }
         }
       `}} />
+
+      {/* Node Detail Popup Modal - Rendered via Portal to escape overflow-hidden containers */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedRoute && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-theme-void/85 backdrop-blur-md z-[9999] flex items-center justify-center p-4"
+              onClick={() => setSelectedRoute(null)}
+            >
+              <motion.div 
+                initial={{ scale: 0.95, y: 15, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.95, y: 15, opacity: 0 }}
+                transition={{ type: "spring", duration: 0.5 }}
+                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-3xl p-6 md:p-10 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* CRT Scanline Overlay */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_3px] opacity-30 pointer-events-none z-0 mix-blend-overlay" />
+                
+                {/* CRT Moving Scan Bar */}
+                <motion.div 
+                  className="absolute left-0 right-0 h-[80px] bg-gradient-to-b from-transparent via-theme-accent/5 to-transparent pointer-events-none z-0 mix-blend-screen"
+                  initial={{ top: "-80px" }}
+                  animate={{ top: "100%" }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Close Button */}
+                <button 
+                  onClick={() => setSelectedRoute(null)}
+                  className="absolute top-4 right-4 p-2 text-theme-text-muted hover:text-theme-accent transition-colors rounded-full border border-theme-border/40 hover:border-theme-accent/40 bg-theme-void z-10"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                {/* Header Section */}
+                <div className="mb-8 border-b border-theme-border/20 pb-5 pr-10 flex justify-between items-end relative z-10">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-pulse" />
+                      <span className="text-[10px] md:text-xs text-theme-accent font-bold uppercase tracking-widest bg-theme-accent/10 px-2 py-0.5 rounded">
+                        Node Active
+                      </span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-theme-text tracking-tight uppercase mb-1">{selectedRoute.role}</h2>
+                    <p className="text-theme-text-muted text-sm uppercase tracking-wider">{selectedRoute.location}</p>
+                  </div>
+                  
+                  {/* Pagination Controls */}
+                  <div className="flex items-center gap-2 mb-1">
+                    <button onClick={handlePrevRoute} className="p-2 border border-theme-border/30 rounded hover:border-theme-accent/50 hover:text-theme-accent text-theme-text-muted transition-colors">
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button onClick={handleNextRoute} className="p-2 border border-theme-border/30 rounded hover:border-theme-accent/50 hover:text-theme-accent text-theme-text-muted transition-colors">
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 gap-4 md:gap-6 mb-8 relative z-10">
+                  <div className="bg-theme-void/50 border border-theme-border/20 rounded-xl p-4 md:p-6 flex flex-col gap-2">
+                    <span className="text-[10px] md:text-xs text-theme-text-muted uppercase tracking-widest">Model Engine</span>
+                    <div className="flex items-end gap-2">
+                      <span className="text-lg md:text-xl font-bold text-theme-text">{selectedRoute.modelId}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-theme-void/50 border border-theme-border/20 rounded-xl p-4 md:p-6 flex flex-col gap-2">
+                    <span className="text-[10px] md:text-xs text-theme-text-muted uppercase tracking-widest">Context Window</span>
+                    <div className="flex items-end gap-2">
+                      <span className="text-lg md:text-xl font-bold text-theme-text">{selectedRoute.contextLimit}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-theme-void/50 border border-theme-border/20 rounded-xl p-4 md:p-6 flex flex-col gap-2">
+                    <span className="text-[10px] md:text-xs text-theme-text-muted uppercase tracking-widest">Est. Cost / 1M</span>
+                    <div className="flex items-end gap-2">
+                      <span className="text-lg md:text-xl font-bold text-theme-accent">{selectedRoute.promptCost}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-theme-void/50 border border-theme-border/20 rounded-xl p-4 md:p-6 flex flex-col gap-2">
+                    <span className="text-[10px] md:text-xs text-theme-text-muted uppercase tracking-widest">Runtime State</span>
+                    <div className="flex items-end gap-2">
+                      <span className="text-lg md:text-xl font-bold text-theme-text capitalize">{selectedRoute.visualState.replace("-", " ")}</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };
