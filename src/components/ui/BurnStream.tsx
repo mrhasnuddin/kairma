@@ -32,7 +32,7 @@ export function BurnStream() {
   return (
     <div className="flex-1 flex flex-col justify-center overflow-hidden opacity-20 pointer-events-none relative my-4">
       {/* Gradient mask to fade out top and bottom */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0B0E0B] via-transparent to-[#0B0E0B] z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-theme-void via-transparent to-theme-void z-10" />
       
       {lines.map((line, i) => (
         <div 
@@ -43,7 +43,7 @@ export function BurnStream() {
         </div>
       ))}
       <div className="absolute inset-0 flex items-center justify-center z-20">
-        <span className="text-theme-accent font-mono text-xs tracking-widest bg-[#0B0E0B] px-2 py-1 border border-theme-accent/20">
+        <span className="text-theme-accent font-mono text-xs tracking-widest bg-theme-void px-2 py-1 border border-theme-accent/20">
           DATA_BLEED_ACTIVE
         </span>
       </div>

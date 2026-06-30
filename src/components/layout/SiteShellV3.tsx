@@ -20,7 +20,7 @@ import CodeXmlIcon from "@/components/ui/code-xml-icon";
 import { AnimatedIconHandle } from "@/components/ui/types";
 import { FallingPattern } from "@/components/visual/FallingPattern";
 import { useTheme } from "@/lib/theme";
-import { useLanguage, useSiteCopyV4 } from "@/lib/language";
+import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
 import { EvilRadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, Dot, ActiveDot } from "@/components/evilcharts/charts/radar-chart";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
@@ -65,12 +65,12 @@ const InteractiveBootBox: React.FC<{
           <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase">
             KAIRMA OS BIOS v1.0<br/>LOCALE SETTINGS:
           </div>
-          <div className="flex flex-col gap-2 text-sm md:text-base font-bold">
-            {(["en", "zh-TW", "vi", "ms"] as Language[]).map(l => (
+          <div className="grid grid-cols-2 gap-2 text-sm md:text-base font-bold">
+            {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => (
               <button 
                 key={l}
                 onClick={() => handleNormalLanguage(l)}
-                className={`text-left p-2.5 transition-all border focus:outline-none ${language === l ? 'text-[#2aff9b] bg-theme-accent/10 border-theme-accent/30' : 'text-theme-accent hover:text-[#2aff9b] hover:bg-theme-accent/10 border-transparent hover:border-theme-accent/30'}`}
+                className={`text-left p-2.5 transition-all border focus:outline-none ${language === l ? 'text-theme-text bg-theme-accent/10 border-theme-accent/30' : 'text-theme-accent hover:text-theme-text hover:bg-theme-accent/10 border-transparent hover:border-theme-accent/30'}`}
               >
                 {"> [ " + getLangLabel(l).toUpperCase() + " ]"}
               </button>
@@ -85,7 +85,7 @@ const InteractiveBootBox: React.FC<{
 export const SiteShellV3: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const siteCopy = useSiteCopyV4();
+  const siteCopy = useSiteCopyV6();
   const [langOpen, setLangOpen] = useState(false);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
   const [compareModel, setCompareModel] = useState<string>("gpt4o");
@@ -449,6 +449,8 @@ export const SiteShellV3: React.FC = () => {
   const getLangLabel = (lang: Language) => {
     if (lang === "en") return "EN";
     if (lang === "zh-TW") return "繁";
+    if (lang === "ko") return "KR";
+    if (lang === "ja") return "JP";
     if (lang === "vi") return "VI";
     if (lang === "ms") return "MY";
     return "EN";
@@ -503,42 +505,30 @@ export const SiteShellV3: React.FC = () => {
                 }}
               />
               <p className="font-mono text-sm tracking-tight text-theme-text font-bold mb-4">
-                {siteCopy.hero.h1}
+                {siteCopy.hero_left.h1}
               </p>
               <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
-                {siteCopy.hero.sub}
+                {siteCopy.hero_left.sub}
               </p>
             </div>
             
             <div className="mt-6 relative z-10 flex flex-col justify-between flex-1">
               <div className="group/cta">
                 <button 
-                  onMouseEnter={() => setIsDeployHovered(true)}
-                  onMouseLeave={() => setIsDeployHovered(false)}
-                  onClick={() => setPilotOpen(true)}
-                  className="relative w-full py-3 mb-2 bg-theme-accent text-[#0B0E0B] font-mono text-xs font-bold uppercase tracking-widest rounded transition-all hover:scale-[1.02] hover:shadow-[0_0_15px_var(--color-theme-accent)] overflow-hidden group/btn"
+                  disabled
+                  className="relative w-full py-3 mb-6 bg-theme-accent/10 border border-theme-accent/20 text-theme-accent/40 font-mono text-xs font-bold uppercase tracking-widest rounded cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <span className="relative z-10 group-hover/btn:hidden">{siteCopy.hero.cta_primary}</span>
-                  <span className="relative z-10 hidden group-hover/btn:inline-flex items-center gap-1">
-                    DEPLOYMENT REQUEST PREPARED<span className="w-1.5 h-3 bg-[#0B0E0B] animate-pulse" />
-                  </span>
-                </button>
-                <button className="w-full py-2 border border-theme-border/50 text-theme-text font-mono text-xs uppercase tracking-widest rounded hover:border-theme-accent transition-colors mb-6">
-                  {siteCopy.hero.cta_secondary}
+                  COMING SOON
                 </button>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <div className="px-4 py-1.5 rounded-full border border-theme-border/30 text-[10px] md:text-xs font-mono uppercase flex items-center gap-2 select-none">
-                  <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
-                  {t("system_online")}
-                </div>
+              <div className="flex items-center justify-end w-full">
                 <ThemeSwitcher />
               </div>
             </div>
           </OSCard>
 
           {/* 01: Main Hero Canvas */}
-          <OSCard className="col-span-1 md:col-span-3 row-span-1 p-0 overflow-hidden relative min-h-[400px]">
+          <OSCard overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
             <div className="w-full h-full flex flex-col md:flex-row relative">
               
               {/* Top-Right Mini Status */}
@@ -552,11 +542,11 @@ export const SiteShellV3: React.FC = () => {
                 
                 <div className="pointer-events-none">
                   <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
-                    {siteCopy.hero.sub}
+                    {siteCopy.hero_center.h1}
                   </h1>
                   
                   <p className="font-mono text-sm text-theme-text-muted leading-relaxed drop-shadow-md mb-8 max-w-xl">
-                    {siteCopy.hero.bio}
+                    {siteCopy.hero_center.body}
                   </p>
                 </div>
 
@@ -627,7 +617,7 @@ export const SiteShellV3: React.FC = () => {
                   </span>
                 </div>
                 <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text mb-6">
-                {siteCopy.s01_problem.heading}
+                {siteCopy.shift.h}
                 </h2>
               </div>
 
@@ -772,18 +762,42 @@ export const SiteShellV3: React.FC = () => {
           {/* Section 3: Forward Deployment */}
           <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
             <div>
-              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.s05_architecture.heading}</h2>
-              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.s05_architecture.customer_side}</p>
+              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.panel_keep.h}</h2>
+              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.panel_keep.body}</p>
             </div>
           </OSCard>
 
-          {/* Row 3 */}
-          {/* 03: The Foundry (Radar Chart replaced with dynamic horizontal bar chart) */}
+          {/* Row 3: Four Moats */}
+          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 relative overflow-hidden group">
+            <div className="flex justify-between items-center mb-6 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.moats.label}</h3>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 font-mono text-sm leading-relaxed text-theme-text-muted">
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">01.</strong> {siteCopy.moats.card_1}
+              </div>
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">02.</strong> {siteCopy.moats.card_2}
+              </div>
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">03.</strong> {siteCopy.moats.card_3}
+              </div>
+              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
+                <strong className="text-theme-text block mb-2 text-base">04.</strong> {siteCopy.moats.card_4}
+              </div>
+            </div>
+          </OSCard>
+
+          {/* Row 4+5 */}
+          {/* 04: The Foundry (Leaderboard) */}
           <OSCard className="col-span-1 md:col-span-3 row-span-2 p-6 flex flex-col overflow-hidden min-h-[550px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.s06_moats.heading}</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">MODEL LEADERBOARD</h3>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
@@ -1024,8 +1038,8 @@ export const SiteShellV3: React.FC = () => {
                   </span>
                   <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_developers")}</span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.s04_what.heading}</h2>
-                <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.s04_what.footer}</p>
+                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.dev_smithy.h}</h2>
+                <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
               <button className="self-start mt-6 px-5 py-2.5 border border-theme-text text-theme-text font-mono text-xs uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
                 {t("view_docs")} <span>→</span>
@@ -1063,12 +1077,12 @@ export const SiteShellV3: React.FC = () => {
                     </span>
                     <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_operators")}</span>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.s08_howitworks.heading}</h2>
-                  <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.s07_story.heading}</p>
+                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.operators.h}</h2>
+                  <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">
-                  <button className="self-start px-5 py-2.5 bg-theme-accent text-[#0B0E0B] font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
-                    {siteCopy.hero.cta_primary} <span>→</span>
+                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
+                    {siteCopy.operators.cta} <span>→</span>
                   </button>
                 </div>
               </div>

@@ -33,6 +33,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("data-theme", initialTheme);
     if (initialTheme === "xuan-mode") {
       document.documentElement.classList.add("xuan-mode");
+    } else {
+      document.documentElement.classList.remove("xuan-mode");
     }
     setMounted(true);
   }, []);
@@ -49,8 +51,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    const nextTheme = theme === "matrix-mode" ? "xuan-mode" : "matrix-mode";
-    setTheme(nextTheme);
+    const themes: Theme[] = ["matrix-mode", "xuan-mode"];
+    const nextIndex = (themes.indexOf(theme) + 1) % themes.length;
+    setTheme(themes[nextIndex]);
   }, [theme, setTheme]);
 
   return React.createElement(

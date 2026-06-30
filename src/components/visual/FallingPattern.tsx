@@ -90,7 +90,7 @@ export function FallingPattern({
 
     // Resolve color strings/variables to RGB/RGBA for Canvas operations
     const resolveColors = () => {
-      if (typeof window === "undefined" || !canvas) return { bg: [11, 14, 11], accent: "#1FAA68" };
+      if (typeof window === "undefined" || !canvas) return { bg: [11, 10, 12], accent: "#C9402B" };
       
       const temp = document.createElement("div");
       temp.style.color = color;
@@ -107,7 +107,7 @@ export function FallingPattern({
         accent: resolvedColor,
         bg: bgMatch && bgMatch.length >= 3 
           ? [parseInt(bgMatch[0]), parseInt(bgMatch[1]), parseInt(bgMatch[2])]
-          : (theme === "matrix-mode" ? [11, 14, 11] : [240, 240, 240])
+          : (theme === "matrix-mode" ? [11, 10, 12] : [255, 255, 255])
       };
     };
 

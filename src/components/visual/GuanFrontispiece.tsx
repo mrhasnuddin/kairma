@@ -199,27 +199,34 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
   const [isVisible, setIsVisible] = useState(true);
   const [isFading, setIsFading] = useState(false);
   const [step, setStep] = useState(0);
-  const { language } = useLanguage();
+
+  const triggerSkip = () => {
+    setIsFading(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      onComplete();
+    }, 1000);
+  };
 
   useEffect(() => {
-    // Pick a random quote
-    const randomQuote = guanCodex[Math.floor(Math.random() * guanCodex.length)];
+    // Temporary: Pick a random quote from the first 5 only (indices 0 to 4) since we only have 5 thumbnails
+    const randomQuote = guanCodex[Math.floor(Math.random() * 5)];
     setQuote(randomQuote);
 
     // Boot sequence steps
     const t1 = setTimeout(() => setStep(1), 500); // logo flickers in
     const t2 = setTimeout(() => setStep(2), 1500); // terminal types
 
-    // Fade out after 4.5 seconds to accommodate the full typing animation length
+    // Fade out after 7 seconds to accommodate reading time
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
-    }, 4500);
+    }, 7000);
 
-    // Unmount after 5.5 seconds
+    // Unmount after 8 seconds
     const removeTimer = setTimeout(() => {
       setIsVisible(false);
       onComplete();
-    }, 5500);
+    }, 8000);
 
     return () => {
       clearTimeout(t1);
@@ -231,29 +238,62 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
 
   if (!isVisible || !quote) return null;
 
-  const isCjk = language === "zh-TW";
-  const displayQuote = (isCjk && quote.original) ? quote.original : quote.quote;
-
   return (
     <div 
       className={`fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-theme-void transition-opacity duration-1000 ${
         isFading ? "opacity-0" : "opacity-100"
       }`}
     >
-      <div className="max-w-3xl w-full px-8 md:px-12 text-center flex flex-col items-center z-10 relative mt-[-10vh]">
-        {/* The Quote */}
-        <p className="text-theme-text text-2xl md:text-4xl font-normal md:font-medium tracking-wide md:tracking-wider leading-relaxed md:leading-loose mb-8 md:mb-12 font-serif text-balance drop-shadow-sm">
-          <ScrambleText text={displayQuote} duration={2500} delay={400} />
+      <div className="max-w-xl w-full px-6 flex flex-col z-10 relative mt-[-8vh]">
+        {/* Thumbnail Image */}
+        <div className="w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto bg-theme-void rounded-sm overflow-hidden mb-8 border border-theme-border/50 relative">
+           <img 
+              src={`/quotes/thumbnail/${quote.quoteNo.toString().padStart(2, '0')}.jpg`} 
+              alt={`Quote ${quote.quoteNo}`} 
+              className="absolute inset-0 w-full h-full object-cover" 
+              onError={(e) => {
+                // Fallback for when image isn't generated yet
+                e.currentTarget.style.display = 'none';
+              }}
+           />
+           {/* Scanline / Dither Overlay — sits on top of image, subtle */}
+           <div 
+             className="absolute inset-0 pointer-events-none opacity-[0.12]" 
+             style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.4) 1px, rgba(0,0,0,0.4) 2px)' }} 
+           />
+           {/* Soft bottom fade */}
+           <div className="absolute inset-0 bg-gradient-to-t from-theme-void/60 via-transparent to-transparent pointer-events-none" />
+        </div>
+        
+        {/* Original Text */}
+        {quote.original && (
+          <p className="text-theme-text text-lg md:text-xl font-serif mb-4 leading-relaxed tracking-wide drop-shadow-sm text-center">
+            <ScrambleText text={quote.original} duration={1500} delay={400} />
+          </p>
+        )}
+        
+        {/* English */}
+        <p className="text-theme-text-muted text-sm md:text-base font-serif mb-8 leading-relaxed drop-shadow-sm text-center">
+           <ScrambleText text={`English: ${quote.english}`} duration={2000} delay={quote.original ? 1500 : 400} />
         </p>
         
-        {/* Attribution & Label */}
-        <div className="flex flex-col items-center gap-2 opacity-90 drop-shadow-sm">
-          <p className="text-xs md:text-sm font-mono font-medium md:font-semibold text-theme-accent uppercase tracking-[0.2em] md:tracking-[0.3em]">
-            — {quote.attribution}
-          </p>
-          <p className="text-[10px] md:text-xs font-mono font-medium text-theme-text-muted tracking-widest">
-            观 · № 0{quote.chamber}
-          </p>
+        {/* Source - Stylized Box */}
+        <div className="text-theme-text-muted/70 text-xs md:text-sm font-mono mt-4 p-4 border border-theme-border/40 bg-theme-void/60 rounded-sm flex flex-col gap-2 relative mx-auto text-center items-center backdrop-blur-sm">
+           <div className="absolute -top-[1px] -left-[1px] w-3 h-[1px] bg-theme-accent" />
+           <div className="absolute -top-[1px] -left-[1px] w-[1px] h-3 bg-theme-accent" />
+           <div className="absolute -bottom-[1px] -right-[1px] w-3 h-[1px] bg-theme-accent" />
+           <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-3 bg-theme-accent" />
+           
+           <ScrambleText 
+             text={`SOURCE: ${quote.source}`} 
+             duration={1000} 
+             delay={quote.original ? 3000 : 2000} 
+           />
+           <ScrambleText 
+             text={`ORIGIN: ${quote.language}`} 
+             duration={1000} 
+             delay={quote.original ? 3200 : 2200} 
+           />
         </div>
       </div>
 

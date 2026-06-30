@@ -20,25 +20,25 @@
   --font-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
   --font-sans: "Inter", "Helvetica", "Source Han Sans SC", "PingFang SC", sans-serif;
 
-  /* Theme Palette A: Matrix Mode (Dark) */
-  --kairma-void: #0B0E0B;
-  --kairma-matrix-green: #1FAA68;
+  /* Theme Palette A: Dark Theme */
+  --kairma-void: #0B0A0C; /* Black */
+  --kairma-matrix-green: #C9402B; /* Red (Replacing green as accent) */
   --kairma-chrome-silver: #C0C0C8;
-  --kairma-pixel-white: #E8F0E8;
+  --kairma-pixel-white: #ffffff; /* Or keep #E8F0E8 if they want pixel white, but let's use white #ffffff for text */
 
-  /* Theme Palette B: Xuan Mode (Light) */
-  --kairma-xuan-white: #f3eee7;
-  --kairma-xuan-red: #af3621;
-  --kairma-void-ink: #1F1A17;
+  /* Theme Palette B: Light Theme */
+  --kairma-xuan-white: #ffffff; /* White */
+  --kairma-xuan-red: #00492E; /* Green (Replacing red as accent) */
+  --kairma-void-ink: #0B0A0C; /* Black text */
 
-  /* Functional Theme Tokens mapped to Matrix Dark by default */
+  /* Functional Theme Tokens mapped to Dark by default */
   --theme-void: var(--kairma-void);
   --theme-accent: var(--kairma-matrix-green);
   --theme-chrome: var(--kairma-chrome-silver);
   --theme-text: var(--kairma-pixel-white);
-  --theme-border: rgba(31, 170, 104, 0.2);
-  --theme-border-glow: rgba(31, 170, 104, 0.45);
-  --theme-text-muted: rgba(232, 240, 232, 0.6);
+  --theme-border: rgba(201, 64, 43, 0.2);
+  --theme-border-glow: rgba(201, 64, 43, 0.45);
+  --theme-text-muted: rgba(255, 255, 255, 0.6);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -73,15 +73,15 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* Xuan Mode selector override */
+/* Light Theme selector override */
 .xuan-mode, [data-theme="xuan-mode"] {
   --theme-void: var(--kairma-xuan-white);
   --theme-accent: var(--kairma-xuan-red);
   --theme-chrome: var(--kairma-chrome-silver);
   --theme-text: var(--kairma-void-ink);
-  --theme-border: rgba(175, 54, 33, 0.2);
-  --theme-border-glow: rgba(175, 54, 33, 0.45);
-  --theme-text-muted: rgba(31, 26, 23, 0.6);
+  --theme-border: rgba(0, 73, 46, 0.2);
+  --theme-border-glow: rgba(0, 73, 46, 0.45);
+  --theme-text-muted: rgba(11, 10, 12, 0.6);
 }
 
 @theme {

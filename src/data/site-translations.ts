@@ -1,9 +1,11 @@
 import { siteCopy, SiteCopyType } from "./site-copy";
 
-export type Language = "en" | "zh-TW" | "vi" | "ms";
+export type Language = "en" | "zh-TW" | "vi" | "ms" | "ko" | "ja";
 
 export const siteTranslations: Record<Language, SiteCopyType> = {
   en: siteCopy,
+  ko: siteCopy,
+  ja: siteCopy,
   "zh-TW": {
     hero: {
       kicker: "§ 00 · KAIRMA",
