@@ -2,19 +2,14 @@
 
 import React, { useEffect, useRef } from "react";
 import { useTheme } from "@/lib/theme";
+import { canonRain } from "@/data/canon-rain";
 
 type FallingPatternProps = React.ComponentProps<"div"> & {
-  /** Primary color of the falling elements (default: 'var(--theme-accent)') */
   color?: string;
-  /** Background color (default: 'var(--theme-void)') */
   backgroundColor?: string;
-  /** Speed multiplier for the falling characters (default: 1) */
   speed?: number;
-  /** Blur intensity for the overlay effect - ignored in optimized version for performance */
   blurIntensity?: string;
-  /** Pattern density - affects spacing of grid (default: 1) */
   density?: number;
-  /** Opacity of the background container (default: 0.15) */
   opacity?: number;
 };
 
@@ -22,7 +17,7 @@ export function FallingPattern({
   color = "var(--theme-accent)",
   backgroundColor = "var(--theme-void)",
   speed = 1,
-  blurIntensity = "0.8px", // Kept prop for compatibility, but ignored in DOM to save GPU
+  blurIntensity = "0.8px",
   density = 1,
   opacity = 0.15,
   className,
@@ -36,28 +31,28 @@ export function FallingPattern({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d", { alpha: false }); // alpha false optimizes rendering
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
     let animationId: number;
     let width = canvas.width = 0;
     let height = canvas.height = 0;
     
-    // Font configuration
-    const fontSize = 14;
-    let columns = 0;
+    const fontSize = 16;
+    const rowHeight = fontSize * 1.8;
+    let numRows = 0;
     
-    interface Drop {
-      y: number;
+    interface RowData {
+      x: number;
       speed: number;
+      str: string;
+      index: number;
+      lastCharX: number;
+      nextCharWidth: number;
     }
     
-    let drops: Drop[] = [];
+    let rows: RowData[] = [];
 
-    // Matrix characters: half-width Japanese katakana and standard numbers
-    const chars = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789";
-
-    // Resize canvas and recalculate columns
     const handleResize = () => {
       const container = containerRef.current;
       if (!container) return;
@@ -66,29 +61,25 @@ export function FallingPattern({
       width = canvas.width = rect.width;
       height = canvas.height = rect.height;
       
-      columns = Math.floor(width / fontSize);
-      drops = [];
-      for (let i = 0; i < columns; i++) {
-        drops[i] = {
-          y: Math.random() * -(height / fontSize), // Start randomly offscreen
-          speed: (0.1 + Math.random() * 0.2) * speed,
-        };
-      }
+      numRows = Math.floor(height / rowHeight);
+      rows = Array.from({ length: numRows }).map(() => ({
+        x: width + Math.random() * width,
+        speed: (0.8 + Math.random() * 1.2) * speed, // Faster horizontal speed
+        str: canonRain[Math.floor(Math.random() * canonRain.length)],
+        index: 0,
+        lastCharX: 99999, // Force immediate draw
+        nextCharWidth: 0,
+      }));
     };
 
     const resizeObserver = new ResizeObserver(handleResize);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-    
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
     handleResize();
 
-    // Speed control variables
     let lastTime = 0;
-    const baseFps = 60; // 60fps for buttery smooth rendering (fixes perceived lag)
+    const baseFps = 60;
     const interval = 1000 / baseFps;
 
-    // Resolve color strings/variables to RGB/RGBA for Canvas operations
     const resolveColors = () => {
       if (typeof window === "undefined" || !canvas) return { bg: [11, 10, 12], accent: "#C9402B" };
       
@@ -102,7 +93,6 @@ export function FallingPattern({
       document.body.removeChild(temp);
 
       const bgMatch = resolvedBg.match(/\d+/g);
-
       return {
         accent: resolvedColor,
         bg: bgMatch && bgMatch.length >= 3 
@@ -113,16 +103,13 @@ export function FallingPattern({
 
     const parseRGB = (colorStr: string): [number, number, number] => {
       const match = colorStr.match(/\d+/g);
-      if (match && match.length >= 3) {
-        return [parseInt(match[0]), parseInt(match[1]), parseInt(match[2])];
-      }
+      if (match && match.length >= 3) return [parseInt(match[0]), parseInt(match[1]), parseInt(match[2])];
       return theme === "matrix-mode" ? [31, 170, 104] : [200, 68, 46];
     };
 
-    let colors = resolveColors();
+    const colors = resolveColors();
     const rgb = parseRGB(colors.accent);
 
-    // Initial fill to avoid flashing
     ctx.fillStyle = `rgb(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]})`;
     ctx.fillRect(0, 0, width, height);
 
@@ -134,51 +121,51 @@ export function FallingPattern({
 
       const isDark = theme === "matrix-mode";
 
-      // 1. HIGH PERFORMANCE FADE: Draw a semi-transparent background box over everything
-      // This creates the trails organically without clearing the canvas or keeping arrays of chars
-      // Lowered alpha to 0.08 to compensate for 60fps (keeps trails long)
+      // Fade effect (trail)
       ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.08)`;
       ctx.fillRect(0, 0, width, height);
 
-      // Configure font
-      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.font = `bold ${fontSize}px var(--font-serif), monospace`; // Use serif for literary canon, fallback to mono
       ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
 
-      for (let i = 0; i < drops.length; i++) {
-        const drop = drops[i];
-        const prevY = Math.floor(drop.y);
-        
-        drop.y += drop.speed;
-        
-        const currentY = Math.floor(drop.y);
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        row.x -= row.speed;
+        const yPos = i * rowHeight + rowHeight / 2;
 
-        // Only draw if we've advanced to a new grid cell to avoid heavy overdraw
-        if (currentY > prevY && currentY > 0) {
-          const xPos = i * fontSize + fontSize / 2;
-          const yPos = currentY * fontSize;
+        if (row.lastCharX - row.x >= row.nextCharWidth) {
+          const tailChar = row.index > 0 ? row.str[row.index - 1] : "";
+          const headChar = row.str[row.index];
+          
+          if (tailChar) {
+            ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+            ctx.fillText(tailChar, row.lastCharX, yPos);
+          }
 
-          // Draw the trail (re-paint the previous head position with the accent color)
-          // This covers the old white head and replaces it with green/orange
-          ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-          const tailText = chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillText(tailText, xPos, yPos - fontSize);
-
-          // Draw the new head (bright white/dark ink)
-          ctx.fillStyle = isDark ? "#ffffff" : "#1F1A17";
-          const headText = chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillText(headText, xPos, yPos);
-        }
-
-        // Reset drop index once it leaves bottom screen (with some randomness)
-        if (currentY * fontSize > height && Math.random() > 0.95) {
-          drop.y = 0;
-          drop.speed = (0.1 + Math.random() * 0.2) * speed;
+          if (headChar) {
+            ctx.fillStyle = isDark ? "#ffffff" : "#1F1A17";
+            ctx.fillText(headChar, row.x, yPos);
+            
+            row.lastCharX = row.x;
+            row.nextCharWidth = ctx.measureText(headChar).width * 1.1; // Add slight letter spacing
+            row.index++;
+          } else {
+            // String finished; reset offscreen left (which is Canvas X = width + random)
+            if (row.x < -width || Math.random() > 0.99) {
+              row.x = width + Math.random() * 400;
+              row.str = canonRain[Math.floor(Math.random() * canonRain.length)];
+              row.index = 0;
+              row.lastCharX = row.x + 999;
+              row.nextCharWidth = 0;
+              row.speed = (0.8 + Math.random() * 1.2) * speed;
+            }
+          }
         }
       }
     };
 
     animationId = requestAnimationFrame(draw);
-
     return () => {
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
@@ -194,13 +181,9 @@ export function FallingPattern({
       style={{ opacity: resolvedOpacity }}
       {...props}
     >
-      {/* 
-        Removed alpha channel on canvas and removed heavy CSS blur 
-        for massive performance gains. 
-      */}
-      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full z-0" />
+      {/* -scale-x-100 applies the mirror-reverse effect visually */}
+      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full z-0 transform -scale-x-100" />
       
-      {/* Cheap CRT overlay grid (no expensive backdrop-filter) */}
       <div
         className="absolute inset-0 pointer-events-none z-10 dark:brightness-600"
         style={{

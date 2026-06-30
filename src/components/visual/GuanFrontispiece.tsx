@@ -209,8 +209,8 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
   };
 
   useEffect(() => {
-    // Temporary: Pick a random quote from the first 5 only (indices 0 to 4) since we only have 5 thumbnails
-    const randomQuote = guanCodex[Math.floor(Math.random() * 5)];
+    // Picking a random quote from the first 15 (indices 0 to 14) since we have 15 thumbnails generated
+    const randomQuote = guanCodex[Math.floor(Math.random() * 15)];
     setQuote(randomQuote);
 
     // Boot sequence steps

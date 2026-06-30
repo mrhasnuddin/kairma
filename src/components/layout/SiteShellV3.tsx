@@ -42,6 +42,7 @@ const InteractiveBootBox: React.FC<{
   className?: string;
 }> = ({ language, setLanguage, triggerCrt, getLangLabel, className }) => {
   const { theme } = useTheme();
+  const siteCopy = useSiteCopyV6();
 
   const handleNormalLanguage = (l: Language) => {
     setLanguage(l);
@@ -62,8 +63,8 @@ const InteractiveBootBox: React.FC<{
       
       <div className="relative z-20 flex-1 flex flex-col w-full mx-auto p-8 overflow-y-auto no-scrollbar">
         <div className="flex flex-col gap-6 w-full font-mono select-none my-auto animate-in fade-in duration-500">
-          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase">
-            KAIRMA OS BIOS v1.0<br/>LOCALE SETTINGS:
+          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line">
+            {siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"}
           </div>
           <div className="grid grid-cols-2 gap-2 text-sm md:text-base font-bold">
             {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => (
