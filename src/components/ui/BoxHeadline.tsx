@@ -11,16 +11,11 @@ export const BoxHeadline: React.FC<BoxHeadlineProps> = ({ text, className = "" }
 
   if (!text) return null;
 
-  // Apply Canterbury (font-gothic) ONLY to the first character for English ('en') and Malay ('ms') languages
+  // Apply Canterbury (font-gothic) to ALL characters for English ('en') and Malay ('ms') languages
   if (language === "en" || language === "ms") {
-    const firstChar = text.charAt(0);
-    const restChars = text.slice(1);
     return (
-      <span className={className}>
-        <span className="font-gothic font-normal inline text-[1.25em] mr-[1.5px]">
-          {firstChar}
-        </span>
-        {restChars}
+      <span className={`font-gothic font-normal tracking-wide ${className}`}>
+        {text}
       </span>
     );
   }
