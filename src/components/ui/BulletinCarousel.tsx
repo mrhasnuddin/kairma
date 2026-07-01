@@ -121,21 +121,35 @@ export const BulletinCarousel: React.FC = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Bottom Dotted Pagination (Cybernetic Floating Dock) */}
-      <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center z-40 pointer-events-none">
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/85 border border-white/20 backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.8)] pointer-events-auto">
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`transition-all duration-300 rounded-full cursor-pointer outline-none ${
-                currentSlide === idx
-                  ? "w-5 h-1.5 bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]"
-                  : "w-1.5 h-1.5 bg-white/50 hover:bg-white hover:scale-125"
-              }`}
-              aria-label={`Go to bulletin slide ${idx + 1}`}
-            />
-          ))}
+      {/* Bottom Terminal Status Bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-8 bg-black/90 backdrop-blur-md border-t border-white/20 px-3.5 flex items-center justify-between z-40 font-mono text-[10px] select-none shadow-[0_-4px_12px_rgba(0,0,0,0.8)]">
+        {/* Left: Terminal Prompt & Status */}
+        <div className="flex items-center gap-1.5 text-theme-accent font-bold tracking-wider">
+          <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 shadow-[0_0_6px_var(--color-theme-accent)]" />
+          <span>{">"} SYS.FEED // LIVE</span>
+        </div>
+
+        {/* Right: ASCII Block Pagination */}
+        <div className="flex items-center gap-0.5">
+          <span className="text-white/30 mr-1">[</span>
+          {slides.map((_, idx) => {
+            const isActive = currentSlide === idx;
+            return (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`transition-all duration-300 px-0.5 py-0.5 rounded cursor-pointer outline-none text-xs flex items-center justify-center ${
+                  isActive
+                    ? "text-theme-accent scale-110 drop-shadow-[0_0_6px_var(--color-theme-accent)]"
+                    : "text-white/40 hover:text-white"
+                }`}
+                aria-label={`Go to bulletin slide ${idx + 1}`}
+              >
+                {isActive ? "■" : "□"}
+              </button>
+            );
+          })}
+          <span className="text-white/30 ml-1">]</span>
         </div>
       </div>
     </div>
