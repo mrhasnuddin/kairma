@@ -506,7 +506,7 @@ export const SiteShellV3: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={bootPhase === "ready" ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32"
+        className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32 overflow-x-hidden"
       >
         
         {bootPhase === "ready" && (
@@ -1153,7 +1153,7 @@ export const SiteShellV3: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-theme-void/85 backdrop-blur-md z-[999] flex items-center justify-center p-4"
+              className="fixed inset-0 bg-theme-void/85 backdrop-blur-md z-[999] flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-y-auto"
               onClick={() => setSelectedModelForModal(null)}
             >
               <motion.div 
@@ -1161,7 +1161,7 @@ export const SiteShellV3: React.FC = () => {
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.95, y: 15, opacity: 0 }}
                 transition={{ type: "spring", duration: 0.5 }}
-                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-3xl p-6 md:p-10 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono"
+                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-3xl p-5 sm:p-6 md:p-10 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono my-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Close Button */}

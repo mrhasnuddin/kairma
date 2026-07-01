@@ -98,7 +98,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-theme-void/80 backdrop-blur-md font-mono"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-theme-void/80 backdrop-blur-md font-mono overflow-y-auto"
         onKeyDown={handleFocusTrap}
       >
         {/* Modal container */}
@@ -111,7 +111,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-xl bg-theme-void border-2 border-theme-border rounded-sm shadow-2xl p-6 md:p-8 flex flex-col gap-6"
+          className="relative w-full max-w-xl bg-theme-void border-2 border-theme-border rounded-sm shadow-2xl p-5 sm:p-6 md:p-8 flex flex-col gap-6 my-auto"
         >
           {/* Gothic Technical Corners */}
           <div className="absolute top-0 left-0 w-4.5 h-4.5 border-t-2 border-l-2 border-theme-accent pointer-events-none" />
