@@ -843,63 +843,15 @@ export const SiteShellV3: React.FC = () => {
                 <span>{t("fetching_rankings")}</span>
               </div>
             ) : (
-              <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
-                {/* Left: 3D Interactive WebGL Constellation (7 cols) */}
-                <div className="lg:col-span-7 flex flex-col h-full min-h-[480px]">
-                  <ModelLeaderboard3D
-                    models={activeModels}
-                    activeMetric={chartMetric}
-                    onMetricChange={setChartMetric}
-                    onSelectModelForModal={setSelectedModelForModal}
-                    language={language}
-                    t={t}
-                  />
-                </div>
-
-                {/* Right: Real-time Telemetry Rankings (5 cols) */}
-                <div className="lg:col-span-5 flex flex-col min-h-0 border-t lg:border-t-0 lg:border-l border-theme-border/30 pt-6 lg:pt-0 lg:pl-6">
-                  <div className="flex justify-between items-center mb-4 shrink-0">
-                    <p className="font-mono text-xs md:text-sm font-semibold text-theme-text-muted uppercase tracking-widest">
-                      {chartMetric === "intelligence_index" ? t("intel") : chartMetric === "coding_index" ? t("coding") : t("agentic")} // {t("top_daily_runtimes")}
-                    </p>
-                    <span className="text-[10px] font-mono text-theme-accent animate-pulse">[3D INTERACTIVE]</span>
-                  </div>
-                  <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
-                    <div className="flex flex-col gap-2.5">
-                      {activeModels
-                        .filter(m => m.benchmarks?.[chartMetric] != null)
-                        .sort((a, b) => (b.benchmarks?.[chartMetric] ?? 0) - (a.benchmarks?.[chartMetric] ?? 0))
-                        .slice(0, 8)
-                        .map((model, i) => {
-                          const isBaseline = i === 0;
-                          const specs = getModelSpecs(model);
-                          const score = model.benchmarks?.[chartMetric] ?? 0;
-                          return (
-                            <div 
-                              key={model.id} 
-                              onClick={() => setSelectedModelForModal(model)}
-                              className="flex justify-between items-center font-mono text-xs md:text-sm p-3.5 border border-theme-border/30 hover:border-theme-accent/40 bg-theme-void/40 hover:bg-theme-accent/5 transition-all cursor-pointer rounded group"
-                            >
-                              <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                                <span className={`w-4 shrink-0 font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text-muted"}`}>#{i + 1}</span>
-                                <span className="truncate font-bold text-theme-text group-hover:text-theme-accent transition-colors">{model.name}</span>
-                              </div>
-                              
-                              <div className="flex items-center gap-3 shrink-0">
-                                <span className="font-bold text-theme-accent">{score}%</span>
-                                <span className="text-[10px] md:text-xs text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
-                                  {specs.provider.toUpperCase()}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                    </div>
-                  </div>
-                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-4">
-                    {t("benchmarks_note")}
-                  </div>
-                </div>
+              <div className="flex-1 w-full h-full min-h-[560px]">
+                <ModelLeaderboard3D
+                  models={activeModels}
+                  activeMetric={chartMetric}
+                  onMetricChange={setChartMetric}
+                  onSelectModelForModal={setSelectedModelForModal}
+                  language={language}
+                  t={t}
+                />
               </div>
             )}
           </OSCard>
