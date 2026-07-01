@@ -3,28 +3,14 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Terminal,
   Code,
   Cpu,
-  Shield,
   Zap,
-  Activity,
-  ExternalLink,
-  Search,
   Database,
-  Radio,
-  CheckCircle2,
   AlertTriangle,
   ChevronRight,
-  BarChart2,
-  Layers,
-  Sparkles,
-  Filter,
   FileText,
-  Calendar,
-  UserCheck,
   DollarSign,
-  Lock,
 } from "lucide-react";
 
 interface ModelData {
@@ -111,8 +97,6 @@ export default function NeuralPipelineHUD({
   const [activeGroup, setActiveGroup] = useState<DataGroupId>("market_intel");
   const [searchQuery, setSearchQuery] = useState("");
   const [isParsing, setIsParsing] = useState(false);
-  const [parserLogs, setParserLogs] = useState<string[]>([]);
-  const [parseTime, setParseTime] = useState("0.42");
 
   const dataGroups: DataGroupConfig[] = useMemo(
     () => [
@@ -159,36 +143,11 @@ export default function NeuralPipelineHUD({
   // Trigger terminal parsing sequence when category or search changes
   useEffect(() => {
     setIsParsing(true);
-    const start = performance.now();
-    
-    setParserLogs([
-      "> Fetching live OpenRouter telemetry... [OK]",
-      "> Initializing neural data pipeline...",
-    ]);
-
-    const t1 = setTimeout(() => {
-      setParserLogs((prev) => [
-        ...prev,
-        `> Filtering by category: [${activeGroup.toUpperCase()}]... [OK]`,
-        "> Running KAIRMA reasoning parser...",
-      ]);
-    }, 150);
-
-    const t2 = setTimeout(() => {
-      const elapsed = ((performance.now() - start) / 1000).toFixed(2);
-      setParseTime(elapsed);
-      setParserLogs((prev) => [
-        ...prev,
-        "> Routing verified telemetry nodes... [OK]",
-        `> PIPELINE SEALED // Completed in ${elapsed}s`,
-      ]);
+    const timer = setTimeout(() => {
       setIsParsing(false);
-    }, 380);
+    }, 400);
 
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
+    return () => clearTimeout(timer);
   }, [activeGroup, searchQuery]);
 
   // Handle keyword search input
@@ -323,26 +282,26 @@ export default function NeuralPipelineHUD({
         {/* =========================================================
             COLUMN 2: KAIRMA PARSER & HEXAGON CORE (~5 cols on lg, ~42%)
         ========================================================= */}
-        <div className="lg:col-span-5 flex flex-col justify-between bg-black/40 border border-theme-border/40 rounded-lg p-5 relative overflow-hidden">
+        <div className="lg:col-span-5 flex flex-col bg-black/40 border border-theme-border/40 rounded-lg p-5 relative overflow-hidden">
           
           {/* Background Matrix Grid Subtle Pattern */}
-          <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(#00FF66_1px,transparent_1px)] [background-size:16px_16px]" />
+          <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(var(--color-theme-accent)_1px,transparent_1px)] [background-size:16px_16px]" />
 
-          <div className="relative z-10">
-            <div className="flex items-center justify-between text-xs font-bold text-theme-text-muted mb-4 uppercase tracking-wider pb-2 border-b border-theme-border/20">
+          <div className="relative z-10 flex-1 flex flex-col">
+            <div className="flex items-center justify-between text-xs font-bold text-theme-text-muted mb-4 uppercase tracking-wider pb-2 border-b border-theme-border/20 shrink-0">
               <span>KAIRMA PARSER</span>
               <span className="text-[10px] text-theme-accent">// REASONING CORE</span>
             </div>
 
-            {/* Glowing Hexagon Core Display */}
-            <div className="my-6 flex flex-col items-center justify-center relative min-h-[220px]">
+            {/* Glowing Hexagon Core Display centered vertically & horizontally */}
+            <div className="flex-1 flex flex-col items-center justify-center relative my-auto min-h-[320px]">
               
               {/* Outer Orbit Rings */}
-              <div className="absolute w-44 h-44 md:w-52 md:h-52 rounded-full border border-theme-accent/20 animate-spin-slow pointer-events-none" />
-              <div className="absolute w-36 h-36 md:w-40 md:h-40 rounded-full border border-dashed border-theme-accent/30 animate-reverse-spin pointer-events-none" />
+              <div className="absolute w-48 h-48 md:w-56 md:h-56 rounded-full border border-theme-accent/20 animate-spin-slow pointer-events-none" />
+              <div className="absolute w-40 h-40 md:w-44 md:h-44 rounded-full border border-dashed border-theme-accent/30 animate-reverse-spin pointer-events-none" />
 
               {/* Cyber Hexagon Shape */}
-              <div className="relative w-28 h-28 md:w-32 md:h-32 flex items-center justify-center">
+              <div className="relative w-32 h-32 md:w-36 md:h-36 flex items-center justify-center">
                 {/* Glowing Hexagon Border */}
                 <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-[0_0_25px_var(--color-theme-accent)]">
                   <polygon
@@ -367,7 +326,7 @@ export default function NeuralPipelineHUD({
                   <img
                     src="/Bentos/K.svg"
                     alt="Kairma Core"
-                    className={`w-10 h-10 md:w-12 md:h-12 transition-transform duration-500 ${
+                    className={`w-12 h-12 md:w-14 md:h-14 transition-transform duration-500 ${
                       isParsing ? "scale-110 drop-shadow-[0_0_20px_var(--color-theme-accent)]" : "scale-100 drop-shadow-[0_0_10px_var(--color-theme-accent)]"
                     }`}
                   />
@@ -379,47 +338,9 @@ export default function NeuralPipelineHUD({
               </div>
 
               {/* Status Badge below core */}
-              <div className="mt-6 px-3 py-1 rounded-full border border-theme-accent/40 bg-theme-void/90 text-[11px] font-bold text-theme-accent tracking-widest flex items-center gap-2 shadow-lg">
+              <div className="mt-8 px-4 py-1.5 rounded-full border border-theme-accent/40 bg-theme-void/90 text-xs font-bold text-theme-accent tracking-widest flex items-center gap-2 shadow-lg">
                 <span className={`w-2 h-2 rounded-full ${isParsing ? "bg-amber-400 animate-ping" : "bg-theme-accent"}`} />
                 <span>{isParsing ? "PARSER: DECODING..." : `CORE: [${decryptedTitle}]`}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Live Console Log Box */}
-          <div className="relative z-10 bg-black/80 border border-theme-border/50 rounded-lg p-3.5 text-[11px] font-mono leading-relaxed shadow-inner">
-            <div className="flex justify-between items-center text-[10px] text-theme-text-muted mb-2 border-b border-theme-border/20 pb-1">
-              <span className="flex items-center gap-1.5 text-theme-accent font-bold">
-                <Terminal size={12} /> KAIRMA_OS // TELEMETRY LOG
-              </span>
-              <span>PID: 4092</span>
-            </div>
-            
-            <div className="space-y-1 text-theme-text-muted/90 min-h-[64px] flex flex-col justify-end">
-              {parserLogs.map((log, i) => (
-                <div key={i} className={log.includes("OK") || log.includes("SEALED") ? "text-theme-accent font-bold" : ""}>
-                  {log}
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Register Stats Row */}
-            <div className="grid grid-cols-4 gap-2 mt-3 pt-2 border-t border-theme-border/20 text-[10px]">
-              <div className="bg-white/5 p-1.5 rounded border border-theme-border/20">
-                <div className="text-theme-text-muted text-[8px] uppercase">TOKENS USED</div>
-                <div className="font-bold text-theme-text">24.8K</div>
-              </div>
-              <div className="bg-white/5 p-1.5 rounded border border-theme-border/20">
-                <div className="text-theme-text-muted text-[8px] uppercase">MODEL CORE</div>
-                <div className="font-bold text-theme-accent truncate">KAIRMA-V3</div>
-              </div>
-              <div className="bg-white/5 p-1.5 rounded border border-theme-border/20">
-                <div className="text-theme-text-muted text-[8px] uppercase">AVG LATENCY</div>
-                <div className="font-bold text-theme-accent">112ms</div>
-              </div>
-              <div className="bg-white/5 p-1.5 rounded border border-theme-border/20">
-                <div className="text-theme-text-muted text-[8px] uppercase">QUERY COST</div>
-                <div className="font-bold text-theme-text">$0.0024</div>
               </div>
             </div>
           </div>
