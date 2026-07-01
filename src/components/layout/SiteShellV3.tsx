@@ -31,51 +31,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
 const KairmaHero = dynamic(() => import("@/components/3d/KairmaHero"), { ssr: false });
 gsap.registerPlugin(useGSAP, ScrollTrigger);
-const MoatCard = ({ index, title, description, tag, Icon }: { index: number, title: string, description: string, tag: string, Icon: any }) => {
-  const iconRef = useRef<AnimatedIconHandle>(null);
 
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.5, delay: index * 0.15 }}
-      className="relative z-10"
-    >
-      {/* Glowing timeline node */}
-      <div className="absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_10px_rgba(31,170,104,1)] transform -translate-x-1/2 -translate-y-1/2 hidden md:block group-hover/card:scale-150 transition-transform duration-300" />
-      
-      <div 
-        className="p-5 md:p-6 border border-theme-border/30 bg-theme-void/80 backdrop-blur-sm rounded-lg hover:border-theme-accent/70 hover:shadow-[0_0_20px_rgba(31,170,104,0.15)] transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 hover:scale-[1.01] hover:-translate-y-1 cursor-crosshair group/card"
-        onMouseEnter={() => iconRef.current?.startAnimation?.()}
-        onMouseLeave={() => iconRef.current?.stopAnimation?.()}
-      >
-        {/* Left: Icon and Title */}
-        <div className="flex items-center gap-4 md:gap-6 md:w-[40%] w-full shrink-0">
-          <div className="text-theme-accent font-mono text-xl md:text-2xl font-bold opacity-50 group-hover/card:opacity-100 transition-opacity">
-            {String(index + 1).padStart(2, '0')}
-          </div>
-          <div className="text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center">
-            <Icon ref={iconRef} size={24} />
-          </div>
-          <div className="font-mono font-bold text-theme-text text-sm md:text-base uppercase tracking-wider">
-            {title}
-          </div>
-        </div>
-        
-        {/* Middle: Description */}
-        <div className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed flex-1 text-left">
-          {description}
-        </div>
-        
-        {/* Right: Tag */}
-        <div className="font-mono text-[10px] md:text-xs text-theme-accent/40 tracking-widest uppercase md:w-32 text-left md:text-right group-hover/card:text-theme-accent transition-colors">
-          {tag}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 const InteractiveBootBox: React.FC<{
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -672,126 +628,74 @@ export const SiteShellV3: React.FC = () => {
                 {/* Node 0: Model Capability */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 0 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <CpuIcon 
-                      ref={(el) => { iconRefs.current[0] = el; }} 
                       size={20} 
-                      color={pipelineState === 0 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 0 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Model
                   </span>
                 </div>
 
                 {/* Connector Line 0 */}
                 <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 1 ? 'opacity-100' : 'opacity-0'}`} />
-                  {pipelineState === 1 && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, ease: "easeInOut" }}
-                    />
-                  )}
+                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
                 </div>
 
                 {/* Node 1: Workflow */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 2 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <GearIcon 
-                      ref={(el) => { iconRefs.current[1] = el; }} 
                       size={20} 
-                      color={pipelineState === 2 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 2 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Workflow
                   </span>
                 </div>
 
                 {/* Connector Line 1 */}
                 <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 3 || pipelineState === 4 ? 'opacity-100' : 'opacity-0'}`} />
-                  {pipelineState === 3 && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, ease: "easeInOut" }}
-                    />
-                  )}
+                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
                 </div>
 
                 {/* Node 2: Deployment */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 4 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <PlugConnectedIcon 
-                      ref={(el) => { iconRefs.current[2] = el; }} 
                       size={20} 
-                      color={pipelineState === 4 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 4 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Deployment
                   </span>
                 </div>
 
                 {/* Connector Line 2 */}
                 <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 5 || pipelineState === 6 ? 'opacity-100' : 'opacity-0'}`} />
-                  {pipelineState === 5 && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, ease: "easeInOut" }}
-                    />
-                  )}
+                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
                 </div>
 
                 {/* Node 3: Outcome */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 6 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <DoubleCheckIcon 
-                      ref={(el) => { iconRefs.current[3] = el; }} 
                       size={20} 
-                      color={pipelineState === 6 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 6 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Outcome
                   </span>
                 </div>
@@ -813,37 +717,75 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Row 3: Four Moats */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group">
-            <div className="flex justify-between items-center mb-10 shrink-0">
+          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
+            <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
                 <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.moats.label}</h3>
               </div>
             </div>
             
-            <div className="relative max-w-5xl mx-auto flex flex-col gap-6">
-              {/* The central glowing timeline */}
-              <div className="absolute left-1/2 top-4 bottom-4 w-px bg-gradient-to-b from-theme-border/10 via-theme-accent/50 to-theme-border/10 transform -translate-x-1/2 z-0 hidden md:block" />
-              
+            <div className="relative w-full flex flex-col md:flex-row items-stretch justify-between gap-4 mt-8">
               {[
-                { text: siteCopy.moats.card_1, tag: "[ LOGIC ]", Icon: GearIcon },
-                { text: siteCopy.moats.card_2, tag: "[ PEOPLE ]", Icon: UserIcon },
-                { text: siteCopy.moats.card_3, tag: "[ MEMORY ]", Icon: PlugConnectedIcon },
-                { text: siteCopy.moats.card_4, tag: "[ SOVEREIGN ]", Icon: ShieldCheck }
+                { text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon },
+                { text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon },
+                { text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon },
+                { text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck }
               ].map((moat, idx) => {
                 const parts = moat.text.split(/—|-/);
                 const title = parts[0]?.trim();
                 const description = parts.slice(1).join('-').trim();
-                
+                const isActive = pipelineState === idx * 2;
+                const isLineActive = pipelineState === idx * 2 + 1 || pipelineState === idx * 2 + 2; 
+
                 return (
-                  <MoatCard 
-                    key={idx} 
-                    index={idx} 
-                    title={title} 
-                    description={description} 
-                    tag={moat.tag} 
-                    Icon={moat.Icon} 
-                  />
+                  <React.Fragment key={idx}>
+                    <div 
+                      className={`flex-1 p-5 border rounded-lg transition-all duration-500 relative bg-theme-void/80 backdrop-blur-sm flex flex-col gap-4 group/card ${
+                        isActive ? 'border-theme-accent shadow-[0_0_20px_rgba(31,170,104,0.15)] -translate-y-1' : 'border-theme-border/30 hover:border-theme-accent/50'
+                      }`}
+                      onMouseEnter={() => iconRefs.current[idx]?.startAnimation?.()}
+                      onMouseLeave={() => iconRefs.current[idx]?.stopAnimation?.()}
+                    >
+                      <div className="flex flex-col gap-4 h-full">
+                        <div className="flex items-center justify-between">
+                          <div className={`text-theme-accent font-mono text-xl font-bold transition-opacity ${isActive ? 'opacity-100' : 'opacity-50 group-hover/card:opacity-100'}`}>
+                            {String(idx + 1).padStart(2, '0')}
+                          </div>
+                          <div className={`text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center transition-transform ${isActive ? 'scale-110' : ''}`}>
+                            <moat.Icon ref={(el: any) => { iconRefs.current[idx] = el; }} size={24} color={isActive ? "var(--theme-accent)" : "currentColor"} />
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className={`font-mono font-bold text-sm mb-2 transition-colors ${isActive ? 'text-theme-text' : 'text-theme-text'}`}>{title}</h4>
+                          <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{description}</p>
+                        </div>
+                        <div className={`font-mono text-[10px] tracking-widest uppercase text-left mt-auto transition-colors ${isActive ? 'text-theme-accent' : 'text-theme-accent/40 group-hover/card:text-theme-accent'}`}>
+                          [ {moat.tag} ]
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Connector arrow/line (except for last item) */}
+                    {idx < 3 && (
+                      <div className="hidden md:flex items-center justify-center w-8 relative shrink-0">
+                         <div className="w-full h-[2px] bg-theme-border/20 relative overflow-hidden rounded-full">
+                           <div className={`absolute inset-0 bg-theme-accent/30 transition-opacity duration-500 ${isLineActive ? 'opacity-100' : 'opacity-0'}`} />
+                           {(pipelineState === idx * 2 + 1) && (
+                             <motion.div
+                               className="absolute top-0 bottom-0 w-4 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
+                               initial={{ left: "-20px" }}
+                               animate={{ left: "100%" }}
+                               transition={{ duration: 1.2, ease: "easeInOut" }}
+                             />
+                           )}
+                         </div>
+                         <div className={`absolute right-[-4px] text-[10px] transition-colors duration-500 ${isLineActive ? 'text-theme-accent' : 'text-theme-border/20'}`}>
+                            ▶
+                         </div>
+                      </div>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </div>
