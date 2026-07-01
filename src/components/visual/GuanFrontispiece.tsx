@@ -79,17 +79,19 @@ interface ScrambleTextProps {
   text: string;
   duration?: number;
   delay?: number;
+  cursor?: boolean;
 }
 
-const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, delay = 200 }) => {
+const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, delay = 200, cursor = true }) => {
   const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set());
-  const [showCursor, setShowCursor] = useState(true);
+  const [showCursor, setShowCursor] = useState(cursor);
 
   // Blinking cursor effect
   useEffect(() => {
+    if (!cursor) return;
     const cursorInterval = setInterval(() => setShowCursor((v) => !v), 530);
     return () => clearInterval(cursorInterval);
-  }, []);
+  }, [cursor]);
 
   // Split text into tokens (words and spaces)
   const tokens = useMemo(() => text.split(/(\s+)/), [text]);
@@ -184,11 +186,13 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
           </span>
         );
       })}
-      <span 
-        className={`inline-block ml-[2px] font-light transition-opacity duration-75 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
-      >
-        |
-      </span>
+      {cursor && (
+        <span 
+          className={`inline-block ml-[2px] font-light transition-opacity duration-75 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
+        >
+          |
+        </span>
+      )}
     </span>
   );
 };
@@ -240,11 +244,11 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div 
-      className={`fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-theme-void transition-opacity duration-1000 ${
+      className={`fixed inset-0 z-[1000] flex flex-col items-center bg-theme-void transition-opacity duration-1000 overflow-y-auto ${
         isFading ? "opacity-0" : "opacity-100"
       }`}
     >
-      <div className="max-w-xl w-full px-6 flex flex-col z-10 relative mt-[-8vh]">
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-xl px-6 pt-12 pb-8 z-10 relative">
         {/* Thumbnail Image */}
         <div className="w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto bg-theme-void rounded-sm overflow-hidden mb-8 border border-theme-border/50 relative">
            <img 
@@ -274,7 +278,7 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
         
         {/* English */}
         <p className="text-theme-text-muted text-sm md:text-base font-serif mb-8 leading-relaxed drop-shadow-sm text-center">
-           <ScrambleText text={`English: ${quote.english}`} duration={2000} delay={quote.original ? 1500 : 400} />
+           <ScrambleText text={`English: ${quote.english}`} duration={2000} delay={quote.original ? 1500 : 400} cursor={!quote.original} />
         </p>
         
         {/* Source - Stylized Box */}
@@ -288,17 +292,19 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
              text={`SOURCE: ${quote.source}`} 
              duration={1000} 
              delay={quote.original ? 3000 : 2000} 
+             cursor={false}
            />
            <ScrambleText 
              text={`ORIGIN: ${quote.language}`} 
              duration={1000} 
              delay={quote.original ? 3200 : 2200} 
+             cursor={false}
            />
         </div>
       </div>
 
       {/* Boot Sequence Overlay at bottom */}
-      <div className="absolute bottom-16 md:bottom-24 left-0 right-0 flex flex-col items-center justify-center pointer-events-none">
+      <div className="flex flex-col items-center justify-center w-full pb-12 shrink-0 pointer-events-none">
         <AnimatePresence mode="wait">
           {step >= 1 && (
             <motion.div

@@ -32,8 +32,6 @@ import dynamic from "next/dynamic";
 const KairmaHero = dynamic(() => import("@/components/3d/KairmaHero"), { ssr: false });
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-
-
 const InteractiveBootBox: React.FC<{
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -224,52 +222,54 @@ export const SiteShellV3: React.FC = () => {
     toggleTheme();
   };
 
-  // Centralized UI micro-copy translations for all 5 languages
+  // Centralized UI micro-copy translations for all 5 languages + ko/ja
   const uiT: Record<string, Record<string, string>> = {
     // Hero section
-    "system_online":        { en: "System: Online",        "zh-TW": "系統狀態: 上線",     vi: "Hệ thống: Trực tuyến",           ms: "Sistem: Dalam Talian" },
-    "the_shift":            { en: "The Shift",             "zh-TW": "轉移",               vi: "Sự chuyển đổi",                  ms: "Anjakan" },
+    "system_online":        { en: "System: Online",        "zh-TW": "系統狀態: 上線",     vi: "Hệ thống: Trực tuyến",           ms: "Sistem: Dalam Talian", ja: "システム: オンライン", ko: "시스템: 온라인" },
+    "the_shift":            { en: "The Shift",             "zh-TW": "轉移",               vi: "Sự chuyển đổi",                  ms: "Anjakan", ja: "転換", ko: "전환" },
     // Digital Employees box
-    "digital_emp_heading":  { en: "Your first AI digital employees, deployed – not downloaded.", "zh-TW": "您的第一批 AI 數位員工，已部署，無需下載。", vi: "Nhân viên kỹ thuật số AI đầu tiên — được triển khai, không phải tải xuống.", ms: "Pekerja digital AI pertama anda — ditempatkan, bukan dimuat turun." },
-    "pilot_ready":          { en: "Pilot-ready",           "zh-TW": "試點就緒",           vi: "Sẵn sàng thử nghiệm",            ms: "Sedia perintis" },
-    "fde_configured":       { en: "FDE configured",        "zh-TW": "已配置 FDE",         vi: "Đã cấu hình FDE",                ms: "FDE dikonfigurasi" },
-    "customer_care":        { en: "Customer Care",         "zh-TW": "客戶服務",           vi: "Chăm sóc khách hàng",            ms: "Khidmat Pelanggan" },
-    "in_development":       { en: "In development",        "zh-TW": "開發中",             vi: "Đang phát triển",                ms: "Dalam pembangunan" },
-    "compliance":           { en: "Compliance",            "zh-TW": "合規審查",           vi: "Tuân thủ",                       ms: "Pematuhan" },
-    "private_runtime":      { en: "Private runtime",       "zh-TW": "私有運行環境",       vi: "Môi trường riêng tư",            ms: "Persekitaran peribadi" },
+    "digital_emp_heading":  { en: "Your first AI digital employees, deployed – not downloaded.", "zh-TW": "您的第一批 AI 數位員工，已部署，無需下載。", vi: "Nhân viên kỹ thuật số AI đầu tiên — được triển khai, không phải tải xuống.", ms: "Pekerja digital AI pertama anda — ditempatkan, bukan dimuat turun.", ja: "あなたの最初のAIデジタル従業員——ダウンロードではなく、配備。", ko: "당신의 첫 AI 디지털 직원 — 다운로드가 아니라 배치." },
+    "pilot_ready":          { en: "Pilot-ready",           "zh-TW": "試點就緒",           vi: "Sẵn sàng thử nghiệm",            ms: "Sedia perintis", ja: "パイロット可", ko: "파일럿 준비" },
+    "fde_configured":       { en: "FDE configured",        "zh-TW": "已配置 FDE",         vi: "Đã cấu hình FDE",                ms: "FDE dikonfigurasi", ja: "FDE構成済み", ko: "FDE 구성됨" },
+    "customer_care":        { en: "Customer Care",         "zh-TW": "客戶服務",           vi: "Chăm sóc khách hàng",            ms: "Khidmat Pelanggan", ja: "カスタマーケア", ko: "고객 지원" },
+    "in_development":       { en: "In development",        "zh-TW": "開發中",             vi: "Đang phát triển",                ms: "Dalam pembangunan", ja: "開発中", ko: "개발 중" },
+    "compliance":           { en: "Compliance",            "zh-TW": "合規審查",           vi: "Tuân thủ",                       ms: "Pematuhan", ja: "コンプライアンス", ko: "컴플라이언스" },
+    "private_runtime":      { en: "Private runtime",       "zh-TW": "私有運行環境",       vi: "Môi trường riêng tư",            ms: "Persekitaran peribadi", ja: "プライベートランタイム", ko: "프라이빗 런타임" },
     // CTA boxes
-    "for_developers":       { en: "For Developers",        "zh-TW": "面向開發者",         vi: "Dành cho nhà phát triển",         ms: "Untuk Pembangun" },
-    "for_operators":        { en: "For Operators",         "zh-TW": "面向營運方",         vi: "Dành cho nhà vận hành",           ms: "Untuk Operator" },
-    "view_docs":            { en: "View Docs",             "zh-TW": "查看文件",           vi: "Xem tài liệu",                   ms: "Lihat Dokumen" },
+    "for_developers":       { en: "For Developers",        "zh-TW": "面向開發者",         vi: "Dành cho nhà phát triển",         ms: "Untuk Pembangun", ja: "開発者へ", ko: "개발자를 위해" },
+    "for_operators":        { en: "For Operators",         "zh-TW": "面向營運方",         vi: "Dành cho nhà vận hành",           ms: "Untuk Operator", ja: "オペレーターへ", ko: "운영자를 위해" },
+    "view_docs":            { en: "View Docs",             "zh-TW": "查看文件",           vi: "Xem tài liệu",                   ms: "Lihat Dokumen", ja: "ドキュメントを見る", ko: "문서 보기" },
     // Quote / pipeline
-    "quote":                { en: "Models got better.\nBut deployment velocity is\nwhere outcomes compound.", "zh-TW": "模型變得更好了。\n但部署速度才是\n業務成果產生複利的地方。", vi: "Mô hình tốt hơn.\nNhưng tốc độ triển khai\nmới là nơi kết quả cộng hưởng.", ms: "Model semakin baik.\nTetapi halaju penempatan\nadalah di mana hasil berganda." },
+    "quote":                { en: "Models got better.\nBut deployment velocity is\nwhere outcomes compound.", "zh-TW": "模型變得更好了。\n但部署速度才是\n業務成果產生複利的地方。", vi: "Mô hình tốt hơn.\nNhưng tốc độ triển khai\nmới là nơi kết quả cộng hưởng.", ms: "Model semakin baik.\nTetapi halaju penempatan\nadalah di mana hasil berganda.", ja: "モデルは良くなった。\n成果が複利で積み上がるのは、\n配備の段階だ。", ko: "모델은 좋아졌습니다.\n성과가 복리로 쌓이는 곳은\n배치입니다." },
     // OpenRouter / Model box
-    "syncing":              { en: "SYNCING...",            "zh-TW": "同步中...",           vi: "ĐANG ĐỒNG BỘ...",                ms: "MENYEGERAK..." },
-    "openrouter_live":      { en: "OPENROUTER SYNC: LIVE", "zh-TW": "OPENROUTER 同步: 運行中", vi: "OPENROUTER ĐỒNG BỘ: TRỰC TIẾP", ms: "OPENROUTER SEGERAK: LANGSUNG" },
-    "fetching_rankings":    { en: "FETCHING LATEST RANKINGS...", "zh-TW": "正在獲取最新排名...", vi: "ĐANG TẢI BẢNG XẾP HẠNG...",   ms: "MEMUATKAN KEDUDUKAN TERKINI..." },
-    "intel":                { en: "Intel",                 "zh-TW": "智能",               vi: "Trí tuệ",                        ms: "Kepintaran" },
-    "coding":               { en: "Coding",                "zh-TW": "代碼",               vi: "Lập trình",                      ms: "Pengekodan" },
-    "agentic":              { en: "Agentic",               "zh-TW": "智能體",             vi: "Tự hành",                        ms: "Agentik" },
-    "benchmarks_note":      { en: "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS.", "zh-TW": "* 基準數據由 ARTIFICIAL ANALYSIS 排行榜標準化。", vi: "* ĐIỂM CHUẨN ĐƯỢC CHUẨN HÓA BỞI BẢNG XẾP HẠNG ARTIFICIAL ANALYSIS.", ms: "* PENANDA ARAS DINORMALISASI OLEH PAPAN PENDAHULU ARTIFICIAL ANALYSIS." },
-    "top_daily_runtimes":   { en: "TOP DAILY RUNTIMES",    "zh-TW": "每日最熱運行環境",   vi: "MÔI TRƯỜNG CHẠY HÀNG ĐẦU HÀNG NGÀY", ms: "PERSEKITARAN HARIAN TERATAS" },
+    "syncing":              { en: "SYNCING...",            "zh-TW": "同步中...",           vi: "ĐANG ĐỒNG BỘ...",                ms: "MENYEGERAK...", ja: "同期中...", ko: "동기화 중..." },
+    "openrouter_live":      { en: "OPENROUTER SYNC: LIVE", "zh-TW": "OPENROUTER 同步: 運行中", vi: "OPENROUTER ĐỒNG BỘ: TRỰC TIẾP", ms: "OPENROUTER SEGERAK: LANGSUNG", ja: "OPENROUTER 同期: 稼働中", ko: "OPENROUTER 동기화: 켜짐" },
+    "fetching_rankings":    { en: "FETCHING LATEST RANKINGS...", "zh-TW": "正在獲取最新排名...", vi: "ĐANG TẢI BẢNG XẾP HẠNG...",   ms: "MEMUATKAN KEDUDUKAN TERKINI...", ja: "最新ランキングを取得中...", ko: "최신 순위를 가져오는 중..." },
+    "intel":                { en: "Intel",                 "zh-TW": "智能",               vi: "Trí tuệ",                        ms: "Kepintaran", ja: "知能", ko: "지능" },
+    "coding":               { en: "Coding",                "zh-TW": "代碼",               vi: "Lập trình",                      ms: "Pengekodan", ja: "コーディング", ko: "코딩" },
+    "agentic":              { en: "Agentic",               "zh-TW": "智能體",             vi: "Tự hành",                        ms: "Agentik", ja: "エージェント", ko: "에이전틱" },
+    "kol_bd":               { en: "KOL BD",                "zh-TW": "KOL BD",             vi: "KOL BD",                         ms: "KOL BD", ja: "KOL BD", ko: "KOL BD" },
+    "content_ops":          { en: "Content Ops",           "zh-TW": "內容營運",           vi: "Vận hành nội dung",              ms: "Operasi Kandungan", ja: "コンテンツ運用", ko: "콘텐츠 운영" },
+    "benchmarks_note":      { en: "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS.", "zh-TW": "* 基準數據由 ARTIFICIAL ANALYSIS 排行榜標準化。", vi: "* ĐIỂM CHUẨN ĐƯỢC CHUẨN HÓA BỞI BẢNG XẾP HẠNG ARTIFICIAL ANALYSIS.", ms: "* PENANDA ARAS DINORMALISASI OLEH PAPAN PENDAHULU ARTIFICIAL ANALYSIS.", ja: "* ベンチマークは ARTIFICIAL ANALYSIS のリーダーボードにより正規化されています。", ko: "* 벤치마크는 ARTIFICIAL ANALYSIS 리더보드에 의해 정규화되었습니다." },
+    "top_daily_runtimes":   { en: "TOP DAILY RUNTIMES",    "zh-TW": "每日最熱運行環境",   vi: "MÔI TRƯỜNG CHẠY HÀNG ĐẦU HÀNG NGÀY", ms: "PERSEKITARAN HARIAN TERATAS", ja: "毎日の人気ランタイム", ko: "일일 최고 런타임" },
     // Model detail modal
-    "runtime_module":       { en: "Runtime Module",        "zh-TW": "運行時模組",         vi: "Mô-đun vận hành",                ms: "Modul Masa Jalan" },
-    "specs_metrics":        { en: "Specs & Metrics",       "zh-TW": "規格與指標",         vi: "Thông số & Chỉ số",              ms: "Spesifikasi & Metrik" },
-    "context_window":       { en: "CONTEXT WINDOW",        "zh-TW": "上下文窗口",         vi: "CỬA SỔ NGỮ CẢNH",               ms: "TETINGKAP KONTEKS" },
-    "max_completion":       { en: "MAX COMPLETION",        "zh-TW": "最大輸出限制",       vi: "ĐẦU RA TỐI ĐA",                 ms: "PENYELESAIAN MAKS" },
-    "pricing_prompt":       { en: "PRICING (PROMPT)",      "zh-TW": "計費 (輸入)",        vi: "GIÁ (ĐẦU VÀO)",                 ms: "HARGA (PROMPT)" },
-    "pricing_comp":         { en: "PRICING (COMP)",        "zh-TW": "計費 (輸出)",        vi: "GIÁ (ĐẦU RA)",                  ms: "HARGA (PENYELESAIAN)" },
-    "cost_savings":         { en: "cost savings vs baseline", "zh-TW": "比基線模型節省成本", vi: "tiết kiệm chi phí so với cơ sở",  ms: "penjimatan kos berbanding garis asas" },
-    "benchmarks":           { en: "Benchmarks",            "zh-TW": "基準測試",           vi: "Điểm chuẩn",                     ms: "Penanda Aras" },
-    "intelligence":         { en: "Intelligence",          "zh-TW": "智能程度",           vi: "Trí tuệ",                        ms: "Kepintaran" },
-    "coding_speed":         { en: "Coding Speed",          "zh-TW": "代碼生成速度",       vi: "Tốc độ lập trình",               ms: "Kelajuan Pengekodan" },
-    "autonomy":             { en: "Autonomy",              "zh-TW": "自主執行力",         vi: "Tự chủ",                         ms: "Autonomi" },
-    "pending_eval":         { en: "PENDING EVAL",          "zh-TW": "等待評測",           vi: "CHỜ ĐÁNH GIÁ",                  ms: "MENUNGGU PENILAIAN" },
-    "latency_ttft":         { en: "LATENCY (TTFT)",        "zh-TW": "首字延遲 (TTFT)",    vi: "ĐỘ TRỄ (TTFT)",                 ms: "KEPENDAMAN (TTFT)" },
-    "throughput":           { en: "THROUGHPUT",             "zh-TW": "吞吐速度",           vi: "THÔNG LƯỢNG",                    ms: "DAYA PEMPROSESAN" },
-    "reliability":          { en: "RELIABILITY",           "zh-TW": "穩定性/上線率",      vi: "ĐỘ TIN CẬY",                    ms: "KEBOLEHPERCAYAAN" },
-    "verdict":              { en: "VERDICT:",              "zh-TW": "運營結論:",          vi: "KẾT LUẬN:",                      ms: "KEPUTUSAN:" },
-    "use_cases":            { en: "USE CASES:",            "zh-TW": "建議工作流:",        vi: "TRƯỜNG HỢP SỬ DỤNG:",           ms: "KES PENGGUNAAN:" },
+    "runtime_module":       { en: "Runtime Module",        "zh-TW": "運行時模組",         vi: "Mô-đun vận hành",                ms: "Modul Masa Jalan", ja: "ランタイムモジュール", ko: "런타임 모듈" },
+    "specs_metrics":        { en: "Specs & Metrics",       "zh-TW": "規格與指標",         vi: "Thông số & Chỉ số",              ms: "Spesifikasi & Metrik", ja: "仕様と指標", ko: "사양 및 지표" },
+    "context_window":       { en: "CONTEXT WINDOW",        "zh-TW": "上下文窗口",         vi: "CỬA SỔ NGỮ CẢNH",               ms: "TETINGKAP KONTEKS", ja: "コンテキストウィンドウ", ko: "컨텍스트 윈도우" },
+    "max_completion":       { en: "MAX COMPLETION",        "zh-TW": "最大輸出限制",       vi: "ĐẦU RA TỐI ĐA",                 ms: "PENYELESAIAN MAKS", ja: "最大出力", ko: "최대 출력" },
+    "pricing_prompt":       { en: "PRICING (PROMPT)",      "zh-TW": "計費 (輸入)",        vi: "GIÁ (ĐẦU VÀO)",                 ms: "HARGA (PROMPT)", ja: "価格 (入力)", ko: "가격 (프롬프트)" },
+    "pricing_comp":         { en: "PRICING (COMP)",        "zh-TW": "計費 (輸出)",        vi: "GIÁ (ĐẦU RA)",                  ms: "HARGA (PENYELESAIAN)", ja: "価格 (出力)", ko: "가격 (생성)" },
+    "cost_savings":         { en: "cost savings vs baseline", "zh-TW": "比基線模型節省成本", vi: "tiết kiệm chi phí so với cơ sở",  ms: "penjimatan kos berbanding garis asas", ja: "ベースラインからのコスト削減", ko: "베이스라인 대비 비용 절감" },
+    "benchmarks":           { en: "Benchmarks",            "zh-TW": "基準測試",           vi: "Điểm chuẩn",                     ms: "Penanda Aras", ja: "ベンチマーク", ko: "벤치마크" },
+    "intelligence":         { en: "Intelligence",          "zh-TW": "智能程度",           vi: "Trí tuệ",                        ms: "Kepintaran", ja: "知能", ko: "지능" },
+    "coding_speed":         { en: "Coding Speed",          "zh-TW": "代碼生成速度",       vi: "Tốc độ lập trình",               ms: "Kelajuan Pengekodan", ja: "コーディング速度", ko: "코딩 속도" },
+    "autonomy":             { en: "Autonomy",              "zh-TW": "自主執行力",         vi: "Tự chủ",                         ms: "Autonomi", ja: "自律性", ko: "자율성" },
+    "pending_eval":         { en: "PENDING EVAL",          "zh-TW": "等待評測",           vi: "CHỜ ĐÁNH GIÁ",                  ms: "MENUNGGU PENILAIAN", ja: "評価待ち", ko: "평가 대기 중" },
+    "latency_ttft":         { en: "LATENCY (TTFT)",        "zh-TW": "首字延遲 (TTFT)",    vi: "ĐỘ TRỄ (TTFT)",                 ms: "KEPENDAMAN (TTFT)", ja: "レイテンシ (TTFT)", ko: "지연 시간 (TTFT)" },
+    "throughput":           { en: "THROUGHPUT",             "zh-TW": "吞吐速度",           vi: "THÔNG LƯỢNG",                    ms: "DAYA PEMPROSESAN", ja: "スループット", ko: "처리량" },
+    "reliability":          { en: "RELIABILITY",           "zh-TW": "穩定性/上線率",      vi: "ĐỘ TIN CẬY",                    ms: "KEBOLEHPERCAYAAN", ja: "信頼性", ko: "신뢰도" },
+    "verdict":              { en: "VERDICT:",              "zh-TW": "運營結論:",          vi: "KẾT LUẬN:",                      ms: "KEPUTUSAN:", ja: "結論:", ko: "결론:" },
+    "use_cases":            { en: "USE CASES:",            "zh-TW": "建議工作流:",        vi: "TRƯỜNG HỢP SỬ DỤNG:",           ms: "KES PENGGUNAAN:", ja: "ユースケース:", ko: "사용 사례:" },
   };
   const t = (key: string) => uiT[key]?.[language] ?? uiT[key]?.en ?? key;
 
@@ -628,126 +628,74 @@ export const SiteShellV3: React.FC = () => {
                 {/* Node 0: Model Capability */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 0 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <CpuIcon 
-                      ref={(el) => { iconRefs.current[0] = el; }} 
                       size={20} 
-                      color={pipelineState === 0 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 0 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Model
                   </span>
                 </div>
 
                 {/* Connector Line 0 */}
                 <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 1 ? 'opacity-100' : 'opacity-0'}`} />
-                  {pipelineState === 1 && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, ease: "easeInOut" }}
-                    />
-                  )}
+                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
                 </div>
 
                 {/* Node 1: Workflow */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 2 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <GearIcon 
-                      ref={(el) => { iconRefs.current[1] = el; }} 
                       size={20} 
-                      color={pipelineState === 2 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 2 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Workflow
                   </span>
                 </div>
 
                 {/* Connector Line 1 */}
                 <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 3 || pipelineState === 4 ? 'opacity-100' : 'opacity-0'}`} />
-                  {pipelineState === 3 && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, ease: "easeInOut" }}
-                    />
-                  )}
+                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
                 </div>
 
                 {/* Node 2: Deployment */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 4 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <PlugConnectedIcon 
-                      ref={(el) => { iconRefs.current[2] = el; }} 
                       size={20} 
-                      color={pipelineState === 4 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 4 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Deployment
                   </span>
                 </div>
 
                 {/* Connector Line 2 */}
                 <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className={`absolute inset-0 bg-theme-accent/20 transition-opacity duration-500 ${pipelineState === 5 || pipelineState === 6 ? 'opacity-100' : 'opacity-0'}`} />
-                  {pipelineState === 5 && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, ease: "easeInOut" }}
-                    />
-                  )}
+                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
                 </div>
 
                 {/* Node 3: Outcome */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 ${
-                      pipelineState === 6 
-                        ? 'border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]' 
-                        : 'border-theme-border/50'
-                    }`}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
                   >
                     <DoubleCheckIcon 
-                      ref={(el) => { iconRefs.current[3] = el; }} 
                       size={20} 
-                      color={pipelineState === 6 ? "var(--theme-accent)" : "var(--theme-text-muted)"} 
+                      color="var(--theme-accent)"
                     />
                   </div>
-                  <span className={`font-mono text-[8px] md:text-xs uppercase tracking-widest text-center transition-colors duration-500 ${
-                    pipelineState === 6 ? 'text-theme-text font-bold' : 'text-theme-text-muted'
-                  } mt-1`}>
+                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
                     Outcome
                   </span>
                 </div>
@@ -769,26 +717,77 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Row 3: Four Moats */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 relative overflow-hidden group">
+          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
                 <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.moats.label}</h3>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 font-mono text-sm leading-relaxed text-theme-text-muted">
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">01.</strong> {siteCopy.moats.card_1}
-              </div>
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">02.</strong> {siteCopy.moats.card_2}
-              </div>
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">03.</strong> {siteCopy.moats.card_3}
-              </div>
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">04.</strong> {siteCopy.moats.card_4}
-              </div>
+            
+            <div className="relative w-full flex flex-col md:flex-row items-stretch justify-between gap-4 mt-8">
+              {[
+                { text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon },
+                { text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon },
+                { text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon },
+                { text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck }
+              ].map((moat, idx) => {
+                const parts = moat.text.split(/—|-/);
+                const title = parts[0]?.trim();
+                const description = parts.slice(1).join('-').trim();
+                const isActive = pipelineState === idx * 2;
+                const isLineActive = pipelineState === idx * 2 + 1 || pipelineState === idx * 2 + 2; 
+
+                return (
+                  <React.Fragment key={idx}>
+                    <div 
+                      className={`flex-1 p-5 border rounded-lg transition-all duration-500 relative bg-theme-void/80 backdrop-blur-sm flex flex-col gap-4 group/card ${
+                        isActive ? 'border-theme-accent shadow-[0_0_20px_rgba(31,170,104,0.15)] -translate-y-1' : 'border-theme-border/30 hover:border-theme-accent/50'
+                      }`}
+                      onMouseEnter={() => iconRefs.current[idx]?.startAnimation?.()}
+                      onMouseLeave={() => iconRefs.current[idx]?.stopAnimation?.()}
+                    >
+                      <div className="flex flex-col gap-4 h-full">
+                        <div className="flex items-center justify-between">
+                          <div className={`text-theme-accent font-mono text-xl font-bold transition-opacity ${isActive ? 'opacity-100' : 'opacity-50 group-hover/card:opacity-100'}`}>
+                            {String(idx + 1).padStart(2, '0')}
+                          </div>
+                          <div className={`text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center transition-transform ${isActive ? 'scale-110' : ''}`}>
+                            <moat.Icon ref={(el: any) => { iconRefs.current[idx] = el; }} size={24} color={isActive ? "var(--theme-accent)" : "currentColor"} />
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className={`font-mono font-bold text-sm mb-2 transition-colors ${isActive ? 'text-theme-text' : 'text-theme-text'}`}>{title}</h4>
+                          <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{description}</p>
+                        </div>
+                        <div className={`font-mono text-[10px] tracking-widest uppercase text-left mt-auto transition-colors ${isActive ? 'text-theme-accent' : 'text-theme-accent/40 group-hover/card:text-theme-accent'}`}>
+                          [ {moat.tag} ]
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Connector arrow/line (except for last item) */}
+                    {idx < 3 && (
+                      <div className="hidden md:flex items-center justify-center w-8 relative shrink-0">
+                         <div className="w-full h-[2px] bg-theme-border/20 relative overflow-hidden rounded-full">
+                           <div className={`absolute inset-0 bg-theme-accent/30 transition-opacity duration-500 ${isLineActive ? 'opacity-100' : 'opacity-0'}`} />
+                           {(pipelineState === idx * 2 + 1) && (
+                             <motion.div
+                               className="absolute top-0 bottom-0 w-4 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
+                               initial={{ left: "-20px" }}
+                               animate={{ left: "100%" }}
+                               transition={{ duration: 1.2, ease: "easeInOut" }}
+                             />
+                           )}
+                         </div>
+                         <div className={`absolute right-[-4px] text-[10px] transition-colors duration-500 ${isLineActive ? 'text-theme-accent' : 'text-theme-border/20'}`}>
+                            ▶
+                         </div>
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </div>
           </OSCard>
 
@@ -938,7 +937,7 @@ export const SiteShellV3: React.FC = () => {
               {[
                 {
                   id: "kol",
-                  title: "KOL BD",
+                  title: t("kol_bd"),
                   status: t("pilot_ready"),
                   statusColor: "text-theme-accent",
                   dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
@@ -946,7 +945,7 @@ export const SiteShellV3: React.FC = () => {
                 },
                 {
                   id: "content",
-                  title: "Content Ops",
+                  title: t("content_ops"),
                   status: t("fde_configured"),
                   statusColor: "text-theme-accent",
                   dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
@@ -1025,8 +1024,8 @@ export const SiteShellV3: React.FC = () => {
                   theme === "xuan-mode" ? "opacity-40 mix-blend-multiply" : "opacity-25 mix-blend-screen"
                 }`} 
                 style={{
-                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)",
-                  maskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)"
+                  WebkitMaskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
+                  maskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)"
                 }}
               />
             </div>
@@ -1064,8 +1063,8 @@ export const SiteShellV3: React.FC = () => {
                     theme === "xuan-mode" ? "opacity-50 mix-blend-multiply" : "opacity-30 mix-blend-screen"
                   }`} 
                   style={{
-                    WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)",
-                    maskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)"
+                    WebkitMaskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
+                    maskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)"
                   }}
                 />
               </div>
@@ -1082,8 +1081,8 @@ export const SiteShellV3: React.FC = () => {
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">
-                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
-                    {siteCopy.operators.cta} <span>→</span>
+                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-theme-text hover:text-theme-void transition-colors flex items-center gap-2">
+                    {siteCopy.operators.cta}
                   </button>
                 </div>
               </div>
