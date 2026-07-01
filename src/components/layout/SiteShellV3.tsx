@@ -1024,8 +1024,8 @@ export const SiteShellV3: React.FC = () => {
                   theme === "xuan-mode" ? "opacity-40 mix-blend-multiply" : "opacity-25 mix-blend-screen"
                 }`} 
                 style={{
-                  WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)",
-                  maskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)"
+                  WebkitMaskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
+                  maskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)"
                 }}
               />
             </div>
@@ -1063,8 +1063,8 @@ export const SiteShellV3: React.FC = () => {
                     theme === "xuan-mode" ? "opacity-50 mix-blend-multiply" : "opacity-30 mix-blend-screen"
                   }`} 
                   style={{
-                    WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)",
-                    maskImage: "linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 65%)"
+                    WebkitMaskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
+                    maskImage: "radial-gradient(ellipse 80% 50% at right center, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)"
                   }}
                 />
               </div>
@@ -1081,7 +1081,7 @@ export const SiteShellV3: React.FC = () => {
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">
-                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-white transition-colors flex items-center gap-2">
+                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-theme-text hover:text-theme-void transition-colors flex items-center gap-2">
                     {siteCopy.operators.cta}
                   </button>
                 </div>

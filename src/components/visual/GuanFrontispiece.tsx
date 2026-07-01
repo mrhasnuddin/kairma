@@ -5,7 +5,197 @@ import { guanCodex, GuanQuote } from "@/data/guan-codex";
 import { useLanguage } from "@/lib/language";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { AsciiGlitchRipple } from "@/components/ui/ascii-glitch-ripple";
+// Web Audio API synthesizer for clean mechanical typewriter sound clicks (0kb downloads, works offline)
+let audioCtx: AudioContext | null = null;
+let lastClickTime = 0;
+
+function playKeystrokeClick() {
+  if (typeof window === "undefined") return;
+
+  const nowMs = Date.now();
+  if (nowMs - lastClickTime < 65) return; // Throttle to maintain typewriter rhythm and avoid digital clipping
+  lastClickTime = nowMs;
+
+  try {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    if (!audioCtx) {
+      audioCtx = new AudioContextClass();
+    }
+
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume().catch(() => {});
+    }
+
+    const ctx = audioCtx;
+    const now = ctx.currentTime;
+
+    // 1. High frequency mechanical tap (noise snap)
+    const noiseBufferSize = ctx.sampleRate * 0.015; // 15ms transient
+    const noiseBuffer = ctx.createBuffer(1, noiseBufferSize, ctx.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseBufferSize; i++) {
+      noiseData[i] = Math.random() * 2 - 1;
+    }
+    const noiseSource = ctx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = "bandpass";
+    noiseFilter.frequency.setValueAtTime(1500 + Math.random() * 400, now);
+    noiseFilter.Q.setValueAtTime(6, now);
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.06, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+
+    // 2. Platen housing impact body (low frequency resonance)
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(140 + Math.random() * 30, now);
+    osc.frequency.exponentialRampToValueAtTime(70, now + 0.035);
+
+    const oscGain = ctx.createGain();
+    oscGain.gain.setValueAtTime(0.12, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+
+    noiseSource.start(now);
+    osc.start(now);
+    osc.stop(now + 0.04);
+  } catch (e) {
+    console.warn("AudioContext failed to initialize:", e);
+  }
+}
+
+interface ScrambleTextProps {
+  text: string;
+  duration?: number;
+  delay?: number;
+  cursor?: boolean;
+}
+
+const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, delay = 200, cursor = true }) => {
+  const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set());
+  const [showCursor, setShowCursor] = useState(cursor);
+
+  // Blinking cursor effect
+  useEffect(() => {
+    if (!cursor) return;
+    const cursorInterval = setInterval(() => setShowCursor((v) => !v), 530);
+    return () => clearInterval(cursorInterval);
+  }, [cursor]);
+
+  // Split text into tokens (words and spaces)
+  const tokens = useMemo(() => text.split(/(\s+)/), [text]);
+  
+  // Assign a global index to every non-space character
+  const { charData, charCount } = useMemo(() => {
+    let globalCharIndex = 0;
+    const data = tokens.map((token: string) => {
+      if (token.trim().length === 0) {
+        return { isWord: false, token, chars: [] };
+      }
+      const chars = token.split("").map((char: string) => {
+        const index = globalCharIndex++;
+        return { char, index };
+      });
+      return { isWord: true, token, chars };
+    });
+    return { charData: data, charCount: globalCharIndex };
+  }, [tokens]);
+
+  const revealOrder = useMemo(() => {
+    const indices = Array.from({ length: charCount }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return indices;
+  }, [charCount]);
+
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    let animationFrameId: number;
+    let lastRevealedCount = 0;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const elapsed = timestamp - startTimestamp;
+
+      if (elapsed < delay) {
+        animationFrameId = requestAnimationFrame(step);
+        return;
+      }
+
+      const activeElapsed = elapsed - delay;
+      const progress = Math.min(activeElapsed / duration, 1);
+      const charsToReveal = Math.floor(progress * charCount);
+
+      if (charsToReveal > lastRevealedCount) {
+        // play click sound (if we uncomment it later)
+        // const newlyRevealedCount = charsToReveal - lastRevealedCount;
+        // for (let i = 0; i < newlyRevealedCount; i++) {
+        //   playKeystrokeClick();
+        // }
+
+        setRevealedIndices(prev => {
+          const next = new Set(prev);
+          for (let i = 0; i < charsToReveal; i++) {
+            next.add(revealOrder[i]);
+          }
+          return next;
+        });
+        lastRevealedCount = charsToReveal;
+      }
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [duration, delay, revealOrder, charCount]);
+
+  return (
+    <span>
+      {charData.map((group, i) => {
+        if (!group.isWord) {
+          return <span key={i}>{group.token}</span>;
+        }
+        return (
+          <span key={i} className="whitespace-nowrap">
+            {group.chars.map((c) => (
+              <span
+                key={c.index}
+                className="transition-opacity duration-75"
+                style={{ opacity: revealedIndices.has(c.index) ? 1 : 0 }}
+              >
+                {c.char}
+              </span>
+            ))}
+          </span>
+        );
+      })}
+      {cursor && (
+        <span 
+          className={`inline-block ml-[2px] font-light transition-opacity duration-75 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
+        >
+          |
+        </span>
+      )}
+    </span>
+  );
+};
 
 
 export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
@@ -82,15 +272,13 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
         {/* Original Text */}
         {quote.original && (
           <p className="text-theme-text text-lg md:text-xl font-serif mb-4 leading-relaxed tracking-wide drop-shadow-sm text-center">
-            <AsciiGlitchRipple as="span" dur={1000} autoPlay autoPlayDelay={400}>{quote.original}</AsciiGlitchRipple>
-            <span className="inline-block ml-[2px] font-light animate-pulse">|</span>
+            <ScrambleText text={quote.original} duration={1500} delay={400} />
           </p>
         )}
         
         {/* English */}
         <p className="text-theme-text-muted text-sm md:text-base font-serif mb-8 leading-relaxed drop-shadow-sm text-center">
-           <AsciiGlitchRipple as="span" dur={1000} autoPlay autoPlayDelay={quote.original ? 1500 : 400}>{`English: ${quote.english}`}</AsciiGlitchRipple>
-           {!quote.original && <span className="inline-block ml-[2px] font-light animate-pulse">|</span>}
+           <ScrambleText text={`English: ${quote.english}`} duration={2000} delay={quote.original ? 1500 : 400} cursor={!quote.original} />
         </p>
         
         {/* Source - Stylized Box */}
@@ -100,22 +288,18 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
            <div className="absolute -bottom-[1px] -right-[1px] w-3 h-[1px] bg-theme-accent" />
            <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-3 bg-theme-accent" />
            
-           <AsciiGlitchRipple 
-             as="span"
-             dur={1000} 
-             autoPlay
-             autoPlayDelay={quote.original ? 3000 : 2000}
-           >
-             {`SOURCE: ${quote.source}`}
-           </AsciiGlitchRipple>
-           <AsciiGlitchRipple 
-             as="span"
-             dur={1000} 
-             autoPlay
-             autoPlayDelay={quote.original ? 3200 : 2200}
-           >
-             {`ORIGIN: ${quote.language}`}
-           </AsciiGlitchRipple>
+           <ScrambleText 
+             text={`SOURCE: ${quote.source}`} 
+             duration={1000} 
+             delay={quote.original ? 3000 : 2000} 
+             cursor={false}
+           />
+           <ScrambleText 
+             text={`ORIGIN: ${quote.language}`} 
+             duration={1000} 
+             delay={quote.original ? 3200 : 2200} 
+             cursor={false}
+           />
         </div>
       </div>
 
