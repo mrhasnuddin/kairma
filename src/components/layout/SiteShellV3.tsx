@@ -34,6 +34,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
 const KairmaHero = dynamic(() => import("@/components/3d/KairmaHero"), { ssr: false });
+const ModelLeaderboard3D = dynamic(() => import("@/components/3d/ModelLeaderboard3D"), { ssr: false });
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const InteractiveBootBox: React.FC<{
@@ -843,118 +844,60 @@ export const SiteShellV3: React.FC = () => {
               </div>
             ) : (
               <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
-                {/* Left: Bar Chart (6 cols) */}
-                <div className="lg:col-span-6 flex flex-col justify-between h-full min-h-[300px]">
-                  <div>
-                    {/* Metric Selector Tabs */}
-                    <div className="flex items-center gap-1 border border-theme-border/50 p-1 rounded-lg bg-theme-void/80 w-full mb-6 select-none">
-                      {(["intelligence_index", "coding_index", "agentic_index"] as const).map((metric) => {
-                        const label = metric === "intelligence_index" 
-                          ? t("intel")
-                          : metric === "coding_index"
-                            ? t("coding")
-                            : t("agentic");
-                        const isActive = chartMetric === metric;
-                        return (
-                          <button
-                            key={metric}
-                            onClick={() => setChartMetric(metric)}
-                            className={`group/btn relative flex-1 flex items-center justify-center py-2.5 text-xs md:text-sm font-mono font-bold uppercase tracking-wider rounded-md transition-all duration-300 focus:outline-none backdrop-blur-sm ${
-                              isActive 
-                                ? 'border border-theme-border/40 bg-theme-void text-theme-accent shadow-sm' 
-                                : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/40'
-                            }`}
-                          >
-                            {/* Quote Source Box Corner Brackets */}
-                            <div className={`absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
-                            <div className={`absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
-                            <div className={`absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
-                            <div className={`absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
-                            
-                            <span>{label}</span>
-                            {isActive && <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 ml-2" />}
-                          </button>
-                        );
-                      })}
-                    </div>
+                {/* Left: 3D Interactive WebGL Constellation (7 cols) */}
+                <div className="lg:col-span-7 flex flex-col h-full min-h-[480px]">
+                  <ModelLeaderboard3D
+                    models={activeModels}
+                    activeMetric={chartMetric}
+                    onMetricChange={setChartMetric}
+                    onSelectModelForModal={setSelectedModelForModal}
+                    language={language}
+                    t={t}
+                  />
+                </div>
 
-                    {/* Horizontal Bar Chart */}
-                    <div className="flex flex-col gap-4">
+                {/* Right: Real-time Telemetry Rankings (5 cols) */}
+                <div className="lg:col-span-5 flex flex-col min-h-0 border-t lg:border-t-0 lg:border-l border-theme-border/30 pt-6 lg:pt-0 lg:pl-6">
+                  <div className="flex justify-between items-center mb-4 shrink-0">
+                    <p className="font-mono text-xs md:text-sm font-semibold text-theme-text-muted uppercase tracking-widest">
+                      {chartMetric === "intelligence_index" ? t("intel") : chartMetric === "coding_index" ? t("coding") : t("agentic")} // {t("top_daily_runtimes")}
+                    </p>
+                    <span className="text-[10px] font-mono text-theme-accent animate-pulse">[3D INTERACTIVE]</span>
+                  </div>
+                  <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
+                    <div className="flex flex-col gap-2.5">
                       {activeModels
                         .filter(m => m.benchmarks?.[chartMetric] != null)
-                        .slice(0, 7)
-                        .map((model, idx) => {
-                          const val = model.benchmarks?.[chartMetric] ?? 0;
-                          const maxVal = Math.max(...activeModels.map(m => m.benchmarks?.[chartMetric] ?? 0), 100);
-                          const percent = Math.max(10, Math.min(100, (val / maxVal) * 100));
-                          const isBaseline = activeModels.filter(m => m.benchmarks?.[chartMetric] != null)[0]?.id === model.id;
-                          const barColor = chartMetric === "intelligence_index" 
-                            ? "bg-gradient-to-r from-[#9C5AFF]/40 to-[#9C5AFF]" 
-                            : chartMetric === "coding_index" 
-                              ? "bg-gradient-to-r from-[#10A37F]/40 to-[#10A37F]" 
-                              : "bg-gradient-to-r from-[#D4783A]/40 to-[#D4783A]";
-
+                        .sort((a, b) => (b.benchmarks?.[chartMetric] ?? 0) - (a.benchmarks?.[chartMetric] ?? 0))
+                        .slice(0, 8)
+                        .map((model, i) => {
+                          const isBaseline = i === 0;
+                          const specs = getModelSpecs(model);
+                          const score = model.benchmarks?.[chartMetric] ?? 0;
                           return (
                             <div 
-                              key={model.id}
+                              key={model.id} 
                               onClick={() => setSelectedModelForModal(model)}
-                              className="flex flex-col gap-1.5 transition-all cursor-pointer group/bar hover:opacity-100 opacity-90"
+                              className="flex justify-between items-center font-mono text-xs md:text-sm p-3.5 border border-theme-border/30 hover:border-theme-accent/40 bg-theme-void/40 hover:bg-theme-accent/5 transition-all cursor-pointer rounded group"
                             >
-                              <div className="flex justify-between items-center text-xs md:text-sm font-mono text-theme-text-muted">
-                                <span className={`font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text"} group-hover/bar:text-theme-accent transition-colors`}>
-                                  #{idx + 1} {model.name.replace("Google: ", "").replace("Anthropic: ", "").replace("Cohere: ", "").replace("Sakana: ", "")}
-                                </span>
-                                <span className="font-bold text-theme-text group-hover/bar:text-theme-accent transition-colors">{val}%</span>
+                              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                                <span className={`w-4 shrink-0 font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text-muted"}`}>#{i + 1}</span>
+                                <span className="truncate font-bold text-theme-text group-hover:text-theme-accent transition-colors">{model.name}</span>
                               </div>
-                              <div className="h-2.5 w-full bg-theme-void border border-theme-border/20 rounded-full overflow-hidden flex items-center">
-                                <motion.div 
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${percent}%` }}
-                                  transition={{ duration: 0.8, ease: "easeOut" }}
-                                  className={`h-full rounded-full ${barColor} transition-all`}
-                                />
+                              
+                              <div className="flex items-center gap-3 shrink-0">
+                                <span className="font-bold text-theme-accent">{score}%</span>
+                                <span className="text-[10px] md:text-xs text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
+                                  {specs.provider.toUpperCase()}
+                                </span>
                               </div>
                             </div>
                           );
                         })}
                     </div>
                   </div>
-                  
-                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-6">
+                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-4">
                     {t("benchmarks_note")}
-                  </div>
-                </div>
-
-                {/* Right: Model list (6 cols) */}
-                <div className="lg:col-span-6 flex flex-col min-h-0 border-t lg:border-t-0 lg:border-l border-theme-border/30 pt-6 lg:pt-0 lg:pl-6">
-                  <p className="font-mono text-xs md:text-sm font-semibold text-theme-text-muted mb-4 uppercase tracking-widest shrink-0">
-                    {t("top_daily_runtimes")}
-                  </p>
-                  <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
-                    <div className="flex flex-col gap-2.5">
-                      {activeModels.slice(0, 8).map((model, i) => {
-                        const isBaseline = i === 0;
-                        const specs = getModelSpecs(model);
-                        return (
-                          <div 
-                            key={model.id} 
-                            onClick={() => setSelectedModelForModal(model)}
-                            className="flex justify-between items-center font-mono text-xs md:text-sm p-3.5 border border-theme-border/30 hover:border-theme-accent/40 bg-theme-void/40 hover:bg-theme-accent/5 transition-all cursor-pointer rounded group"
-                          >
-                            <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                              <span className={`w-4 shrink-0 font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text-muted"}`}>#{i + 1}</span>
-                              <span className="truncate font-bold text-theme-text group-hover:text-theme-accent transition-colors">{model.name}</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[10px] md:text-xs text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
-                                {specs.provider.toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
                   </div>
                 </div>
               </div>
