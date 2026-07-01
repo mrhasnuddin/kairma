@@ -6,6 +6,7 @@ import { BurnStream } from "@/components/ui/BurnStream";
 import { BentoGrid } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
+import { SocialLinks } from "@/components/ui/SocialLinks";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import CpuIcon from "@/components/ui/cpu-icon";
@@ -522,8 +523,9 @@ export const SiteShellV3: React.FC = () => {
                   COMING SOON
                 </button>
               </div>
-              <div className="flex items-center justify-end w-full">
+              <div className="flex flex-col gap-2 w-full mt-auto">
                 <ThemeSwitcher />
+                <SocialLinks />
               </div>
             </div>
           </OSCard>
