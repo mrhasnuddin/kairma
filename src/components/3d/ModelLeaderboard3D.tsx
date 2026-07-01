@@ -96,7 +96,7 @@ const DataTether: React.FC<{ startPos: THREE.Vector3; endPos: THREE.Vector3; col
   color,
   isSelected,
 }) => {
-  const lineRef = useRef<THREE.Line>(null);
+  const lineRef = useRef<any>(null);
   const points = useMemo(() => {
     // Route along the floor grid for a circuit-board trace look: start -> ground -> core ground -> core
     const p1 = new THREE.Vector3(startPos.x, -2.4, startPos.z);
@@ -110,7 +110,8 @@ const DataTether: React.FC<{ startPos: THREE.Vector3; endPos: THREE.Vector3; col
   }, [points]);
 
   return (
-    <line ref={lineRef} geometry={geometry}>
+    // @ts-ignore - R3F line collision with React 19 SVGLineElement TS types
+    <line ref={lineRef as any} geometry={geometry}>
       <lineBasicMaterial color={color} transparent opacity={isSelected ? 0.9 : 0.3} linewidth={isSelected ? 2 : 1} />
     </line>
   );
@@ -123,17 +124,14 @@ const ServerPillarNode: React.FC<{
   total: number;
   metric: string;
   isSelected: boolean;
-  isHovered: boolean;
   onSelect: (model: ModelData) => void;
-  onHover: (id: string | null) => void;
-}> = ({ model, rank, total, metric, isSelected, isHovered, onSelect, onHover }) => {
+}> = ({ model, rank, total, metric, isSelected, onSelect }) => {
   const groupRef = useRef<THREE.Group>(null);
   const pillarRef = useRef<THREE.Mesh>(null);
   const bracketRef = useRef<THREE.Mesh>(null);
   const ringRef = useRef<THREE.Mesh>(null);
-  const [localHovered, setLocalHovered] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
-  const activeHover = localHovered || isHovered;
   const score = model.benchmarks?.[metric] || model.score || 80;
   const color = useMemo(() => getModelColor(model, rank - 1), [model, rank]);
 
@@ -159,7 +157,7 @@ const ServerPillarNode: React.FC<{
       groupRef.current.position.lerp(targetPos, 0.08);
     }
     if (bracketRef.current) {
-      bracketRef.current.rotation.y += delta * (isSelected ? 2.5 : activeHover ? 1.8 : 0.8);
+      bracketRef.current.rotation.y += delta * (isSelected ? 2.5 : hovered ? 1.8 : 0.8);
     }
     if (ringRef.current) {
       ringRef.current.rotation.z -= delta * 1.5;
@@ -184,7 +182,7 @@ const ServerPillarNode: React.FC<{
   return (
     <group ref={groupRef}>
       {/* Laser Tether to Core */}
-      <DataTether startPos={new THREE.Vector3(0, -targetHeight / 2, 0)} endPos={corePos} color={color} isSelected={isSelected || activeHover} />
+      <DataTether startPos={new THREE.Vector3(0, -targetHeight / 2, 0)} endPos={corePos} color={color} isSelected={isSelected || hovered} />
 
       {/* Main Server Pillar Monolith */}
       <mesh
@@ -195,25 +193,23 @@ const ServerPillarNode: React.FC<{
         }}
         onPointerOver={(e) => {
           e.stopPropagation();
-          setLocalHovered(true);
-          onHover(model.id);
+          setHovered(true);
           document.body.style.cursor = "pointer";
         }}
         onPointerOut={() => {
-          setLocalHovered(false);
-          onHover(null);
+          setHovered(false);
           document.body.style.cursor = "default";
         }}
-        scale={isSelected ? [1.15, 1.0, 1.15] : activeHover ? [1.1, 1.0, 1.1] : [1, 1, 1]}
+        scale={isSelected ? [1.15, 1.0, 1.15] : hovered ? [1.08, 1.0, 1.08] : [1, 1, 1]}
       >
         <boxGeometry args={[0.7, targetHeight, 0.7]} />
         <meshStandardMaterial
           color={color}
           emissive={color}
-          emissiveIntensity={isSelected ? 1.5 : activeHover ? 1.2 : 0.4}
+          emissiveIntensity={isSelected ? 1.5 : hovered ? 1.0 : 0.4}
           roughness={0.1}
           metalness={0.9}
-          wireframe={!isSelected && !activeHover && rank > 3}
+          wireframe={!isSelected && !hovered && rank > 3}
         />
       </mesh>
 
@@ -224,7 +220,7 @@ const ServerPillarNode: React.FC<{
       </mesh>
 
       {/* Floating Cyber Target Ring */}
-      {(isSelected || activeHover || rank <= 2) && (
+      {(isSelected || hovered || rank <= 2) && (
         <mesh ref={ringRef} position={[0, targetHeight / 2 + 0.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.6, 0.8, 4]} />
           <meshBasicMaterial color={color} wireframe side={THREE.DoubleSide} />
@@ -241,8 +237,8 @@ const ServerPillarNode: React.FC<{
           className={`cursor-pointer px-2.5 py-1 rounded border backdrop-blur-md transition-all select-none whitespace-nowrap flex items-center gap-2 font-mono text-xs shadow-xl ${
             isSelected
               ? "bg-theme-void/95 border-theme-accent text-theme-accent scale-110 shadow-[0_0_20px_var(--color-theme-accent)]"
-              : activeHover
-              ? "bg-theme-void/95 border-theme-text text-theme-text scale-105 shadow-[0_0_12px_rgba(255,255,255,0.3)]"
+              : hovered
+              ? "bg-theme-void/90 border-theme-text text-theme-text scale-105"
               : "bg-theme-void/80 border-theme-border/50 text-theme-text-muted hover:text-theme-text"
           }`}
         >
@@ -336,11 +332,9 @@ export default function ModelLeaderboard3D({
   t,
 }: ModelLeaderboard3DProps) {
   const [selectedModel, setSelectedModel] = useState<ModelData | null>(null);
-  const [hoveredModelId, setHoveredModelId] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDecrypting, setIsDecrypting] = useState(false);
 
-  // Filter and sort models by active metric (synchronized with OpenRouter live data)
+  // Filter and sort models by active metric
   const rankedModels = useMemo(() => {
     return models
       .filter((m) => m.benchmarks?.[activeMetric] != null)
@@ -364,7 +358,7 @@ export default function ModelLeaderboard3D({
   };
 
   return (
-    <div className="relative w-full h-full min-h-[560px] flex flex-col bg-theme-void/80 rounded-lg border border-theme-border/40 overflow-hidden shadow-2xl">
+    <div className="relative w-full h-full min-h-[480px] flex flex-col bg-theme-void/80 rounded-lg border border-theme-border/40 overflow-hidden shadow-2xl">
       {/* Top Hacker Terminal HUD Controls Overlay */}
       <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
         {/* Metric Selector Tabs */}
@@ -399,11 +393,11 @@ export default function ModelLeaderboard3D({
         <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded border border-theme-border/50 bg-theme-void/90 backdrop-blur-md font-mono text-[11px] text-theme-text-muted pointer-events-auto shadow-md">
           <Terminal size={14} className="text-emerald-400 animate-pulse" />
           <span className="text-theme-accent font-bold">root@kairma:~#</span>
-          <span>ORBIT_GRID: ACTIVE // HOVER REGISTER TO HIGHLIGHT PILLAR</span>
+          <span>ORBIT_GRID: ACTIVE // CLICK PILLAR FOR HEX DUMP</span>
         </div>
       </div>
 
-      {/* 3D WebGL Canvas (Takes 100% full width & height) */}
+      {/* 3D WebGL Canvas */}
       <div className="flex-1 w-full h-full relative cursor-grab active:cursor-grabbing">
         <Canvas camera={{ position: [0, 5, 13], fov: 48 }}>
           <ambientLight intensity={0.8} />
@@ -426,9 +420,7 @@ export default function ModelLeaderboard3D({
               total={rankedModels.length}
               metric={activeMetric}
               isSelected={selectedModel?.id === model.id}
-              isHovered={hoveredModelId === model.id}
               onSelect={(m) => setSelectedModel(selectedModel?.id === m.id ? null : m)}
-              onHover={(id) => setHoveredModelId(id)}
             />
           ))}
 
@@ -437,7 +429,7 @@ export default function ModelLeaderboard3D({
             enableZoom={true}
             enablePan={true}
             enableRotate={true}
-            autoRotate={!selectedModel && !hoveredModelId}
+            autoRotate={!selectedModel}
             autoRotateSpeed={0.4}
             maxDistance={22}
             minDistance={6}
@@ -445,94 +437,6 @@ export default function ModelLeaderboard3D({
           />
         </Canvas>
       </div>
-
-      {/* Reopen Sidebar Button (When closed and no model selected) */}
-      {!selectedModel && !isSidebarOpen && (
-        <button
-          onClick={() => setIsSidebarOpen(true)}
-          className="absolute top-16 right-4 z-30 px-3 py-2 bg-theme-void/95 border border-theme-accent/60 text-theme-accent text-xs font-mono font-bold rounded shadow-[0_0_15px_var(--color-theme-accent)] hover:bg-theme-accent hover:text-theme-void transition-all cursor-pointer flex items-center gap-2 pointer-events-auto"
-        >
-          <Terminal size={14} className="animate-pulse text-emerald-400" />
-          <span>[ ☰ OPEN RUNTIMES REGISTER ]</span>
-        </button>
-      )}
-
-      {/* Right Side Top Daily Runtimes Register Sidebar (When NO Model Selected) */}
-      <AnimatePresence>
-        {!selectedModel && isSidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: 320 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 320 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-16 right-4 bottom-12 w-full sm:w-80 bg-theme-void/92 border border-theme-border/60 rounded p-4 flex flex-col justify-between shadow-[0_0_30px_rgba(0,0,0,0.85)] backdrop-blur-xl font-mono overflow-y-auto no-scrollbar z-30 pointer-events-auto"
-          >
-            <div>
-              {/* Register Header */}
-              <div className="flex justify-between items-center mb-3 pb-2 border-b border-theme-border/40">
-                <div className="flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-                  <span className="text-[11px] font-bold text-theme-accent uppercase tracking-widest">
-                    {metricLabel} // TOP RUNTIMES
-                  </span>
-                </div>
-                <button
-                  onClick={() => setIsSidebarOpen(false)}
-                  className="text-[10px] text-theme-text-muted hover:text-theme-text px-1.5 py-0.5 border border-theme-border/40 rounded hover:border-theme-accent transition-all cursor-pointer font-bold"
-                >
-                  [ _ MINIMIZE ]
-                </button>
-              </div>
-
-              {/* Live Synced Model List */}
-              <div className="flex flex-col gap-2 max-h-[380px] overflow-y-auto no-scrollbar pr-0.5">
-                {rankedModels.map((model, i) => {
-                  const score = model.benchmarks?.[activeMetric] ?? model.score;
-                  const isHovered = hoveredModelId === model.id;
-                  const provColor = getModelColor(model, i);
-                  const shortName = model.name
-                    .replace("Google: ", "")
-                    .replace("Anthropic: ", "")
-                    .replace("Cohere: ", "")
-                    .replace("Sakana: ", "")
-                    .replace("Moonshot: ", "")
-                    .replace("Z.ai: ", "");
-                  return (
-                    <div
-                      key={model.id}
-                      onMouseEnter={() => setHoveredModelId(model.id)}
-                      onMouseLeave={() => setHoveredModelId(null)}
-                      onClick={() => setSelectedModel(model)}
-                      className={`flex justify-between items-center p-2.5 rounded border transition-all cursor-pointer group ${
-                        isHovered
-                          ? "bg-theme-accent/15 border-theme-accent text-theme-text scale-[1.02] shadow-[0_0_12px_var(--color-theme-accent)]"
-                          : "bg-black/40 border-theme-border/30 text-theme-text hover:border-theme-border/80"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse" style={{ backgroundColor: provColor, boxShadow: `0 0 6px ${provColor}` }} />
-                        <span className={`w-5 text-xs font-bold shrink-0 ${i === 0 ? "text-theme-accent" : "text-theme-text-muted"}`}>#{i + 1}</span>
-                        <span className="truncate text-xs font-semibold group-hover:text-theme-accent transition-colors">{shortName}</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="font-bold text-emerald-400 text-xs">{score}%</span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded border border-theme-border/30 bg-theme-void/80 uppercase font-semibold text-theme-text-muted group-hover:border-theme-accent/40 group-hover:text-theme-accent transition-colors">
-                          {(model.provider || "OPENROUTER").toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="text-[10px] text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-3 mt-3">
-              {t("benchmarks_note")}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Right Side Hacker Terminal Execution HUD (When Model Selected) */}
       <AnimatePresence>
@@ -542,7 +446,7 @@ export default function ModelLeaderboard3D({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 340 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-16 right-4 bottom-12 w-full sm:w-85 bg-theme-void/95 border-2 border-theme-accent rounded p-5 flex flex-col justify-between z-30 shadow-[0_0_35px_rgba(0,0,0,0.9)] backdrop-blur-2xl font-mono overflow-y-auto no-scrollbar pointer-events-auto"
+            className="absolute top-16 right-4 bottom-4 w-full sm:w-85 bg-theme-void/95 border-2 border-theme-accent rounded p-5 flex flex-col justify-between z-30 shadow-[0_0_35px_rgba(0,0,0,0.9)] backdrop-blur-2xl font-mono overflow-y-auto no-scrollbar"
           >
             {/* Terminal Header */}
             <div>
@@ -555,9 +459,9 @@ export default function ModelLeaderboard3D({
                 </div>
                 <button
                   onClick={() => setSelectedModel(null)}
-                  className="text-[11px] text-theme-accent hover:text-theme-void hover:bg-theme-accent px-2 py-0.5 border border-theme-accent/60 rounded transition-all cursor-pointer font-bold"
+                  className="text-xs text-theme-text-muted hover:text-theme-accent px-2 py-0.5 border border-theme-border/50 rounded hover:border-theme-accent transition-all cursor-pointer font-bold"
                 >
-                  [ &lt; RUNTIMES LIST ]
+                  [ kill -9 ]
                 </button>
               </div>
 
@@ -669,10 +573,10 @@ export default function ModelLeaderboard3D({
         <div className="flex items-center gap-2.5">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
           <span className="text-theme-accent font-bold">SYS_STATUS: ONLINE</span>
-          <span className="hidden sm:inline">// GRID_NODES: {rankedModels.length} // OPENROUTER_SYNC: 100% LIVE</span>
+          <span className="hidden sm:inline">// GRID_NODES: {rankedModels.length} // CIPHER: AES-GCM-256</span>
         </div>
         <div className="font-bold text-theme-text">
-          {selectedModel ? `TARGET_LOCKED: ${selectedModel.name}` : `HOVER_TARGET: ${hoveredModelId || "NONE"}`}
+          {selectedModel ? `LOCKED: ${selectedModel.name}` : "AWAITING USER TARGET SELECTION..."}
         </div>
       </div>
     </div>
