@@ -49,6 +49,7 @@ export function FallingPattern({
       index: number;
       lastCharX: number;
       nextCharWidth: number;
+      maxChars: number;
     }
     
     let rows: RowData[] = [];
@@ -63,12 +64,14 @@ export function FallingPattern({
       
       numRows = Math.floor(height / rowHeight);
       rows = Array.from({ length: numRows }).map(() => ({
-        x: width + Math.random() * width,
-        speed: (1.0 + Math.random() * 1.5) * speed, // Slightly faster horizontal speed
+        // Spawn randomly across the entire viewport immediately!
+        x: Math.random() * (width + 150),
+        speed: (1.2 + Math.random() * 1.8) * speed, // Dynamic speed variety for 3D depth
         str: canonRain[Math.floor(Math.random() * canonRain.length)],
         index: 0,
         lastCharX: 99999, // Force immediate draw
         nextCharWidth: 0,
+        maxChars: Math.floor(Math.random() * 30) + 15, // Bounded drop distance (15-45 chars)
       }));
     };
 
@@ -143,7 +146,7 @@ export function FallingPattern({
             ctx.fillText(tailChar, row.lastCharX, yPos);
           }
 
-          if (headChar) {
+          if (headChar && row.index < row.maxChars) {
             ctx.fillStyle = isDark ? "#ffffff" : "#1F1A17";
             ctx.fillText(headChar, row.x, yPos);
             
@@ -151,14 +154,15 @@ export function FallingPattern({
             row.nextCharWidth = ctx.measureText(headChar).width * 1.1; // Add slight letter spacing
             row.index++;
           } else {
-            // String finished; reset offscreen left (which is Canvas X = width + random)
-            if (row.x < -width || Math.random() > 0.99) {
-              row.x = width + Math.random() * 400;
+            // String finished or max distance reached; reset randomly across the viewport!
+            if (row.x < -100 || row.index >= row.maxChars || Math.random() > 0.99) {
+              row.x = Math.random() * (width + 200);
               row.str = canonRain[Math.floor(Math.random() * canonRain.length)];
+              row.maxChars = Math.floor(Math.random() * 30) + 15;
               row.index = 0;
               row.lastCharX = row.x + 999;
               row.nextCharWidth = 0;
-              row.speed = (1.0 + Math.random() * 1.5) * speed;
+              row.speed = (1.2 + Math.random() * 1.8) * speed;
             }
           }
         }
