@@ -94,11 +94,45 @@ const translations: Record<string, TranslationContent> = {
       { id: "05", name: "하드웨어 링크", freq: "852 Hz", freqVal: 852, desc: "물리적 센서 및 엣지 장치 원격 측정", type: "square", waveName: "레조넌스 스윕" },
     ],
   },
+  vi: {
+    title: "KIẾN TRÚC NHẬN DẠNG ÂM THANH",
+    subtitle: "Âm thanh là một chiều nguyên bản của KAIRMA. 5 tài sản âm thanh cố định cho sự cộng sinh độ trễ bằng không.",
+    audio_on: "ÂM THANH: BẬT",
+    audio_off: "TẮT TIẾNG",
+    freq: "TẦN SỐ",
+    wave: "SÓNG",
+    status: "TRẠNG THÁI",
+    active_dsp: "BỘ TỔNG HỢP TRỰC TIẾP",
+    assets: [
+      { id: "01", name: "TRÌNH TỰ KHỞI ĐỘNG", freq: "432 Hz", freqVal: 432, desc: "Khởi động hệ thống & kích hoạt lõi thần kinh", type: "sine", waveName: "XUNG SINE" },
+      { id: "02", name: "ĐỒNG BỘ HÓA ĐẠI LÝ", freq: "528 Hz", freqVal: 528, desc: "Bắt tay đại lý tự trị & đo lường từ xa", type: "triangle", waveName: "SÓNG HÀI" },
+      { id: "03", name: "XUNG THẦN KINH", freq: "639 Hz", freqVal: 639, desc: "Suy luận sâu & vòng lặp logic đệ quy", type: "sawtooth", waveName: "ÂM TRẦM" },
+      { id: "04", name: "XÁC NHẬN DỮ LIỆU", freq: "741 Hz", freqVal: 741, desc: "Kiểm tra đồng thuận & giao dịch an toàn", type: "sine", waveName: "TIẾNG PING RÕ" },
+      { id: "05", name: "LIÊN KẾT PHẦN CỨNG", freq: "852 Hz", freqVal: 852, desc: "Đo lường từ xa cảm biến & thiết bị biên", type: "square", waveName: "QUÉT CỘNG HƯỞNG" },
+    ],
+  },
+  ms: {
+    title: "ARKITEKTUR IDENTITI BUNYI",
+    subtitle: "Audio adalah dimensi asli KAIRMA. 5 aset bunyi tetap direka untuk simbiosis kependaman sifar.",
+    audio_on: "AUDIO: AKTIF",
+    audio_off: "SENYAP",
+    freq: "FREK",
+    wave: "GELOMBANG",
+    status: "STATUS",
+    active_dsp: "SINTESIS LANGSUNG",
+    assets: [
+      { id: "01", name: "URUTAN BOOT", freq: "432 Hz", freqVal: 432, desc: "Permulaan sistem & pencetus teras saraf", type: "sine", waveName: "DENYUTAN SINUS" },
+      { id: "02", name: "SINKRONISASI EJEN", freq: "528 Hz", freqVal: 528, desc: "Jabat tangan ejen autonomi & telemetri", type: "triangle", waveName: "GELOMBANG HARMONI" },
+      { id: "03", name: "DENYUTAN SARAF", freq: "639 Hz", freqVal: 639, desc: "Inferens mendalam & gelung logik rekursif", type: "sawtooth", waveName: "DENGUNGAN BASS" },
+      { id: "04", name: "PENGESAHAN DATA", freq: "741 Hz", freqVal: 741, desc: "Semakan konsensus & transaksi selamat", type: "sine", waveName: "PING JELAS" },
+      { id: "05", name: "PAUTAN PERKAKASAN", freq: "852 Hz", freqVal: 852, desc: "Telemetri penderia fizikal & peranti pinggir", type: "square", waveName: "SAPUAN RESONANS" },
+    ],
+  },
 };
 
 export const SonicVocabularyCard: React.FC = () => {
-  const { lang } = useLanguage();
-  const content = translations[lang] || translations.en;
+  const { language } = useLanguage();
+  const content = translations[language] || translations.en;
 
   const [activeIdx, setActiveIdx] = useState<number>(0);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
