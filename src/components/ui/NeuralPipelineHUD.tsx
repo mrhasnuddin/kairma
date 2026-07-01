@@ -264,34 +264,7 @@ export default function NeuralPipelineHUD({
   const decryptedTitle = useDecryptedText(activeGroupTitle, activeGroup);
 
   return (
-    <div className="w-full flex flex-col gap-6 bg-theme-void/90 rounded-xl border border-theme-border/40 p-5 md:p-8 shadow-2xl font-mono relative overflow-hidden">
-      {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-theme-border/30">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded border border-theme-accent/40 bg-theme-accent/10 flex items-center justify-center shadow-[0_0_12px_var(--color-theme-accent)]">
-            <img src="/Bentos/K.svg" alt="Kairma" className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm md:text-base font-extrabold tracking-widest text-theme-text flex items-center gap-2">
-              <span>KAIRMA NEURAL PIPELINE</span>
-              <span className="text-[10px] text-theme-accent bg-theme-accent/20 border border-theme-accent/40 px-2 py-0.5 rounded">
-                v3.2 LIVE
-              </span>
-            </h3>
-            <p className="text-[11px] text-theme-text-muted">
-              {"// OPENROUTER TELEMETRY PARSER & REASONING LAYER"}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 text-xs">
-          <span className="flex items-center gap-1.5 px-3 py-1 rounded bg-white/5 border border-theme-border/40 text-theme-text-muted">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>OPENROUTER SYNC: <strong className="text-emerald-400">ONLINE</strong></span>
-          </span>
-        </div>
-      </div>
-
+    <div className="w-full flex flex-col gap-6 font-mono relative h-full">
       {/* 3-Column Bento Pipeline Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[520px] items-stretch">
         
