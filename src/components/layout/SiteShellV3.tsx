@@ -61,21 +61,35 @@ const InteractiveBootBox: React.FC<{
         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
       />
       
-      <div className="relative z-20 flex-1 flex flex-col w-full mx-auto p-8 overflow-y-auto no-scrollbar">
-        <div className="flex flex-col gap-6 w-full font-mono select-none my-auto animate-in fade-in duration-500">
-          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line">
+      <div className="relative z-20 flex-1 flex flex-col justify-between w-full h-full mx-auto p-6 md:p-8 overflow-y-auto no-scrollbar">
+        <div className="flex flex-col justify-between flex-1 gap-4 w-full h-full font-mono select-none animate-in fade-in duration-500">
+          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
             {siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"}
           </div>
-          <div className="grid grid-cols-2 gap-2 text-sm md:text-base font-bold">
-            {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => (
-              <button 
-                key={l}
-                onClick={() => handleNormalLanguage(l)}
-                className={`text-left p-2.5 transition-all border focus:outline-none ${language === l ? 'text-theme-text bg-theme-accent/10 border-theme-accent/30' : 'text-theme-accent hover:text-theme-text hover:bg-theme-accent/10 border-transparent hover:border-theme-accent/30'}`}
-              >
-                {"> [ " + getLangLabel(l).toUpperCase() + " ]"}
-              </button>
-            ))}
+          <div className="grid grid-cols-2 gap-3 md:gap-4 flex-1 my-2 content-stretch">
+            {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => {
+              const isActive = language === l;
+              return (
+                <button 
+                  key={l}
+                  onClick={() => handleNormalLanguage(l)}
+                  className={`group/btn relative flex items-center justify-between px-4 py-3.5 md:py-4 rounded-md transition-all duration-300 font-mono text-xs md:text-sm font-bold focus:outline-none backdrop-blur-sm ${
+                    isActive 
+                      ? 'border border-theme-border/40 bg-theme-void text-theme-accent shadow-sm' 
+                      : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/40'
+                  }`}
+                >
+                  {/* Quote Source Box Corner Brackets */}
+                  <div className={`absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  <div className={`absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  <div className={`absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  <div className={`absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  
+                  <span>{"> [ " + getLangLabel(l).toUpperCase() + " ]"}</span>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 ml-2" />}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
