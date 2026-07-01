@@ -97,11 +97,6 @@ export const BulletinCarousel: React.FC = () => {
         </span>
       </div>
 
-      {/* Top Right Badge: Slide Counter */}
-      <div className="absolute top-3 right-3 z-40 px-2.5 py-1 rounded border border-white/30 bg-black/90 backdrop-blur-md font-mono text-[10px] text-white font-bold uppercase tracking-wider shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-        {currentSlide + 1} / {slides.length}
-      </div>
-
       {/* Slide Carousel */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -121,8 +116,8 @@ export const BulletinCarousel: React.FC = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Bottom Terminal Status Bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-black/90 backdrop-blur-md border-t border-white/20 px-3.5 flex items-center justify-between z-40 font-mono text-[10px] select-none shadow-[0_-4px_12px_rgba(0,0,0,0.8)]">
+      {/* Bottom Terminal Status Bar (Theme-Aware Contrast) */}
+      <div className="absolute bottom-0 left-0 right-0 h-8 bg-theme-void/95 backdrop-blur-md border-t border-theme-border/40 px-3.5 flex items-center justify-between z-40 font-mono text-[10px] select-none shadow-md">
         {/* Left: Terminal Prompt & Status */}
         <div className="flex items-center gap-1.5 text-theme-accent font-bold tracking-wider">
           <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 shadow-[0_0_6px_var(--color-theme-accent)]" />
@@ -131,7 +126,7 @@ export const BulletinCarousel: React.FC = () => {
 
         {/* Right: ASCII Block Pagination */}
         <div className="flex items-center gap-0.5">
-          <span className="text-white/30 mr-1">[</span>
+          <span className="text-theme-text-muted mr-1">[</span>
           {slides.map((_, idx) => {
             const isActive = currentSlide === idx;
             return (
@@ -141,7 +136,7 @@ export const BulletinCarousel: React.FC = () => {
                 className={`transition-all duration-300 px-0.5 py-0.5 rounded cursor-pointer outline-none text-xs flex items-center justify-center ${
                   isActive
                     ? "text-theme-accent scale-110 drop-shadow-[0_0_6px_var(--color-theme-accent)] animate-pulse"
-                    : "text-white/40 hover:text-white"
+                    : "text-theme-text-muted hover:text-theme-text"
                 }`}
                 aria-label={`Go to bulletin slide ${idx + 1}`}
               >
@@ -149,7 +144,7 @@ export const BulletinCarousel: React.FC = () => {
               </button>
             );
           })}
-          <span className="text-white/30 ml-1">]</span>
+          <span className="text-theme-text-muted ml-1">]</span>
         </div>
       </div>
     </div>
