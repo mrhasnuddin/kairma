@@ -121,20 +121,22 @@ export const BulletinCarousel: React.FC = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Bottom Dotted Pagination */}
-      <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5 z-20">
-        {slides.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrentSlide(idx)}
-            className={`transition-all duration-300 rounded-full cursor-pointer outline-none ${
-              currentSlide === idx
-                ? "w-6 h-1.5 bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]"
-                : "w-1.5 h-1.5 bg-white/40 hover:bg-white/80"
-            }`}
-            aria-label={`Go to bulletin slide ${idx + 1}`}
-          />
-        ))}
+      {/* Bottom Dotted Pagination (Cybernetic Floating Dock) */}
+      <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center z-40 pointer-events-none">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/85 border border-white/20 backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.8)] pointer-events-auto">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentSlide(idx)}
+              className={`transition-all duration-300 rounded-full cursor-pointer outline-none ${
+                currentSlide === idx
+                  ? "w-5 h-1.5 bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]"
+                  : "w-1.5 h-1.5 bg-white/50 hover:bg-white hover:scale-125"
+              }`}
+              aria-label={`Go to bulletin slide ${idx + 1}`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
