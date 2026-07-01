@@ -51,14 +51,14 @@ const InteractiveBootBox: React.FC<{
 
   return (
     <OSCard className={`relative flex flex-col min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.35)_50%)] bg-[length:100%_4px] opacity-10 pointer-events-none z-10" />
       <motion.div 
-        className={`absolute inset-0 h-[60px] bg-gradient-to-b from-transparent via-theme-accent/20 to-transparent pointer-events-none z-10 ${
+        className={`absolute inset-0 h-[60px] bg-gradient-to-b from-transparent via-theme-accent/10 to-transparent pointer-events-none z-10 ${
           theme === "xuan-mode" ? "mix-blend-multiply" : "mix-blend-screen"
         }`}
         initial={{ top: "-60px" }}
         animate={{ top: "100%" }}
-        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
       />
       
       <div className="relative z-20 flex-1 flex flex-col justify-between w-full h-full mx-auto p-6 md:p-8 overflow-y-auto no-scrollbar">

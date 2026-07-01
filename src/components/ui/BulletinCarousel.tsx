@@ -78,6 +78,17 @@ export const BulletinCarousel: React.FC = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* CRT Scanlines Overlay (slightly reduced intensity and opacity) */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.35)_50%)] bg-[length:100%_4px] opacity-10 pointer-events-none z-30" />
+      
+      {/* CRT Scanning Bar */}
+      <motion.div 
+        className="absolute inset-0 h-[80px] bg-gradient-to-b from-transparent via-theme-accent/10 to-transparent pointer-events-none z-30 mix-blend-screen"
+        initial={{ top: "-80px" }}
+        animate={{ top: "100%" }}
+        transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
+      />
+
       {/* Top Left Badge: Bulletin Tag */}
       <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md shadow-sm">
         <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
@@ -108,19 +119,16 @@ export const BulletinCarousel: React.FC = () => {
             className="w-full h-full object-cover"
           />
 
-          {/* Dark Gradient Overlay for Typography Contrast */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/10" />
-
           {/* Typography Content */}
           {(slides[currentSlide].title || slides[currentSlide].body) && (
-            <div className="absolute bottom-8 left-0 right-0 p-6 z-10 flex flex-col justify-end">
+            <div className="absolute bottom-8 left-0 right-0 p-6 z-10 flex flex-col justify-end pointer-events-none">
               {slides[currentSlide].title && (
-                <h3 className="text-lg md:text-xl font-mono font-bold leading-tight mb-2 text-white drop-shadow">
+                <h3 className="text-lg md:text-xl font-mono font-bold leading-tight mb-2 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
                   {slides[currentSlide].title}
                 </h3>
               )}
               {slides[currentSlide].body && (
-                <p className="font-mono text-xs text-white/75 leading-relaxed max-w-sm">
+                <p className="font-mono text-xs text-white/85 leading-relaxed max-w-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                   {slides[currentSlide].body}
                 </p>
               )}
