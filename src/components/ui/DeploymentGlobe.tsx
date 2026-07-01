@@ -246,17 +246,23 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                 zIndex: 20
               } as any}
             >
-              {/* Magnetic Container */}
-              <div 
-                className="relative flex items-center justify-center transition-transform duration-75 ease-out"
-                style={{ transform: 'translate(var(--mx, 0px), var(--my, 0px))' }}
-              >
+              {/* Fixed Center Container (Dot & Pulse) */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 {/* Visible pulsing marker dot */}
-                <div className="absolute w-5 h-5 bg-theme-accent/40 rounded-full animate-ping pointer-events-none" />
-                <div className="relative w-2.5 h-2.5 bg-theme-accent rounded-full border border-theme-void shadow-[0_0_8px_rgba(31,170,104,0.8)] transition-transform duration-200 group-hover:scale-125" />
+                <div className="absolute w-5 h-5 bg-theme-accent/40 rounded-full animate-ping" />
+                {/* Inner solid dot (stays fixed, scales on hover) */}
+                <div className="relative w-2.5 h-2.5 bg-theme-accent rounded-full border border-theme-void shadow-[0_0_8px_rgba(31,170,104,0.8)] transition-transform duration-300 ease-out group-hover:scale-125" />
+              </div>
 
-                {/* Custom Magnetic Cursor Box (Only visible on hover) */}
-                <div className="absolute w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+              {/* Magnetic Custom Cursor Box */}
+              <div 
+                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                style={{ 
+                  transform: 'translate(var(--mx, 0px), var(--my, 0px))',
+                  transition: 'transform 0.15s cubic-bezier(0.2, 0, 0.2, 1)'
+                }}
+              >
+                <div className="relative w-8 h-8 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out">
                   {/* Top-left bracket */}
                   <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent" />
                   <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent" />
