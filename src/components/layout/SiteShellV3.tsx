@@ -574,7 +574,7 @@ export const SiteShellV3: React.FC = () => {
               <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
+                  <h1 className="text-2xl md:text-[34px] font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
                     <BoxHeadline text={siteCopy.hero_center.h1} />
                   </h1>
                   
@@ -649,7 +649,7 @@ export const SiteShellV3: React.FC = () => {
                     {t("the_shift")}
                   </span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text mb-6">
+                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight text-theme-text mb-6">
                   <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
               </div>
@@ -995,7 +995,7 @@ export const SiteShellV3: React.FC = () => {
                   </span>
                   <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_developers")}</span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">
+                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text">
                   <BoxHeadline text={siteCopy.dev_smithy.h} />
                 </h2>
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
@@ -1040,7 +1040,7 @@ export const SiteShellV3: React.FC = () => {
                     </span>
                     <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_operators")}</span>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
+                  <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
                     <BoxHeadline text={siteCopy.operators.h} />
                   </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>

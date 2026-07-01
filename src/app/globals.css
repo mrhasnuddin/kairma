@@ -122,7 +122,11 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Typography bindings */
+/* Typography bindings & Design System Rules */
+/* Maximum Box Headline Size: 34px max (upgraded from 30px) */
+.text-box-headline-max {
+  font-size: 34px;
+}
 .font-gothic {
   font-family: var(--font-gothic);
 }
