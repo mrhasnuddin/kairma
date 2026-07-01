@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float, Html, Billboard } from "@react-three/drei";
+import { OrbitControls, Float, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Activity, Cpu, Shield, ExternalLink, RotateCcw, Info, Layers, Terminal } from "lucide-react";
@@ -153,8 +153,8 @@ const ModelNode: React.FC<{
           </mesh>
         )}
 
-        {/* Holographic 2D Billboard Label facing camera */}
-        <Billboard position={[0, sphereSize + 0.6, 0]}>
+        {/* Holographic 2D Label facing camera */}
+        <Html center position={[0, sphereSize + 0.6, 0]}>
           <div
             onClick={(e) => {
               e.stopPropagation();
@@ -175,7 +175,7 @@ const ModelNode: React.FC<{
               {score}%
             </span>
           </div>
-        </Billboard>
+        </Html>
       </Float>
     </group>
   );
