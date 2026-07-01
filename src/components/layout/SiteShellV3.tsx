@@ -26,6 +26,7 @@ import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
 import { EvilRadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, Dot, ActiveDot } from "@/components/evilcharts/charts/radar-chart";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
+import { SonicVocabularyCard } from "@/components/ui/SonicVocabularyCard";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -959,88 +960,9 @@ export const SiteShellV3: React.FC = () => {
             )}
           </OSCard>
 
-          {/* Section 2: AI Digital Employees */}
+          {/* Section 2: Sonic Vocabulary & Audio Identity Architecture */}
           <OSCard className="col-span-1 md:col-span-1 row-span-2 p-6 flex flex-col justify-between overflow-hidden">
-            <div className="mb-6">
-              <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text text-balance">
-                {t("digital_emp_heading")}
-              </h2>
-            </div>
-            
-            <div className="flex flex-col flex-1 gap-4 justify-center">
-              {[
-                {
-                  id: "kol",
-                  title: t("kol_bd"),
-                  status: t("pilot_ready"),
-                  statusColor: "text-theme-accent",
-                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
-                  ref: kolIconRef
-                },
-                {
-                  id: "content",
-                  title: t("content_ops"),
-                  status: t("fde_configured"),
-                  statusColor: "text-theme-accent",
-                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
-                  ref: contentIconRef
-                },
-                {
-                  id: "care",
-                  title: t("customer_care"),
-                  status: t("in_development"),
-                  statusColor: "text-amber-500",
-                  dotColor: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]",
-                  ref: customerIconRef
-                },
-                {
-                  id: "compliance",
-                  title: t("compliance"),
-                  status: t("private_runtime"),
-                  statusColor: "text-theme-accent",
-                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
-                  ref: complianceIconRef
-                }
-              ].map((emp) => (
-                <div 
-                  key={emp.id}
-                  onMouseEnter={() => {
-                    if (emp.id === "kol") kolIconRef.current?.startAnimation();
-                    if (emp.id === "content") contentIconRef.current?.startAnimation();
-                    if (emp.id === "care") customerIconRef.current?.startAnimation();
-                    if (emp.id === "compliance") complianceIconRef.current?.startAnimation();
-                  }}
-                  onMouseLeave={() => {
-                    if (emp.id === "kol") kolIconRef.current?.stopAnimation();
-                    if (emp.id === "content") contentIconRef.current?.stopAnimation();
-                    if (emp.id === "care") customerIconRef.current?.stopAnimation();
-                    if (emp.id === "compliance") complianceIconRef.current?.stopAnimation();
-                  }}
-                  className="flex items-stretch rounded border border-theme-border/30 bg-theme-void/50 group/emp hover:bg-theme-accent/5 hover:border-theme-accent/30 transition-all cursor-default overflow-hidden"
-                >
-                  {/* Left Icon Block */}
-                  <div className="flex items-center justify-center w-16 border-r border-theme-border/30 bg-theme-void/80 py-4 shrink-0">
-                    {emp.id === "kol" && <UserIcon ref={kolIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
-                    {emp.id === "content" && <LinkIcon ref={contentIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
-                    {emp.id === "care" && <HeadsetIcon ref={customerIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-amber-500 transition-colors" />}
-                    {emp.id === "compliance" && <ShieldCheck ref={complianceIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
-                  </div>
-                  
-                  {/* Label & Status */}
-                  <div className="flex-1 flex justify-between items-center px-4 py-3">
-                    <div className="flex flex-col gap-1 min-w-0">
-                      <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-theme-text truncate">
-                        {emp.title}
-                      </span>
-                      <span className={`font-mono text-[10px] md:text-xs tracking-wider truncate ${emp.statusColor}`}>
-                        {emp.status}
-                      </span>
-                    </div>
-                    <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${emp.dotColor}`} />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <SonicVocabularyCard />
           </OSCard>
 
           {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}

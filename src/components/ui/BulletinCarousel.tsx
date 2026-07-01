@@ -89,14 +89,6 @@ export const BulletinCarousel: React.FC = () => {
         transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
       />
 
-      {/* Top Left Badge: Bulletin Tag */}
-      <div className="absolute top-3 left-3 z-40 flex items-center gap-2 px-3 py-1 rounded border border-theme-accent/60 bg-theme-void/95 backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-        <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shadow-[0_0_6px_var(--color-theme-accent)]" />
-        <span className="font-mono text-[10px] text-theme-accent font-bold uppercase tracking-widest">
-          {slides[currentSlide].tag}
-        </span>
-      </div>
-
       {/* Slide Carousel */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -121,7 +113,7 @@ export const BulletinCarousel: React.FC = () => {
         {/* Left: Terminal Prompt & Status */}
         <div className="flex items-center gap-1.5 text-theme-accent font-bold tracking-wider">
           <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 shadow-[0_0_6px_var(--color-theme-accent)]" />
-          <span>{">"} SYS.FEED // LIVE</span>
+          <span>{">"} {slides[currentSlide].tag} // LIVE</span>
         </div>
 
         {/* Right: ASCII Block Pagination */}
