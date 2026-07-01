@@ -217,37 +217,55 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
           return (
             <div
               key={route.id}
-              className={`absolute group cursor-pointer anchor-${route.id}`}
+              className={`absolute group cursor-none anchor-${route.id} w-12 h-12 flex items-center justify-center rounded-full`}
               onClick={() => setSelectedRoute(route)}
+              onPointerMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - (rect.left + rect.width / 2);
+                const y = e.clientY - (rect.top + rect.height / 2);
+                e.currentTarget.style.setProperty('--mx', `${x * 0.4}px`);
+                e.currentTarget.style.setProperty('--my', `${y * 0.4}px`);
+              }}
+              onMouseEnter={() => {
+                setHoveredRoute(route);
+                isHoveredRef.current = true;
+              }}
+              onMouseLeave={(e) => {
+                setHoveredRoute(null);
+                isHoveredRef.current = false;
+                e.currentTarget.style.setProperty('--mx', `0px`);
+                e.currentTarget.style.setProperty('--my', `0px`);
+              }}
               style={{
                 position: "absolute",
                 top: "anchor(center)",
                 left: "anchor(center)",
                 transform: "translate(-50%, -50%)",
                 opacity: `var(--cobe-visible-${route.id}, 0)`,
-                // CSS Hack: makes pointer events none on the back side of the globe
                 pointerEvents: `var(--cobe-visible-${route.id}, none)`, 
                 zIndex: 20
               } as any}
-              onMouseEnter={() => {
-                setHoveredRoute(route);
-                isHoveredRef.current = true;
-              }}
-              onMouseLeave={() => {
-                setHoveredRoute(null);
-                isHoveredRef.current = false;
-              }}
             >
-              {/* Visible pulsing marker dot to match Cobe official style with pulse */}
-              <div className="relative flex items-center justify-center">
-                {/* Outer pulsing ring */}
+              {/* Magnetic Container */}
+              <div 
+                className="relative flex items-center justify-center transition-transform duration-75 ease-out"
+                style={{ transform: 'translate(var(--mx, 0px), var(--my, 0px))' }}
+              >
+                {/* Visible pulsing marker dot */}
                 <div className="absolute w-5 h-5 bg-theme-accent/40 rounded-full animate-ping pointer-events-none" />
-                {/* Inner solid dot */}
                 <div className="relative w-2.5 h-2.5 bg-theme-accent rounded-full border border-theme-void shadow-[0_0_8px_rgba(31,170,104,0.8)] transition-transform duration-200 group-hover:scale-125" />
+
+                {/* Custom Magnetic Cursor Box (Only visible on hover) */}
+                <div className="absolute w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  {/* Top-left bracket */}
+                  <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent" />
+                  <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent" />
+                  
+                  {/* Bottom-right bracket */}
+                  <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent" />
+                  <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent" />
+                </div>
               </div>
-              
-              {/* Invisible larger hit area for easier hover */}
-              <div className="absolute w-8 h-8 -top-3 -left-3 rounded-full" />
               
               {/* Tooltip positioned below the dot to prevent clipping */}
               <AnimatePresence>
