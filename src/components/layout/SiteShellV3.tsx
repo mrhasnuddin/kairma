@@ -27,6 +27,7 @@ import { Language } from "@/data/site-translations";
 import { EvilRadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, Dot, ActiveDot } from "@/components/evilcharts/charts/radar-chart";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
 import { SonicVocabularyCard } from "@/components/ui/SonicVocabularyCard";
+import { BoxHeadline } from "@/components/ui/BoxHeadline";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -574,7 +575,7 @@ export const SiteShellV3: React.FC = () => {
                 
                 <div className="pointer-events-none">
                   <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
-                    {siteCopy.hero_center.h1}
+                    <BoxHeadline text={siteCopy.hero_center.h1} />
                   </h1>
                   
                   <p className="font-mono text-sm text-theme-text-muted leading-relaxed drop-shadow-md mb-8 max-w-xl">
@@ -649,7 +650,7 @@ export const SiteShellV3: React.FC = () => {
                   </span>
                 </div>
                 <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text mb-6">
-                {siteCopy.shift.h}
+                  <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
               </div>
 
@@ -994,7 +995,9 @@ export const SiteShellV3: React.FC = () => {
                   </span>
                   <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_developers")}</span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.dev_smithy.h}</h2>
+                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">
+                  <BoxHeadline text={siteCopy.dev_smithy.h} />
+                </h2>
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
               <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-md hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
@@ -1037,7 +1040,9 @@ export const SiteShellV3: React.FC = () => {
                     </span>
                     <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_operators")}</span>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.operators.h}</h2>
+                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
+                    <BoxHeadline text={siteCopy.operators.h} />
+                  </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">

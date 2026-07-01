@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, VolumeX, Radio, Activity, Zap } from "lucide-react";
 import { useLanguage } from "@/lib/language";
+import { BoxHeadline } from "@/components/ui/BoxHeadline";
 
 interface SonicAsset {
   id: string;
@@ -209,7 +210,7 @@ export const SonicVocabularyCard: React.FC = () => {
           <div className="flex items-center gap-2">
             <Radio className="w-4 h-4 text-theme-accent animate-pulse shrink-0" />
             <h2 className="text-sm md:text-base font-bold text-theme-text uppercase tracking-widest">
-              {content.title}
+              <BoxHeadline text={content.title} />
             </h2>
           </div>
 
