@@ -845,7 +845,7 @@ export const SiteShellV3: React.FC = () => {
                 <div className="lg:col-span-6 flex flex-col justify-between h-full min-h-[300px]">
                   <div>
                     {/* Metric Selector Tabs */}
-                    <div className="flex gap-1.5 p-1 bg-theme-void/80 border border-theme-border/20 rounded-md mb-6">
+                    <div className="flex items-center gap-1 border border-theme-border/50 p-1 rounded-lg bg-theme-void/80 w-full mb-6 select-none">
                       {(["intelligence_index", "coding_index", "agentic_index"] as const).map((metric) => {
                         const label = metric === "intelligence_index" 
                           ? t("intel")
@@ -857,13 +857,20 @@ export const SiteShellV3: React.FC = () => {
                           <button
                             key={metric}
                             onClick={() => setChartMetric(metric)}
-                            className={`flex-1 text-center py-2 text-xs md:text-sm font-mono font-semibold uppercase tracking-wider rounded transition-all ${
+                            className={`group/btn relative flex-1 flex items-center justify-center py-2.5 text-xs md:text-sm font-mono font-bold uppercase tracking-wider rounded-md transition-all duration-300 focus:outline-none backdrop-blur-sm ${
                               isActive 
-                                ? 'text-theme-void bg-theme-text font-extrabold shadow-sm' 
-                                : 'text-theme-text-muted hover:text-theme-text hover:bg-theme-text/5'
+                                ? 'border border-theme-border/40 bg-theme-void text-theme-accent shadow-sm' 
+                                : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/40'
                             }`}
                           >
-                            {label}
+                            {/* Quote Source Box Corner Brackets */}
+                            <div className={`absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                            <div className={`absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                            <div className={`absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                            <div className={`absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                            
+                            <span>{label}</span>
+                            {isActive && <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 ml-2" />}
                           </button>
                         );
                       })}

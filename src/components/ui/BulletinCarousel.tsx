@@ -140,7 +140,7 @@ export const BulletinCarousel: React.FC = () => {
                 onClick={() => setCurrentSlide(idx)}
                 className={`transition-all duration-300 px-0.5 py-0.5 rounded cursor-pointer outline-none text-xs flex items-center justify-center ${
                   isActive
-                    ? "text-theme-accent scale-110 drop-shadow-[0_0_6px_var(--color-theme-accent)]"
+                    ? "text-theme-accent scale-110 drop-shadow-[0_0_6px_var(--color-theme-accent)] animate-pulse"
                     : "text-white/40 hover:text-white"
                 }`}
                 aria-label={`Go to bulletin slide ${idx + 1}`}
