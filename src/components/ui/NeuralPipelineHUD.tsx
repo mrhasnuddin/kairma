@@ -522,56 +522,35 @@ export default function NeuralPipelineHUD({
             </div>
           </div>
 
-          <div className="mt-3 pt-3 border-t border-theme-border/20 text-[10px] text-theme-text-muted flex items-center justify-between">
-            <span>CLICK NODE TO VIEW RAW SPECIFICATIONS</span>
-            <span className="text-theme-accent font-bold">JSON ↓</span>
+          {/* Bottom Search Bar inside Column 3 */}
+          <div className="mt-3 pt-3 border-t border-theme-border/20">
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-theme-accent">
+                <span className="font-extrabold mr-1 text-[11px]">{">.."}</span>
+                <Search size={12} />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search database (keyword, LLM, provider)..."
+                className="w-full pl-10 pr-14 py-2 bg-black/60 border border-theme-border/50 rounded-lg text-xs text-theme-text placeholder:text-theme-text-muted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-all font-mono"
+              />
+              {searchQuery.length > 0 && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setActiveGroup("market_intel");
+                  }}
+                  className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-[10px] text-theme-text-muted hover:text-theme-accent font-bold cursor-pointer"
+                >
+                  [CLEAR]
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-      </div>
-
-      {/* =========================================================
-          BOTTOM COMMAND SEARCH & FILTER BAR
-      ========================================================= */}
-      <div className="pt-4 border-t border-theme-border/40 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-theme-accent">
-            <span className="font-extrabold mr-1.5">{">.."}</span>
-            <Search size={14} />
-          </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Search OpenRouter database by keyword, LLM name, provider, or capability..."
-            className="w-full pl-12 pr-4 py-2.5 bg-black/60 border border-theme-border/50 rounded-lg text-xs text-theme-text placeholder:text-theme-text-muted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-all font-mono"
-          />
-          {searchQuery.length > 0 && (
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setActiveGroup("market_intel");
-              }}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-xs text-theme-text-muted hover:text-theme-accent font-bold cursor-pointer"
-            >
-              [ CLEAR ]
-            </button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0 text-xs">
-          <button
-            onClick={() => {
-              if (outputNodes.length > 0) {
-                onSelectModelForModal(outputNodes[0]);
-              }
-            }}
-            className="px-4 py-2.5 bg-theme-accent text-theme-void font-extrabold uppercase tracking-widest rounded-lg hover:opacity-90 transition-all flex items-center gap-2 shadow-[0_0_15px_var(--color-theme-accent)] cursor-pointer"
-          >
-            <span>VIEW TOP SPEC</span>
-            <ExternalLink size={14} />
-          </button>
-        </div>
       </div>
     </div>
   );
