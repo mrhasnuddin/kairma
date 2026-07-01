@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, VolumeX, Radio, Activity, Zap } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "@/lib/language";
 
 interface SonicAsset {
   id: string;
