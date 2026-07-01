@@ -31,9 +31,51 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
 const KairmaHero = dynamic(() => import("@/components/3d/KairmaHero"), { ssr: false });
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+const MoatCard = ({ index, title, description, tag, Icon }: { index: number, title: string, description: string, tag: string, Icon: any }) => {
+  const iconRef = useRef<AnimatedIconHandle>(null);
 
-
-
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5, delay: index * 0.15 }}
+      className="relative z-10"
+    >
+      {/* Glowing timeline node */}
+      <div className="absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_10px_rgba(31,170,104,1)] transform -translate-x-1/2 -translate-y-1/2 hidden md:block group-hover/card:scale-150 transition-transform duration-300" />
+      
+      <div 
+        className="p-5 md:p-6 border border-theme-border/30 bg-theme-void/80 backdrop-blur-sm rounded-lg hover:border-theme-accent/70 hover:shadow-[0_0_20px_rgba(31,170,104,0.15)] transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 hover:scale-[1.01] hover:-translate-y-1 cursor-crosshair group/card"
+        onMouseEnter={() => iconRef.current?.startAnimation?.()}
+        onMouseLeave={() => iconRef.current?.stopAnimation?.()}
+      >
+        {/* Left: Icon and Title */}
+        <div className="flex items-center gap-4 md:gap-6 md:w-[40%] w-full shrink-0">
+          <div className="text-theme-accent font-mono text-xl md:text-2xl font-bold opacity-50 group-hover/card:opacity-100 transition-opacity">
+            {String(index + 1).padStart(2, '0')}
+          </div>
+          <div className="text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center">
+            <Icon ref={iconRef} size={24} />
+          </div>
+          <div className="font-mono font-bold text-theme-text text-sm md:text-base uppercase tracking-wider">
+            {title}
+          </div>
+        </div>
+        
+        {/* Middle: Description */}
+        <div className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed flex-1 text-left">
+          {description}
+        </div>
+        
+        {/* Right: Tag */}
+        <div className="font-mono text-[10px] md:text-xs text-theme-accent/40 tracking-widest uppercase md:w-32 text-left md:text-right group-hover/card:text-theme-accent transition-colors">
+          {tag}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 const InteractiveBootBox: React.FC<{
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -771,26 +813,39 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Row 3: Four Moats */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 relative overflow-hidden group">
-            <div className="flex justify-between items-center mb-6 shrink-0">
+          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group">
+            <div className="flex justify-between items-center mb-10 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
                 <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.moats.label}</h3>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 font-mono text-sm leading-relaxed text-theme-text-muted">
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">01.</strong> {siteCopy.moats.card_1}
-              </div>
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">02.</strong> {siteCopy.moats.card_2}
-              </div>
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">03.</strong> {siteCopy.moats.card_3}
-              </div>
-              <div className="p-4 border border-theme-border/30 bg-theme-void/50 rounded hover:border-theme-accent/50 transition-colors">
-                <strong className="text-theme-text block mb-2 text-base">04.</strong> {siteCopy.moats.card_4}
-              </div>
+            
+            <div className="relative max-w-5xl mx-auto flex flex-col gap-6">
+              {/* The central glowing timeline */}
+              <div className="absolute left-1/2 top-4 bottom-4 w-px bg-gradient-to-b from-theme-border/10 via-theme-accent/50 to-theme-border/10 transform -translate-x-1/2 z-0 hidden md:block" />
+              
+              {[
+                { text: siteCopy.moats.card_1, tag: "[ LOGIC ]", Icon: GearIcon },
+                { text: siteCopy.moats.card_2, tag: "[ PEOPLE ]", Icon: UserIcon },
+                { text: siteCopy.moats.card_3, tag: "[ MEMORY ]", Icon: PlugConnectedIcon },
+                { text: siteCopy.moats.card_4, tag: "[ SOVEREIGN ]", Icon: ShieldCheck }
+              ].map((moat, idx) => {
+                const parts = moat.text.split(/—|-/);
+                const title = parts[0]?.trim();
+                const description = parts.slice(1).join('-').trim();
+                
+                return (
+                  <MoatCard 
+                    key={idx} 
+                    index={idx} 
+                    title={title} 
+                    description={description} 
+                    tag={moat.tag} 
+                    Icon={moat.Icon} 
+                  />
+                );
+              })}
             </div>
           </OSCard>
 
