@@ -24,9 +24,7 @@ import { FallingPattern } from "@/components/visual/FallingPattern";
 import { useTheme } from "@/lib/theme";
 import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
-import { EvilRadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, Dot, ActiveDot } from "@/components/evilcharts/charts/radar-chart";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
-import { SonicVocabularyCard } from "@/components/ui/SonicVocabularyCard";
 import { BoxHeadline } from "@/components/ui/BoxHeadline";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
@@ -34,7 +32,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
 const KairmaHero = dynamic(() => import("@/components/3d/KairmaHero"), { ssr: false });
-const ModelLeaderboard3D = dynamic(() => import("@/components/3d/ModelLeaderboard3D"), { ssr: false });
+import NeuralPipelineHUD from "@/components/ui/NeuralPipelineHUD";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const InteractiveBootBox: React.FC<{
@@ -823,7 +821,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5 */}
           {/* 04: The Foundry (Leaderboard) */}
-          <OSCard className="col-span-1 md:col-span-3 row-span-2 p-6 flex flex-col overflow-hidden min-h-[550px]">
+          <OSCard className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
@@ -843,22 +841,15 @@ export const SiteShellV3: React.FC = () => {
                 <span>{t("fetching_rankings")}</span>
               </div>
             ) : (
-              <div className="flex-1 w-full h-full min-h-[560px]">
-                <ModelLeaderboard3D
+              <div className="flex-1 w-full min-h-0 flex flex-col">
+                <NeuralPipelineHUD
                   models={activeModels}
-                  activeMetric={chartMetric}
-                  onMetricChange={setChartMetric}
                   onSelectModelForModal={setSelectedModelForModal}
                   language={language}
                   t={t}
                 />
               </div>
             )}
-          </OSCard>
-
-          {/* Section 2: Sonic Vocabulary & Audio Identity Architecture */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-2 p-6 flex flex-col justify-between overflow-hidden">
-            <SonicVocabularyCard />
           </OSCard>
 
           {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}
