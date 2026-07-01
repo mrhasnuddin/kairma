@@ -90,15 +90,15 @@ export const BulletinCarousel: React.FC = () => {
       />
 
       {/* Top Left Badge: Bulletin Tag */}
-      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md shadow-sm">
-        <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-        <span className="font-mono text-[9px] text-theme-accent font-bold uppercase tracking-widest">
+      <div className="absolute top-3 left-3 z-40 flex items-center gap-2 px-3 py-1 rounded border border-theme-accent/60 bg-theme-void/95 backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+        <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shadow-[0_0_6px_var(--color-theme-accent)]" />
+        <span className="font-mono text-[10px] text-theme-accent font-bold uppercase tracking-widest">
           {slides[currentSlide].tag}
         </span>
       </div>
 
       {/* Top Right Badge: Slide Counter */}
-      <div className="absolute top-3 right-3 z-20 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 font-mono text-[10px] text-white/80 uppercase tracking-wider">
+      <div className="absolute top-3 right-3 z-40 px-2.5 py-1 rounded border border-white/30 bg-black/90 backdrop-blur-md font-mono text-[10px] text-white font-bold uppercase tracking-wider shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
         {currentSlide + 1} / {slides.length}
       </div>
 
@@ -118,22 +118,6 @@ export const BulletinCarousel: React.FC = () => {
             alt={slides[currentSlide].title}
             className="w-full h-full object-cover"
           />
-
-          {/* Typography Content */}
-          {(slides[currentSlide].title || slides[currentSlide].body) && (
-            <div className="absolute bottom-8 left-0 right-0 p-6 z-10 flex flex-col justify-end pointer-events-none">
-              {slides[currentSlide].title && (
-                <h3 className="text-lg md:text-xl font-mono font-bold leading-tight mb-2 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
-                  {slides[currentSlide].title}
-                </h3>
-              )}
-              {slides[currentSlide].body && (
-                <p className="font-mono text-xs text-white/85 leading-relaxed max-w-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                  {slides[currentSlide].body}
-                </p>
-              )}
-            </div>
-          )}
         </motion.div>
       </AnimatePresence>
 
