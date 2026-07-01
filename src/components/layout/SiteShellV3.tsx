@@ -519,8 +519,12 @@ export const SiteShellV3: React.FC = () => {
               <div className="group/cta">
                 <button 
                   disabled
-                  className="relative w-full py-3 mb-6 bg-theme-accent/10 border border-theme-accent/20 text-theme-accent/40 font-mono text-xs font-bold uppercase tracking-widest rounded cursor-not-allowed flex items-center justify-center gap-2"
+                  className="relative w-full py-3 mb-6 border border-theme-border/40 bg-theme-void/60 text-theme-text-muted/60 font-mono text-xs font-bold uppercase tracking-widest rounded-md cursor-not-allowed flex items-center justify-center gap-2 backdrop-blur-sm"
                 >
+                  <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-border/60" />
+                  <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-border/60" />
+                  <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-border/60" />
+                  <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-border/60" />
                   COMING SOON
                 </button>
               </div>
@@ -1041,8 +1045,12 @@ export const SiteShellV3: React.FC = () => {
                 <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.dev_smithy.h}</h2>
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
-              <button className="self-start mt-6 px-5 py-2.5 border border-theme-text text-theme-text font-mono text-xs uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
-                {t("view_docs")} <span>→</span>
+              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-md hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:w-4 group-hover/btn:bg-theme-text" />
+                <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:h-4 group-hover/btn:bg-theme-text" />
+                <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:w-4 group-hover/btn:bg-theme-text" />
+                <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:h-4 group-hover/btn:bg-theme-text" />
+                {t("view_docs")} <span className="transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
               </button>
             </div>
           </OSCard>
@@ -1081,7 +1089,11 @@ export const SiteShellV3: React.FC = () => {
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">
-                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-theme-text hover:text-theme-void transition-colors flex items-center gap-2">
+                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-md hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                    <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
+                    <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
+                    <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
+                    <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
                     {siteCopy.operators.cta}
                   </button>
                 </div>

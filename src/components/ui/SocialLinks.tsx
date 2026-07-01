@@ -54,10 +54,39 @@ export const SocialLinks: React.FC = () => {
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center py-2 px-2 rounded-md cursor-pointer transition-all duration-300 outline-none select-none text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:scale-105"
+          onPointerMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - (rect.left + rect.width / 2);
+            const y = e.clientY - (rect.top + rect.height / 2);
+            e.currentTarget.style.setProperty('--mx', `${x * 0.45}px`);
+            e.currentTarget.style.setProperty('--my', `${y * 0.45}px`);
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.setProperty('--mx', `0px`);
+            e.currentTarget.style.setProperty('--my', `0px`);
+          }}
+          className="group relative flex-1 flex items-center justify-center py-2 px-2 rounded-md cursor-pointer transition-colors duration-300 outline-none select-none text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 overflow-hidden"
           aria-label={social.label}
         >
-          <social.Icon size={14} />
+          <div 
+            className="relative flex items-center justify-center w-6 h-6"
+            style={{ 
+              transform: 'translate(var(--mx, 0px), var(--my, 0px))',
+              transition: 'transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1)'
+            }}
+          >
+            <social.Icon size={14} />
+
+            {/* Quote-source Corner Brackets that snap around icon on hover */}
+            <div className="absolute inset-0 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out pointer-events-none">
+              {/* Top-left bracket */}
+              <div className="absolute top-0 left-0 w-1.5 h-[1px] bg-theme-accent" />
+              <div className="absolute top-0 left-0 w-[1px] h-1.5 bg-theme-accent" />
+              {/* Bottom-right bracket */}
+              <div className="absolute bottom-0 right-0 w-1.5 h-[1px] bg-theme-accent" />
+              <div className="absolute bottom-0 right-0 w-[1px] h-1.5 bg-theme-accent" />
+            </div>
+          </div>
         </a>
       ))}
     </div>
