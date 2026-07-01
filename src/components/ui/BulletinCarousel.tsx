@@ -1,0 +1,149 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useSiteCopyV6 } from "@/lib/language";
+
+export const BulletinCarousel: React.FC = () => {
+  const siteCopy = useSiteCopyV6();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // =========================================================================
+  // POSTER DESIGN & REPLACEMENT INSTRUCTIONS FOR BULLETIN BOARD:
+  // 
+  // 1. Recommended Box Aspect Ratio: 4:5 (Portrait / Vertical Poster Ratio)
+  //    - Why? In Desktop grid, the card width is ~300px and height stretches to ~360px (5:6 or 4:5 ratio).
+  //    - In Mobile, it expands to full width (~350px x 430px). 
+  //    - Designing at 4:5 ratio guarantees zero awkward cropping on both devices!
+  //
+  // 2. Recommended Resolution to Design: 800 x 1000 px (or 1080 x 1350 px)
+  //
+  // 3. How to Replace Placeholders:
+  //    - Put your designed poster images into the `/public/posters/` or `/public/Bentos/` folder.
+  //    - Update the `image` property for each slide below with your new filename (e.g., "/posters/poster-1.png").
+  //    - If your posters already have built-in typography and text, set `title: ""` and `body: ""` below to hide the text overlay!
+  // =========================================================================
+
+  const slides = [
+    {
+      id: 1,
+      tag: "BULLETIN 01",
+      title: siteCopy.panel_keep.h || "Data local. Models cloud. Only tasks route.",
+      body: siteCopy.panel_keep.body || "The Keep — your sealed runtime. Brand data never leaves. SOP engine · model router · RPA / API.",
+      image: "/quotes/thumbnail/01.jpg",
+    },
+    {
+      id: 2,
+      tag: "BULLETIN 02",
+      title: "Sovereign AI Runtime",
+      body: "Zero-data leakage architecture. Your custom models run within your enterprise VPC and private infrastructure.",
+      image: "/quotes/thumbnail/03.jpg",
+    },
+    {
+      id: 3,
+      tag: "BULLETIN 03",
+      title: "Multi-Model Routing",
+      body: "Dynamically dispatch reasoning tasks across Claude, OpenAI, DeepSeek, and locally fine-tuned Llama models.",
+      image: "/quotes/thumbnail/16.jpg",
+    },
+    {
+      id: 4,
+      tag: "BULLETIN 04",
+      title: "Automated SOP Engine",
+      body: "Codify complex operational procedures into autonomous digital employees that execute seamlessly 24/7/365.",
+      image: "/quotes/thumbnail/17.jpg",
+    },
+    {
+      id: 5,
+      tag: "BULLETIN 05",
+      title: "Enterprise RPA & API",
+      body: "Seamlessly bridge legacy software interfaces with modern agentic AI workflows and event-driven triggers.",
+      image: "/quotes/thumbnail/18.jpg",
+    },
+  ];
+
+  // Auto-advance loop every 4.5 seconds (pauses on hover)
+  useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isHovered, slides.length]);
+
+  return (
+    <div 
+      className="relative w-full h-full min-h-[300px] md:min-h-[340px] overflow-hidden select-none group bg-theme-void"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Top Left Badge: Bulletin Tag */}
+      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md shadow-sm">
+        <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+        <span className="font-mono text-[9px] text-theme-accent font-bold uppercase tracking-widest">
+          {slides[currentSlide].tag}
+        </span>
+      </div>
+
+      {/* Top Right Badge: Slide Counter */}
+      <div className="absolute top-3 right-3 z-20 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 font-mono text-[10px] text-white/80 uppercase tracking-wider">
+        {currentSlide + 1} / {slides.length}
+      </div>
+
+      {/* Slide Carousel */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.03 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 w-full h-full"
+        >
+          {/* Poster Image */}
+          <img
+            src={slides[currentSlide].image}
+            alt={slides[currentSlide].title}
+            className="w-full h-full object-cover"
+          />
+
+          {/* Dark Gradient Overlay for Typography Contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/10" />
+
+          {/* Typography Content */}
+          {(slides[currentSlide].title || slides[currentSlide].body) && (
+            <div className="absolute bottom-8 left-0 right-0 p-6 z-10 flex flex-col justify-end">
+              {slides[currentSlide].title && (
+                <h3 className="text-lg md:text-xl font-mono font-bold leading-tight mb-2 text-white drop-shadow">
+                  {slides[currentSlide].title}
+                </h3>
+              )}
+              {slides[currentSlide].body && (
+                <p className="font-mono text-xs text-white/75 leading-relaxed max-w-sm">
+                  {slides[currentSlide].body}
+                </p>
+              )}
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Bottom Dotted Pagination */}
+      <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5 z-20">
+        {slides.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrentSlide(idx)}
+            className={`transition-all duration-300 rounded-full cursor-pointer outline-none ${
+              currentSlide === idx
+                ? "w-6 h-1.5 bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]"
+                : "w-1.5 h-1.5 bg-white/40 hover:bg-white/80"
+            }`}
+            aria-label={`Go to bulletin slide ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};

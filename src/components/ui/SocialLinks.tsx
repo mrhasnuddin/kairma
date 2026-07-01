@@ -47,14 +47,14 @@ export const SocialLinks: React.FC = () => {
   ];
 
   return (
-    <div className="flex items-center justify-between gap-1 border border-theme-border/50 p-1 rounded-full bg-theme-void/80 w-full max-w-full select-none">
+    <div className="flex items-center justify-between gap-1 border border-theme-border/50 p-1 rounded-lg bg-theme-void/80 w-full max-w-full select-none">
       {socials.map((social, idx) => (
         <a
           key={idx}
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center py-2 px-2 rounded-full cursor-pointer transition-all duration-300 outline-none select-none text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:scale-105"
+          className="flex-1 flex items-center justify-center py-2 px-2 rounded-md cursor-pointer transition-all duration-300 outline-none select-none text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:scale-105"
           aria-label={social.label}
         >
           <social.Icon size={14} />

@@ -7,12 +7,12 @@ export const ThemeSwitcher: React.FC = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex items-center gap-1 border border-theme-border/50 p-1 rounded-full bg-theme-void/80 w-full max-w-full select-none">
+    <div className="flex items-center gap-1 border border-theme-border/50 p-1 rounded-lg bg-theme-void/80 w-full max-w-full select-none">
       
       {/* Dark Theme (Red/Black) */}
       <button
         onClick={() => setTheme("matrix-mode")}
-        className={`flex-1 flex items-center justify-center py-2 px-3 rounded-full cursor-pointer transition-all duration-300 outline-none select-none ${
+        className={`flex-1 flex items-center justify-center py-2 px-3 rounded-md cursor-pointer transition-all duration-300 outline-none select-none ${
           theme === "matrix-mode"
             ? "bg-theme-accent text-theme-void"
             : "text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10"
@@ -28,7 +28,7 @@ export const ThemeSwitcher: React.FC = () => {
       {/* Light Theme (Green/White) */}
       <button
         onClick={() => setTheme("xuan-mode")}
-        className={`flex-1 flex items-center justify-center py-2 px-3 rounded-full cursor-pointer transition-all duration-300 outline-none select-none ${
+        className={`flex-1 flex items-center justify-center py-2 px-3 rounded-md cursor-pointer transition-all duration-300 outline-none select-none ${
           theme === "xuan-mode"
             ? "bg-theme-accent text-theme-void"
             : "text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10"

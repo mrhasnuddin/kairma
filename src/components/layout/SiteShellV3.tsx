@@ -7,6 +7,7 @@ import { BentoGrid } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import { BulletinCarousel } from "@/components/ui/BulletinCarousel";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import CpuIcon from "@/components/ui/cpu-icon";
@@ -710,12 +711,9 @@ export const SiteShellV3: React.FC = () => {
 
           </OSCard>
 
-          {/* Section 3: Forward Deployment */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
-            <div>
-              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.panel_keep.h}</h2>
-              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.panel_keep.body}</p>
-            </div>
+          {/* Section 3: Bulletin Carousel */}
+          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
+            <BulletinCarousel />
           </OSCard>
 
           {/* Row 3: Four Moats */}
