@@ -120,7 +120,7 @@ export default function NeuralPipelineHUD({
         id: "market_intel",
         label: t("intel") || "Market Intelligence",
         desc: "High reasoning, complex math & logic leaders",
-        icon: <FileText size={16} className="text-emerald-400" />,
+        icon: <FileText size={16} className="text-theme-accent" />,
       },
       {
         id: "coding_dev",
@@ -132,25 +132,25 @@ export default function NeuralPipelineHUD({
         id: "agentic_auto",
         label: t("agentic") || "Agentic Autonomy",
         desc: "Multi-step tool calling & autonomous workflows",
-        icon: <Cpu size={16} className="text-purple-400" />,
+        icon: <Cpu size={16} className="text-theme-accent" />,
       },
       {
         id: "daily_runtimes",
         label: t("top_daily_runtimes") || "Top Daily Runtimes",
         desc: "Highest throughput speed & lowest TTFT latency",
-        icon: <Zap size={16} className="text-amber-400" />,
+        icon: <Zap size={16} className="text-theme-accent" />,
       },
       {
         id: "cost_nano",
         label: "Cost-Efficient / Nano",
         desc: "Lowest pricing per 1M token budget champions",
-        icon: <DollarSign size={16} className="text-cyan-400" />,
+        icon: <DollarSign size={16} className="text-theme-accent" />,
       },
       {
         id: "max_context",
         label: "Maximum Context",
         desc: "200k to 1M+ token memory window giants",
-        icon: <Database size={16} className="text-pink-400" />,
+        icon: <Database size={16} className="text-theme-accent" />,
       },
     ],
     [t]
@@ -290,7 +290,7 @@ export default function NeuralPipelineHUD({
                     }}
                     className={`relative p-3 rounded-lg border text-left transition-all duration-300 cursor-pointer flex items-start gap-3 group ${
                       isActive
-                        ? "bg-theme-void/95 border-theme-accent text-theme-text shadow-[0_0_20px_rgba(31,170,104,0.2)] translate-x-1"
+                        ? "bg-theme-accent/10 border-theme-accent text-theme-text shadow-[0_0_15px_var(--color-theme-accent)] translate-x-1"
                         : "bg-theme-void/40 border-theme-border/30 text-theme-text-muted hover:border-theme-border/60 hover:text-theme-text hover:bg-white/5"
                     }`}
                   >
@@ -331,7 +331,7 @@ export default function NeuralPipelineHUD({
           <div className="relative z-10">
             <div className="flex items-center justify-between text-xs font-bold text-theme-text-muted mb-4 uppercase tracking-wider pb-2 border-b border-theme-border/20">
               <span>KAIRMA PARSER</span>
-              <span className="text-[10px] text-emerald-400">// REASONING CORE</span>
+              <span className="text-[10px] text-theme-accent">// REASONING CORE</span>
             </div>
 
             {/* Glowing Hexagon Core Display */}
@@ -339,7 +339,7 @@ export default function NeuralPipelineHUD({
               
               {/* Outer Orbit Rings */}
               <div className="absolute w-44 h-44 md:w-52 md:h-52 rounded-full border border-theme-accent/20 animate-spin-slow pointer-events-none" />
-              <div className="absolute w-36 h-36 md:w-40 md:h-40 rounded-full border border-dashed border-emerald-400/30 animate-reverse-spin pointer-events-none" />
+              <div className="absolute w-36 h-36 md:w-40 md:h-40 rounded-full border border-dashed border-theme-accent/30 animate-reverse-spin pointer-events-none" />
 
               {/* Cyber Hexagon Shape */}
               <div className="relative w-28 h-28 md:w-32 md:h-32 flex items-center justify-center">
@@ -368,19 +368,19 @@ export default function NeuralPipelineHUD({
                     src="/Bentos/K.svg"
                     alt="Kairma Core"
                     className={`w-10 h-10 md:w-12 md:h-12 transition-transform duration-500 ${
-                      isParsing ? "scale-110 drop-shadow-[0_0_20px_#00FF66]" : "scale-100 drop-shadow-[0_0_10px_var(--color-theme-accent)]"
+                      isParsing ? "scale-110 drop-shadow-[0_0_20px_var(--color-theme-accent)]" : "scale-100 drop-shadow-[0_0_10px_var(--color-theme-accent)]"
                     }`}
                   />
                 </div>
 
                 {/* Orbiting LED Dots */}
-                <span className="absolute top-0 right-1/4 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#00FF66] animate-ping" />
+                <span className="absolute top-0 right-1/4 w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-ping" />
                 <span className="absolute bottom-2 left-1/4 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]" />
               </div>
 
               {/* Status Badge below core */}
               <div className="mt-6 px-3 py-1 rounded-full border border-theme-accent/40 bg-theme-void/90 text-[11px] font-bold text-theme-accent tracking-widest flex items-center gap-2 shadow-lg">
-                <span className={`w-2 h-2 rounded-full ${isParsing ? "bg-amber-400 animate-ping" : "bg-emerald-400"}`} />
+                <span className={`w-2 h-2 rounded-full ${isParsing ? "bg-amber-400 animate-ping" : "bg-theme-accent"}`} />
                 <span>{isParsing ? "PARSER: DECODING..." : `CORE: [${decryptedTitle}]`}</span>
               </div>
             </div>
@@ -389,7 +389,7 @@ export default function NeuralPipelineHUD({
           {/* Bottom Live Console Log Box */}
           <div className="relative z-10 bg-black/80 border border-theme-border/50 rounded-lg p-3.5 text-[11px] font-mono leading-relaxed shadow-inner">
             <div className="flex justify-between items-center text-[10px] text-theme-text-muted mb-2 border-b border-theme-border/20 pb-1">
-              <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
+              <span className="flex items-center gap-1.5 text-theme-accent font-bold">
                 <Terminal size={12} /> KAIRMA_OS // TELEMETRY LOG
               </span>
               <span>PID: 4092</span>
@@ -397,7 +397,7 @@ export default function NeuralPipelineHUD({
             
             <div className="space-y-1 text-theme-text-muted/90 min-h-[64px] flex flex-col justify-end">
               {parserLogs.map((log, i) => (
-                <div key={i} className={log.includes("OK") || log.includes("SEALED") ? "text-emerald-400 font-bold" : ""}>
+                <div key={i} className={log.includes("OK") || log.includes("SEALED") ? "text-theme-accent font-bold" : ""}>
                   {log}
                 </div>
               ))}
@@ -415,7 +415,7 @@ export default function NeuralPipelineHUD({
               </div>
               <div className="bg-white/5 p-1.5 rounded border border-theme-border/20">
                 <div className="text-theme-text-muted text-[8px] uppercase">AVG LATENCY</div>
-                <div className="font-bold text-emerald-400">112ms</div>
+                <div className="font-bold text-theme-accent">112ms</div>
               </div>
               <div className="bg-white/5 p-1.5 rounded border border-theme-border/20">
                 <div className="text-theme-text-muted text-[8px] uppercase">QUERY COST</div>
@@ -479,7 +479,7 @@ export default function NeuralPipelineHUD({
                         onClick={() => onSelectModelForModal(model)}
                         className={`p-3 rounded-lg border transition-all cursor-pointer flex items-center justify-between group ${
                           isTop
-                            ? "bg-theme-void/95 border-theme-accent shadow-[0_0_15px_rgba(31,170,104,0.15)] hover:border-theme-accent hover:scale-[1.02]"
+                            ? "bg-theme-accent/10 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)] hover:border-theme-accent hover:scale-[1.02]"
                             : "bg-theme-void/50 border-theme-border/30 hover:border-theme-border/70 hover:bg-white/5 hover:scale-[1.01]"
                         }`}
                       >
@@ -526,15 +526,14 @@ export default function NeuralPipelineHUD({
           <div className="mt-3 pt-3 border-t border-theme-border/20">
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-theme-accent">
-                <span className="font-extrabold mr-1 text-[11px]">{">.."}</span>
-                <Search size={12} />
+                <span className="font-extrabold text-xs tracking-wider">{">_"}</span>
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Search database (keyword, LLM, provider)..."
-                className="w-full pl-10 pr-14 py-2 bg-black/60 border border-theme-border/50 rounded-lg text-xs text-theme-text placeholder:text-theme-text-muted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-all font-mono"
+                className="w-full pl-8 pr-14 py-2 bg-black/60 border border-theme-border/50 rounded-lg text-xs text-theme-text placeholder:text-theme-text-muted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-all font-mono"
               />
               {searchQuery.length > 0 && (
                 <button
