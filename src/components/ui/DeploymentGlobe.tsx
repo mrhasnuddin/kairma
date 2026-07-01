@@ -223,8 +223,8 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                 const rect = e.currentTarget.getBoundingClientRect();
                 const x = e.clientX - (rect.left + rect.width / 2);
                 const y = e.clientY - (rect.top + rect.height / 2);
-                e.currentTarget.style.setProperty('--mx', `${x * 0.6}px`);
-                e.currentTarget.style.setProperty('--my', `${y * 0.6}px`);
+                e.currentTarget.style.setProperty('--mx', `${x * 0.45}px`);
+                e.currentTarget.style.setProperty('--my', `${y * 0.45}px`);
               }}
               onMouseEnter={() => {
                 setHoveredRoute(route);
@@ -259,7 +259,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                 className="absolute inset-0 flex items-center justify-center pointer-events-none"
                 style={{ 
                   transform: 'translate(var(--mx, 0px), var(--my, 0px))',
-                  transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  transition: 'transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1)'
                 }}
               >
                 <div className="relative w-8 h-8 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out">
