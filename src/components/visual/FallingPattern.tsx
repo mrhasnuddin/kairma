@@ -39,7 +39,7 @@ export function FallingPattern({
     let height = canvas.height = 0;
     
     const fontSize = 16;
-    const rowHeight = fontSize * 1.8;
+    const rowHeight = fontSize * 1.5;
     let numRows = 0;
     
     interface RowData {
@@ -64,7 +64,7 @@ export function FallingPattern({
       numRows = Math.floor(height / rowHeight);
       rows = Array.from({ length: numRows }).map(() => ({
         x: width + Math.random() * width,
-        speed: (0.8 + Math.random() * 1.2) * speed, // Faster horizontal speed
+        speed: (1.0 + Math.random() * 1.5) * speed, // Slightly faster horizontal speed
         str: canonRain[Math.floor(Math.random() * canonRain.length)],
         index: 0,
         lastCharX: 99999, // Force immediate draw
@@ -121,8 +121,8 @@ export function FallingPattern({
 
       const isDark = theme === "matrix-mode";
 
-      // Fade effect (trail)
-      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.08)`;
+      // Fade effect (trail) - lower alpha leaves longer glowing tails
+      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.055)`;
       ctx.fillRect(0, 0, width, height);
 
       ctx.font = `bold ${fontSize}px var(--font-serif), monospace`; // Use serif for literary canon, fallback to mono
@@ -158,7 +158,7 @@ export function FallingPattern({
               row.index = 0;
               row.lastCharX = row.x + 999;
               row.nextCharWidth = 0;
-              row.speed = (0.8 + Math.random() * 1.2) * speed;
+              row.speed = (1.0 + Math.random() * 1.5) * speed;
             }
           }
         }
@@ -172,7 +172,7 @@ export function FallingPattern({
     };
   }, [color, backgroundColor, speed, theme]);
 
-  const resolvedOpacity = (opacity ?? 0.15) * (theme === "matrix-mode" ? 1.0 : 3.0);
+  const resolvedOpacity = Math.min(1.0, (opacity ?? 0.2) * (theme === "matrix-mode" ? 1.4 : 3.0));
 
   return (
     <div

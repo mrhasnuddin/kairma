@@ -488,7 +488,7 @@ export const SiteShellV3: React.FC = () => {
       
       {/* Background Matrix Rain */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <FallingPattern opacity={0.3} />
+        <FallingPattern opacity={0.4} speed={1.15} />
       </div>
 
       {/* Global CRT Noise Overlay */}
