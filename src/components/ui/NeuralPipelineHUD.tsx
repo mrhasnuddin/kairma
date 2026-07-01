@@ -222,8 +222,166 @@ export default function NeuralPipelineHUD({
 
   const decryptedTitle = useDecryptedText(activeGroupTitle, activeGroup);
 
+  // Helper to render individual dotted/cyber node blocks
+  const renderNode = (index: number) => {
+    const group = dataGroups[index];
+    const isActive = activeGroup === group.id;
+    
+    const shortLabel = 
+      group.id === "market_intel" ? "INTEL" :
+      group.id === "coding_dev" ? "CODING" :
+      group.id === "agentic_auto" ? "AGENTIC" :
+      group.id === "daily_runtimes" ? "RUNTIMES" :
+      group.id === "cost_nano" ? "COST" : "CONTEXT";
+
+    return (
+      <button
+        key={group.id}
+        onClick={() => {
+          setSearchQuery("");
+          setActiveGroup(group.id);
+        }}
+        className={`relative w-full aspect-[1.1] rounded-lg border flex flex-col items-center justify-center p-2 group transition-all duration-300 ${
+          isActive
+            ? "bg-theme-accent/15 border-theme-accent text-theme-text shadow-[0_0_15px_var(--color-theme-accent)] scale-[1.02] z-10"
+            : "bg-theme-void/60 border-dashed border-theme-border/30 text-theme-text-muted hover:border-theme-border/60 hover:text-theme-text hover:bg-white/5"
+        }`}
+      >
+        {/* Corner Cyber Brackets for Active Node */}
+        {isActive && (
+          <>
+            <div className="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-theme-accent" />
+            <div className="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-theme-accent" />
+            <div className="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-theme-accent" />
+            <div className="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-theme-accent" />
+            <div className="absolute w-8 h-8 rounded-full border border-dashed border-theme-accent/20 animate-spin-slow pointer-events-none" />
+          </>
+        )}
+
+        {/* Node Status Indicator Dot */}
+        <span className={`absolute top-2 right-2 w-1.5 h-1.5 rounded-full ${
+          isActive 
+            ? "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-pulse" 
+            : "bg-theme-border/30"
+        }`} />
+
+        {/* Icon */}
+        <div className={`shrink-0 mb-1.5 transition-transform duration-300 ${isActive ? "text-theme-accent scale-110" : "text-theme-text-muted/70 group-hover:text-theme-accent group-hover:scale-105"}`}>
+          {group.icon}
+        </div>
+
+        {/* Short Cyber Label */}
+        <div className={`text-[10px] font-extrabold tracking-widest leading-none ${isActive ? "text-theme-accent" : "text-theme-text-muted group-hover:text-theme-text"}`}>
+          {shortLabel}
+        </div>
+
+        {/* Description Label / Number */}
+        <div className="absolute bottom-1 text-[8px] text-theme-text-muted/30 font-mono scale-90">
+          {group.id === "market_intel" ? "01" :
+           group.id === "coding_dev" ? "02" :
+           group.id === "agentic_auto" ? "03" :
+           group.id === "daily_runtimes" ? "04" :
+           group.id === "cost_nano" ? "05" : "06"}
+        </div>
+      </button>
+    );
+  };
+
+  // Helper to render horizontal grid lines with animated data packet flow
+  const renderHorizontalConnector = (fromIdx: number, toIdx: number) => {
+    const fromGroup = dataGroups[fromIdx];
+    const toGroup = dataGroups[toIdx];
+    const isLineActive = activeGroup === fromGroup.id || activeGroup === toGroup.id;
+
+    return (
+      <div className="relative w-full h-[2px] flex items-center justify-center">
+        {/* Background line */}
+        <div className={`w-full h-[2px] border-t border-dashed transition-colors duration-500 ${
+          isLineActive ? "border-theme-accent/60" : "border-theme-border/20"
+        }`} />
+        
+        {/* Flowing animated dot */}
+        {isLineActive && (
+          <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] ${
+            activeGroup === toGroup.id ? "animate-flow-horizontal-rev" : "animate-flow-horizontal"
+          }`} />
+        )}
+      </div>
+    );
+  };
+
+  // Helper to render vertical grid lines with animated data packet flow
+  const renderVerticalConnector = (fromIdx: number, toIdx: number) => {
+    const fromGroup = dataGroups[fromIdx];
+    const toGroup = dataGroups[toIdx];
+    const isLineActive = activeGroup === fromGroup.id || activeGroup === toGroup.id;
+
+    return (
+      <div className="relative w-full h-8 flex justify-center">
+        {/* Background line */}
+        <div className={`w-[2px] h-full border-l border-dashed transition-colors duration-500 ${
+          isLineActive ? "border-theme-accent/60" : "border-theme-border/20"
+        }`} />
+
+        {/* Flowing animated dot */}
+        {isLineActive && (
+          <div className={`absolute left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] ${
+            activeGroup === toGroup.id ? "animate-flow-vertical-rev" : "animate-flow-vertical"
+          }`} />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="w-full flex flex-col gap-6 font-mono relative h-full">
+      {/* Dynamic Keyframes Injection */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes flowHorizontal {
+          0% { left: 0%; opacity: 0; }
+          20% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { left: 100%; opacity: 0; }
+        }
+        @keyframes flowHorizontalRev {
+          0% { right: 0%; opacity: 0; }
+          20% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { right: 100%; opacity: 0; }
+        }
+        @keyframes flowVertical {
+          0% { top: 0%; opacity: 0; }
+          20% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { top: 100%; opacity: 0; }
+        }
+        @keyframes flowVerticalRev {
+          0% { bottom: 0%; opacity: 0; }
+          20% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { bottom: 100%; opacity: 0; }
+        }
+        .animate-flow-horizontal {
+          animation: flowHorizontal 1.8s linear infinite;
+        }
+        .animate-flow-horizontal-rev {
+          animation: flowHorizontalRev 1.8s linear infinite;
+        }
+        .animate-flow-vertical {
+          animation: flowVertical 1.8s linear infinite;
+        }
+        .animate-flow-vertical-rev {
+          animation: flowVerticalRev 1.8s linear infinite;
+        }
+        .animate-spin-slow {
+          animation: spin-slow 12s linear infinite;
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}} />
+
       {/* 3-Column Bento Pipeline Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[520px] items-stretch">
         
@@ -237,39 +395,44 @@ export default function NeuralPipelineHUD({
               <span className="text-[10px] text-theme-accent">[SELECT 1]</span>
             </div>
 
-            <div className="flex flex-col gap-2">
-              {dataGroups.map((group) => {
-                const isActive = activeGroup === group.id;
-                return (
-                  <button
-                    key={group.id}
-                    onClick={() => {
-                      setSearchQuery("");
-                      setActiveGroup(group.id);
-                    }}
-                    className={`relative p-3 rounded-lg border text-left transition-all duration-300 cursor-pointer flex items-start gap-3 group ${
-                      isActive
-                        ? "bg-theme-accent/10 border-theme-accent text-theme-text shadow-[0_0_15px_var(--color-theme-accent)] translate-x-1"
-                        : "bg-theme-void/40 border-theme-border/30 text-theme-text-muted hover:border-theme-border/60 hover:text-theme-text hover:bg-white/5"
-                    }`}
-                  >
-                    {/* Active Glowing Dot / Node on right edge */}
-                    {isActive && (
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-ping" />
-                    )}
+            {/* Connected Node Grid Map Layout */}
+            <div className="grid grid-cols-[1fr_24px_1fr] items-center gap-y-0 mt-2">
+              {/* Row 1 */}
+              {renderNode(0)}
+              {renderHorizontalConnector(0, 1)}
+              {renderNode(1)}
 
-                    <div className="mt-0.5 shrink-0">{group.icon}</div>
-                    <div className="flex-1 min-w-0 pr-4">
-                      <div className={`text-xs font-bold truncate ${isActive ? "text-theme-accent" : "group-hover:text-theme-text"}`}>
-                        {group.label}
-                      </div>
-                      <div className="text-[10px] text-theme-text-muted/80 leading-tight mt-0.5 line-clamp-1">
-                        {group.desc}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
+              {/* Row 2 */}
+              {renderVerticalConnector(0, 2)}
+              <div />
+              {renderVerticalConnector(1, 3)}
+
+              {/* Row 3 */}
+              {renderNode(2)}
+              {renderHorizontalConnector(2, 3)}
+              {renderNode(3)}
+
+              {/* Row 4 */}
+              {renderVerticalConnector(2, 4)}
+              <div />
+              {renderVerticalConnector(3, 5)}
+
+              {/* Row 5 */}
+              {renderNode(4)}
+              {renderHorizontalConnector(4, 5)}
+              {renderNode(5)}
+            </div>
+
+            {/* Description telemetry pane */}
+            <div className="mt-4 p-3 bg-theme-void/25 border border-theme-border/20 rounded-lg min-h-[64px] flex flex-col justify-center transition-all duration-300">
+              <span className="text-[9px] text-theme-accent font-extrabold tracking-wider block mb-1">
+                // SYSTEM_SPEC // GROUP_DETAIL
+              </span>
+              <p className="text-[10px] text-theme-text-muted leading-relaxed">
+                {activeGroup === "search_query"
+                  ? `Active search filter: "${searchQuery}" querying all telemetry tables.`
+                  : dataGroups.find((g) => g.id === activeGroup)?.desc || ""}
+              </p>
             </div>
           </div>
 
