@@ -222,6 +222,19 @@ export default function NeuralPipelineHUD({
 
   const decryptedTitle = useDecryptedText(activeGroupTitle, activeGroup);
 
+  // Map Data Group index/id to radial angles along the left hemisphere (270° down to 90°)
+  const activeAngle = useMemo(() => {
+    switch (activeGroup) {
+      case "market_intel": return 270;    // 01
+      case "coding_dev": return 234;      // 02
+      case "agentic_auto": return 198;     // 03
+      case "daily_runtimes": return 162;  // 04
+      case "cost_nano": return 126;       // 05
+      case "max_context": return 90;      // 06
+      default: return 270;
+    }
+  }, [activeGroup]);
+
   // Helper to render individual dotted/cyber node blocks
   const renderNode = (index: number) => {
     const group = dataGroups[index];
@@ -493,62 +506,103 @@ export default function NeuralPipelineHUD({
         </div>
 
         {/* =========================================================
-            COLUMN 2: KAIRMA PARSER & HEXAGON CORE (~5 cols on lg, ~42%)
+            COLUMN 2: KAIRMA PARSER & RADIAL MENU CORE (~5 cols on lg, ~42%)
         ========================================================= */}
         <div className="lg:col-span-5 flex flex-col relative z-10">
           
           <div className="relative z-10 flex-1 flex flex-col">
             <div className="flex items-center justify-between text-xs font-bold text-theme-text-muted mb-4 uppercase tracking-wider pb-2 border-b border-theme-border/20 shrink-0">
               <span>KAIRMA PARSER</span>
-              <span className="text-[10px] text-theme-accent">// REASONING CORE</span>
+              <span className="text-[10px] text-theme-accent">// RADIAL DIAGNOSTICS</span>
             </div>
 
-            {/* Glowing Hexagon Core Display centered vertically & horizontally */}
-            <div className="flex-1 flex flex-col items-center justify-center relative my-auto min-h-[320px]">
+            {/* Glowing Radial Menu Core centered vertically & horizontally */}
+            <div className="flex-1 flex flex-col items-center justify-center relative my-auto min-h-[350px]">
               
-              {/* Outer Orbit Rings */}
-              <div className="absolute w-48 h-48 md:w-56 md:h-56 rounded-full border border-theme-accent/20 animate-spin-slow pointer-events-none" />
-              <div className="absolute w-40 h-40 md:w-44 md:h-44 rounded-full border border-dashed border-theme-accent/30 animate-reverse-spin pointer-events-none" />
+              {/* 8-bit Dithered Phosphor Aura (AI Parser Glow) behind the dial */}
+              <motion.div 
+                className="absolute w-64 h-64 md:w-72 md:h-72 flex items-center justify-center pointer-events-none"
+                animate={{ rotate: activeAngle }}
+                transition={{ type: "spring", stiffness: 60, damping: 14 }}
+              >
+                {/* Glow layer pointing to the active angle */}
+                <div 
+                  className={`absolute top-1/2 left-1/2 -translate-y-1/2 w-28 h-28 rounded-full bg-theme-accent/35 blur-xl transition-all duration-500 ${
+                    isParsing ? "scale-[1.4] opacity-95 animate-pulse" : "scale-100 opacity-60"
+                  }`} 
+                  style={{ transform: "translate(-50%, -50%) translate(105px, 0px)" }}
+                />
+                
+                {/* Pixelated Dither Mask Pattern Overlay */}
+                <div className="absolute inset-0 w-full h-full mix-blend-overlay opacity-80" style={{ 
+                  backgroundImage: "radial-gradient(rgba(0,0,0,0.95) 16%, transparent 16%)", 
+                  backgroundSize: "4px 4px" 
+                }} />
+              </motion.div>
 
-              {/* Cyber Hexagon Shape */}
-              <div className="relative w-32 h-32 md:w-36 md:h-36 flex items-center justify-center">
-                {/* Glowing Hexagon Border */}
-                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-[0_0_25px_var(--color-theme-accent)]">
-                  <polygon
-                    points="50 3, 93 25, 93 75, 50 97, 7 75, 7 25"
-                    fill="rgba(0, 0, 0, 0.85)"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    className="text-theme-accent transition-all duration-500"
-                  />
-                  <polygon
-                    points="50 8, 88 28, 88 72, 50 92, 12 72, 12 28"
-                    fill="none"
-                    stroke="rgba(255, 255, 255, 0.15)"
-                    strokeWidth="1"
-                    strokeDasharray="4 2"
-                    className="animate-pulse"
-                  />
-                </svg>
+              {/* Dial Outer Ring Layout */}
+              <div className="w-60 h-60 md:w-64 md:h-64 rounded-full border border-theme-border/20 flex items-center justify-center relative z-10">
+                
+                {/* Dotted Tick ring */}
+                <div className="absolute inset-2 rounded-full border border-dashed border-theme-border/10 animate-spin-slow" />
 
-                {/* Center K Logo */}
-                <div className="relative z-10 flex flex-col items-center justify-center">
+                {/* Left Hemisphere Radial Node Indicators (01 to 06) */}
+                {[270, 234, 198, 162, 126, 90].map((angle, idx) => {
+                  const isActive = activeAngle === angle;
+                  return (
+                    <div 
+                      key={idx}
+                      className="absolute w-8 h-8 flex flex-col items-center justify-center font-mono text-[10px] tracking-wider z-20 pointer-events-none transition-colors duration-300"
+                      style={{
+                        transform: `rotate(${angle}deg) translate(105px) rotate(-${angle}deg)`
+                      }}
+                    >
+                      <span className={`${
+                        isActive 
+                          ? "text-theme-accent font-extrabold shadow-[0_0_8px_var(--color-theme-accent)] scale-110" 
+                          : "text-theme-text-muted/60"
+                      }`}>
+                        {`0${idx + 1}`}
+                      </span>
+                      <span className={`w-1 h-1 rounded-full mt-0.5 ${
+                        isActive ? "bg-theme-accent animate-ping" : "bg-theme-border/30"
+                      }`} />
+                    </div>
+                  );
+                })}
+
+                {/* Mechanical Needle Pointer (Rotates dynamically) */}
+                <motion.div 
+                  className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                  animate={{ rotate: activeAngle }}
+                  transition={{ type: "spring", stiffness: 85, damping: 14 }}
+                >
+                  <div 
+                    className="absolute top-1/2 left-1/2 -translate-y-1/2 w-[98px] origin-left flex items-center justify-end"
+                    style={{ transform: "translate(-50%, -50%) rotate(0deg)" }}
+                  >
+                    {/* Glowing needle line */}
+                    <div className="w-full h-[1px] bg-theme-accent/70 shadow-[0_0_6px_var(--color-theme-accent)]" />
+                    {/* Mechanical target arrow */}
+                    <div className="w-2.5 h-2.5 rounded-sm bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] rotate-45 -mr-1 transition-transform duration-300" />
+                  </div>
+                </motion.div>
+
+                {/* Central Circle Core Container (Wrapped in circle) */}
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-black/90 border border-theme-border/40 flex items-center justify-center shadow-2xl relative z-20">
+                  <div className="absolute inset-1 rounded-full border border-dashed border-theme-accent/25 animate-reverse-spin pointer-events-none" />
                   <img
                     src="/Bentos/K.svg"
-                    alt="Kairma Core"
-                    className={`w-12 h-12 md:w-14 md:h-14 transition-transform duration-500 ${
-                      isParsing ? "scale-110 drop-shadow-[0_0_20px_var(--color-theme-accent)]" : "scale-100 drop-shadow-[0_0_10px_var(--color-theme-accent)]"
+                    alt="Kairma Core Logo"
+                    className={`w-10 h-10 md:w-12 md:h-12 transition-transform duration-500 ${
+                      isParsing ? "scale-110 drop-shadow-[0_0_15px_var(--color-theme-accent)]" : "scale-100 drop-shadow-[0_0_8px_var(--color-theme-accent)]"
                     }`}
                   />
                 </div>
-
-                {/* Orbiting LED Dots */}
-                <span className="absolute top-0 right-1/4 w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-ping" />
-                <span className="absolute bottom-2 left-1/4 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]" />
               </div>
 
               {/* Status Badge below core */}
-              <div className="mt-8 px-4 py-1.5 rounded-full border border-theme-accent/40 bg-theme-void/90 text-xs font-bold text-theme-accent tracking-widest flex items-center gap-2 shadow-lg">
+              <div className="mt-8 px-4 py-1.5 rounded-full border border-theme-accent/40 bg-theme-void/90 text-xs font-bold text-theme-accent tracking-widest flex items-center gap-2 shadow-lg relative z-20">
                 <span className={`w-2 h-2 rounded-full ${isParsing ? "bg-amber-400 animate-ping" : "bg-theme-accent"}`} />
                 <span>{isParsing ? "PARSER: DECODING..." : `CORE: [${decryptedTitle}]`}</span>
               </div>
