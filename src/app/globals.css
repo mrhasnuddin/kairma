@@ -62,7 +62,8 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  /* Design System: sharp corners globally (corner-bracket UI language) */
+  --radius: 0rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -124,8 +125,27 @@ body {
 
 /* Typography bindings & Design System Rules */
 /* Maximum Box Headline Size: 34px max (upgraded from 30px) */
+/* Minimum font size anywhere: 12px (text-xs) */
 .text-box-headline-max {
   font-size: 34px;
+}
+
+/* Design System Rule: SHARP CORNERS everywhere.
+   The corner-bracket accents (top-left / bottom-right hairlines) define the
+   box language of this site — rounded corners clash with them, so all box
+   radii are zeroed globally. `--radius` is 0 (kills rounded-sm..rounded-4xl
+   via the @theme scale); the rules below catch the bare/default utilities.
+   ONLY `rounded-full` is permitted (status dots, pills, rings, orbits). */
+.rounded,
+.rounded-xs,
+.rounded-sm,
+.rounded-md,
+.rounded-lg,
+.rounded-xl,
+.rounded-2xl,
+.rounded-3xl,
+.rounded-4xl {
+  border-radius: 0;
 }
 .font-gothic {
   font-family: var(--font-gothic);

@@ -120,6 +120,7 @@ export const SiteShellV3: React.FC = () => {
   const [openRouterModels, setOpenRouterModels] = useState<any[]>([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelsError, setModelsError] = useState<string | null>(null);
+  const [modelsSyncedAt, setModelsSyncedAt] = useState<Date | null>(null);
   const [chartMetric, setChartMetric] = useState<"intelligence_index" | "coding_index" | "agentic_index">("intelligence_index");
 
   // AI Employees icon refs
@@ -203,21 +204,24 @@ export const SiteShellV3: React.FC = () => {
 
   useEffect(() => {
     let active = true;
-    async function getModels() {
+    let initialized = false;
+    async function getModels(initial: boolean) {
       try {
-        setModelsLoading(true);
-        const res = await fetch("/api/openrouter");
+        if (initial) setModelsLoading(true);
+        const res = await fetch("/api/openrouter", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        if (active) {
-          setOpenRouterModels(data.data || []);
-          if (data.data && data.data.length > 0) {
-            // Find first model with benchmarks for the default baseline
+        if (active && Array.isArray(data.data) && data.data.length > 0) {
+          setOpenRouterModels(data.data);
+          setModelsSyncedAt(new Date());
+          // Baseline / comparison defaults only on the first successful load —
+          // background re-syncs must not reset the user's selections.
+          if (!initialized) {
+            initialized = true;
             const hasBenchmarks = data.data.find((m: any) => m.benchmarks && m.benchmarks.intelligence_index != null);
             if (hasBenchmarks) {
               setExpandedModel(hasBenchmarks.id);
             }
-            // Set comparison model to the second model with benchmarks if available
             const secondBenchmark = data.data.filter((m: any) => m.benchmarks && m.benchmarks.intelligence_index != null)[1];
             if (secondBenchmark) {
               setCompareModel(secondBenchmark.id);
@@ -225,18 +229,25 @@ export const SiteShellV3: React.FC = () => {
           }
         }
       } catch (err) {
-        if (active) {
+        // Background sync failures keep the last good data silently.
+        if (active && initial) {
           setModelsError(err instanceof Error ? err.message : "Error");
         }
       } finally {
-        if (active) {
+        if (active && initial) {
           setModelsLoading(false);
         }
       }
     }
-    getModels();
+    getModels(true);
+    // Keep the leaderboard fresh: re-sync every 5 minutes and on tab focus.
+    const interval = setInterval(() => getModels(false), 5 * 60 * 1000);
+    const onFocus = () => getModels(false);
+    window.addEventListener("focus", onFocus);
     return () => {
       active = false;
+      clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
     };
   }, []);
 
@@ -278,6 +289,31 @@ export const SiteShellV3: React.FC = () => {
     "content_ops":          { en: "Content Ops",           "zh-TW": "內容營運",           vi: "Vận hành nội dung",              ms: "Operasi Kandungan", ja: "コンテンツ運用", ko: "콘텐츠 운영" },
     "benchmarks_note":      { en: "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS.", "zh-TW": "* 基準數據由 ARTIFICIAL ANALYSIS 排行榜標準化。", vi: "* ĐIỂM CHUẨN ĐƯỢC CHUẨN HÓA BỞI BẢNG XẾP HẠNG ARTIFICIAL ANALYSIS.", ms: "* PENANDA ARAS DINORMALISASI OLEH PAPAN PENDAHULU ARTIFICIAL ANALYSIS.", ja: "* ベンチマークは ARTIFICIAL ANALYSIS のリーダーボードにより正規化されています。", ko: "* 벤치마크는 ARTIFICIAL ANALYSIS 리더보드에 의해 정규화되었습니다." },
     "top_daily_runtimes":   { en: "TOP DAILY RUNTIMES",    "zh-TW": "每日最熱運行環境",   vi: "MÔI TRƯỜNG CHẠY HÀNG ĐẦU HÀNG NGÀY", ms: "PERSEKITARAN HARIAN TERATAS", ja: "毎日の人気ランタイム", ko: "일일 최고 런타임" },
+    // Model Leaderboard / Neural Pipeline HUD
+    "model_leaderboard":    { en: "MODEL LEADERBOARD",     "zh-TW": "模型排行榜",         vi: "BẢNG XẾP HẠNG MÔ HÌNH",         ms: "PAPAN PENDAHULU MODEL", ja: "モデルリーダーボード", ko: "모델 리더보드" },
+    "data_groups":          { en: "DATA GROUPS",           "zh-TW": "數據群組",           vi: "NHÓM DỮ LIỆU",                  ms: "KUMPULAN DATA", ja: "データグループ", ko: "데이터 그룹" },
+    "select_group_hint":    { en: "select a data group to parse", "zh-TW": "選擇要解析的數據群組", vi: "chọn nhóm dữ liệu để phân tích", ms: "pilih kumpulan data untuk dihurai", ja: "解析するデータグループを選択", ko: "분석할 데이터 그룹을 선택" },
+    "output_nodes":         { en: "OUTPUT NODES",          "zh-TW": "輸出節點",           vi: "NÚT ĐẦU RA",                    ms: "NOD OUTPUT", ja: "出力ノード", ko: "출력 노드" },
+    "generated_insights":   { en: "generated insights",    "zh-TW": "生成的洞察",         vi: "thông tin được tạo",             ms: "cerapan dijana", ja: "生成されたインサイト", ko: "생성된 인사이트" },
+    "active_group":         { en: "ACTIVE GROUP",          "zh-TW": "當前群組",           vi: "NHÓM ĐANG CHỌN",                ms: "KUMPULAN AKTIF", ja: "アクティブグループ", ko: "활성 그룹" },
+    "parsing_data":         { en: "PARSING DATA...",       "zh-TW": "解析數據中...",      vi: "ĐANG PHÂN TÍCH...",             ms: "MENGHURAI DATA...", ja: "データ解析中...", ko: "데이터 분석 중..." },
+    "feed_stable":          { en: "FEED STABLE",           "zh-TW": "數據流穩定",         vi: "NGUỒN ỔN ĐỊNH",                 ms: "SUAPAN STABIL", ja: "フィード安定", ko: "피드 안정" },
+    "data_source":          { en: "DATA SOURCE",           "zh-TW": "數據來源",           vi: "NGUỒN DỮ LIỆU",                 ms: "SUMBER DATA", ja: "データソース", ko: "데이터 소스" },
+    "model_core":           { en: "MODEL CORE",            "zh-TW": "模型核心",           vi: "LÕI MÔ HÌNH",                   ms: "TERAS MODEL", ja: "モデルコア", ko: "모델 코어" },
+    "tokens_used":          { en: "TOKENS USED",           "zh-TW": "已用 TOKEN",         vi: "TOKEN ĐÃ DÙNG",                 ms: "TOKEN DIGUNA", ja: "使用トークン", ko: "사용 토큰" },
+    "context_limit":        { en: "CONTEXT LIMIT",         "zh-TW": "上下文上限",         vi: "GIỚI HẠN NGỮ CẢNH",             ms: "HAD KONTEKS", ja: "コンテキスト上限", ko: "컨텍스트 한도" },
+    "query_cost":           { en: "QUERY COST",            "zh-TW": "查詢成本",           vi: "CHI PHÍ TRUY VẤN",              ms: "KOS PERTANYAAN", ja: "クエリコスト", ko: "쿼리 비용" },
+    "search_db":            { en: "Search database...",    "zh-TW": "搜尋資料庫...",      vi: "Tìm trong cơ sở dữ liệu...",     ms: "Cari pangkalan data...", ja: "データベースを検索...", ko: "데이터베이스 검색..." },
+    "search_label":         { en: "SEARCH",                "zh-TW": "搜尋",               vi: "TÌM KIẾM",                      ms: "CARIAN", ja: "検索", ko: "검색" },
+    "select_node_hint":     { en: "SELECT A GENERATED OUTPUT NODE FOR TELEMETRY INSIGHTS...", "zh-TW": "選擇一個輸出節點以查看遙測洞察...", vi: "CHỌN MỘT NÚT ĐẦU RA ĐỂ XEM THÔNG TIN TELEMETRY...", ms: "PILIH NOD OUTPUT UNTUK CERAPAN TELEMETRI...", ja: "出力ノードを選択してテレメトリを表示...", ko: "출력 노드를 선택하면 텔레메트리 인사이트가 표시됩니다..." },
+    "no_telemetry":         { en: "[0x404] NO TELEMETRY FOUND", "zh-TW": "[0x404] 未找到遙測數據", vi: "[0x404] KHÔNG TÌM THẤY DỮ LIỆU", ms: "[0x404] TIADA TELEMETRI DITEMUI", ja: "[0x404] テレメトリが見つかりません", ko: "[0x404] 텔레메트리를 찾을 수 없음" },
+    "no_match":             { en: "No models matched",     "zh-TW": "沒有符合的模型：",   vi: "Không có mô hình khớp",          ms: "Tiada model sepadan", ja: "一致するモデルなし", ko: "일치하는 모델 없음" },
+    "grp_intel":            { en: "INTEL",                 "zh-TW": "智能",               vi: "TRÍ TUỆ",                       ms: "INTEL", ja: "知能", ko: "지능" },
+    "grp_coding":           { en: "CODING",                "zh-TW": "代碼",               vi: "LẬP TRÌNH",                     ms: "KOD", ja: "コード", ko: "코딩" },
+    "grp_agentic":          { en: "AGENTIC",               "zh-TW": "智能體",             vi: "TỰ HÀNH",                       ms: "AGENTIK", ja: "エージェント", ko: "에이전트" },
+    "grp_runtimes":         { en: "RUNTIMES",              "zh-TW": "運行時",             vi: "VẬN HÀNH",                      ms: "MASA JALAN", ja: "ランタイム", ko: "런타임" },
+    "grp_cost":             { en: "COST",                  "zh-TW": "成本",               vi: "CHI PHÍ",                       ms: "KOS", ja: "コスト", ko: "비용" },
+    "grp_context":          { en: "CONTEXT",               "zh-TW": "上下文",             vi: "NGỮ CẢNH",                      ms: "KONTEKS", ja: "文脈", ko: "컨텍스트" },
     // Model detail modal
     "runtime_module":       { en: "Runtime Module",        "zh-TW": "運行時模組",         vi: "Mô-đun vận hành",                ms: "Modul Masa Jalan", ja: "ランタイムモジュール", ko: "런타임 모듈" },
     "specs_metrics":        { en: "Specs & Metrics",       "zh-TW": "規格與指標",         vi: "Thông số & Chỉ số",              ms: "Spesifikasi & Metrik", ja: "仕様と指標", ko: "사양 및 지표" },
@@ -825,13 +861,18 @@ export const SiteShellV3: React.FC = () => {
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">MODEL LEADERBOARD</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{t("model_leaderboard")}</h3>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
                 <span className="text-theme-text-muted">
                   {modelsLoading ? t("syncing") : t("openrouter_live")}
                 </span>
+                {!modelsLoading && modelsSyncedAt && (
+                  <span className="text-theme-text-muted/60">
+                    {modelsSyncedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                )}
               </div>
             </div>
 

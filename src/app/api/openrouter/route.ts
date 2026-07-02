@@ -6,7 +6,8 @@ export async function GET() {
       headers: {
         ...(process.env.OPENROUTER_API_KEY ? { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}` } : {})
       },
-      next: { revalidate: 3600 },
+      // 5-minute server-side cache — the client re-syncs on the same cadence.
+      next: { revalidate: 300 },
     });
 
     if (!response.ok) {
@@ -25,13 +26,14 @@ export async function GET() {
       );
     }
 
-    // Exclude router/redirect models and take top 15
+    // Exclude router/redirect models. Take the top 24 by daily usage so every
+    // data group (cost, context, runtimes...) has a real candidate pool.
     const ranked = data.data
       .filter((m: { pricing?: { prompt?: string | number } }) => {
         const p = Number(m?.pricing?.prompt ?? -1);
         return p >= 0; // exclude routers (price = -1)
       })
-      .slice(0, 15)
+      .slice(0, 24)
       .map((model: {
         id: string;
         name: string;
