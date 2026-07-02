@@ -7,7 +7,6 @@ import {
   Zap,
   Database,
   AlertTriangle,
-  ChevronRight,
   FileText,
   DollarSign,
 } from "lucide-react";
@@ -845,32 +844,72 @@ export default function NeuralPipelineHUD({
     <div className="w-full flex flex-col gap-4 font-mono relative select-none">
       {/* ---------- STAGE (desktop) or STACK (mobile) ---------- */}
       {isMobile ? (
-        // Mobile: no wires / no burst. Stacked groups + nodes, selection kept.
-        <div className="flex flex-col gap-5">
+        // Mobile: no canvas (no rAF cost). Groups → K parser divider → nodes,
+        // ≥44px touch targets, same data layer and selection flow.
+        <div className="flex flex-col gap-4">
           <div>
             <div className="flex flex-col mb-3">
               <span className="text-xs font-bold text-theme-text uppercase tracking-widest">{t("data_groups")}</span>
               <span className="text-xs text-theme-text-muted mt-0.5">{`// ${t("select_group_hint")}`}</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {dataGroups.map((group, idx) => {
+              {dataGroups.map((group) => {
                 const isActive = activeGroup === group.id;
                 return (
                   <button
                     key={group.id}
                     onClick={() => handleGroupClick(group.id)}
-                    className={`py-2 px-3 rounded border text-left transition-all flex items-center gap-2 ${
+                    className={`min-h-[44px] py-2 px-3 border text-left transition-colors flex items-center gap-2 ${
                       isActive
-                        ? "bg-theme-accent/15 border-theme-accent text-theme-text"
-                        : "bg-theme-void/60 border-theme-border/20 text-theme-text-muted"
+                        ? "bg-theme-accent border-theme-accent text-theme-void"
+                        : "bg-theme-void/60 border-theme-border/30 text-theme-text-muted active:bg-theme-accent/10"
                     }`}
                   >
-                    <span className="text-xs font-extrabold text-theme-text-muted/60">{`0${idx + 1}`}</span>
-                    <span className={isActive ? "text-theme-accent" : "text-theme-text-muted"}>{group.icon}</span>
+                    <span className={isActive ? "text-theme-void" : "text-theme-text-muted"}>{group.icon}</span>
                     <span className="text-xs font-extrabold tracking-widest truncate">{group.short}</span>
                   </button>
                 );
               })}
+            </div>
+          </div>
+
+          {/* K parser divider — mobile's version of the core + ACTIVE GROUP
+              readout: shows what is being parsed and the feed status. */}
+          <div className="py-1">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-theme-border/40" />
+              <div
+                className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+                style={{
+                  backgroundColor: pal.accent,
+                  boxShadow: `0 0 10px ${hexToRgba(pal.accent, 0.25)}`,
+                }}
+              >
+                <div
+                  className="w-4 h-4"
+                  style={{
+                    backgroundColor: pal.bg,
+                    WebkitMaskImage: "url(/Bentos/K.svg)",
+                    WebkitMaskSize: "contain",
+                    WebkitMaskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                    maskImage: "url(/Bentos/K.svg)",
+                    maskSize: "contain",
+                    maskRepeat: "no-repeat",
+                    maskPosition: "center",
+                  }}
+                />
+              </div>
+              <div className="flex-1 h-px bg-theme-border/40" />
+            </div>
+            <div className="flex items-center justify-center gap-2 mt-2 text-xs">
+              <span className="font-extrabold tracking-widest uppercase text-theme-accent truncate max-w-[60%]">
+                {activeGroupTitle}
+              </span>
+              <span className="text-theme-border/60 select-none">/</span>
+              <span className="text-theme-text-muted animate-pulse">
+                {isParsing ? t("parsing_data") : t("feed_stable")}
+              </span>
             </div>
           </div>
 
@@ -881,39 +920,65 @@ export default function NeuralPipelineHUD({
             </div>
             <div className="flex flex-col gap-2">
               {outputNodes.length === 0 ? (
-                <div className="p-6 rounded border border-theme-accent/30 bg-theme-accent/5 text-center flex flex-col items-center gap-2">
+                <div className="p-6 border border-theme-border/40 bg-theme-void/70 text-center flex flex-col items-center gap-2">
                   <AlertTriangle className="w-7 h-7 text-theme-accent" />
                   <div className="text-xs font-bold text-theme-accent">{t("no_telemetry")}</div>
+                  {searchQuery.trim().length > 0 && (
+                    <div className="text-xs text-theme-text-muted">{`${t("no_match")} "${searchQuery}"`}</div>
+                  )}
                 </div>
               ) : (
                 outputNodes.map((model, idx) => {
                   const isSelected = selectedModel?.id === model.id;
+                  const filled = [10, 8, 7, 6, 5][idx] ?? 4;
                   return (
                     <button
                       key={model.id}
                       onClick={() => handleNodeClick(model)}
-                      className={`w-full p-2.5 rounded border transition-all flex items-center justify-between ${
+                      className={`relative w-full p-3 border text-left transition-colors ${
                         isSelected
-                          ? "bg-theme-accent/15 border-theme-accent"
-                          : "bg-theme-void/50 border-theme-border/20"
+                          ? "border-theme-accent bg-theme-void/80"
+                          : "border-theme-border/30 bg-theme-void/60 active:bg-theme-accent/5"
                       }`}
+                      style={{ opacity: isParsing ? 0.4 : 1 }}
                     >
-                      <div className="min-w-0 flex-1 text-left flex items-center gap-2">
-                        <span className="text-xs font-extrabold text-theme-accent">{`0${idx + 1}`}</span>
-                        <div className="min-w-0">
-                          <div className={`text-xs font-bold truncate ${isSelected ? "text-theme-accent" : "text-theme-text"}`}>
+                      <CornerBrackets tone={isSelected ? "bg-theme-accent" : "bg-theme-border/70"} />
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className={`w-1.5 h-1.5 shrink-0 ${
+                              isSelected ? "bg-theme-accent" : "bg-theme-border/70"
+                            }`}
+                          />
+                          <span className={`text-xs font-bold truncate ${isSelected ? "text-theme-accent" : "text-theme-text"}`}>
                             {model.name}
-                          </div>
-                          <div className="text-xs text-theme-text-muted/60 truncate">
-                            {deriveProvider(model)}{" // "}{model.modality || "text->text"}
-                          </div>
+                          </span>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                        <span className="px-1.5 py-0.5 rounded text-xs font-extrabold border border-theme-border/30 text-theme-text-muted">
+                        <span className="text-xs font-extrabold shrink-0 text-theme-accent">
                           {metricBadgeFor(model)}
                         </span>
-                        <ChevronRight size={12} className="text-theme-text-muted" />
+                      </div>
+
+                      <div className="text-xs text-theme-text-muted/70 truncate mt-0.5">
+                        {deriveProvider(model)}{" // "}{model.modality || "text->text"}
+                      </div>
+
+                      <div className="flex items-center gap-2 mt-1.5 text-xs">
+                        <div className="flex items-center gap-[2px]">
+                          {Array.from({ length: 10 }).map((_, b) => (
+                            <span
+                              key={b}
+                              className={`w-[3px] h-2.5 ${b < filled ? "bg-theme-accent opacity-90" : "bg-theme-border/50"}`}
+                            />
+                          ))}
+                        </div>
+                        {isSelected && (
+                          <span className="font-extrabold text-theme-accent">{shareFor(model)}%</span>
+                        )}
+                        <span className="ml-auto text-theme-text-muted/60 uppercase tracking-wider truncate">
+                          SRC: {srcShort(nodeSources[idx])}
+                        </span>
                       </div>
                     </button>
                   );
