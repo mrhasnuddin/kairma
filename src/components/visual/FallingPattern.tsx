@@ -39,7 +39,7 @@ export function FallingPattern({
     let height = canvas.height = 0;
     
     const fontSize = 16;
-    const rowHeight = fontSize * 1.8;
+    const rowHeight = fontSize * 1.5;
     let numRows = 0;
     
     interface RowData {
@@ -49,6 +49,7 @@ export function FallingPattern({
       index: number;
       lastCharX: number;
       nextCharWidth: number;
+      maxChars: number;
     }
     
     let rows: RowData[] = [];
@@ -63,12 +64,14 @@ export function FallingPattern({
       
       numRows = Math.floor(height / rowHeight);
       rows = Array.from({ length: numRows }).map(() => ({
-        x: width + Math.random() * width,
-        speed: (0.8 + Math.random() * 1.2) * speed, // Faster horizontal speed
+        // Spawn randomly across the entire viewport immediately!
+        x: Math.random() * (width + 150),
+        speed: (1.2 + Math.random() * 1.8) * speed, // Dynamic speed variety for 3D depth
         str: canonRain[Math.floor(Math.random() * canonRain.length)],
         index: 0,
         lastCharX: 99999, // Force immediate draw
         nextCharWidth: 0,
+        maxChars: Math.floor(Math.random() * 30) + 15, // Bounded drop distance (15-45 chars)
       }));
     };
 
@@ -121,8 +124,8 @@ export function FallingPattern({
 
       const isDark = theme === "matrix-mode";
 
-      // Fade effect (trail)
-      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.08)`;
+      // Fade effect (trail) - lower alpha leaves longer glowing tails
+      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.055)`;
       ctx.fillRect(0, 0, width, height);
 
       ctx.font = `bold ${fontSize}px var(--font-serif), monospace`; // Use serif for literary canon, fallback to mono
@@ -143,7 +146,7 @@ export function FallingPattern({
             ctx.fillText(tailChar, row.lastCharX, yPos);
           }
 
-          if (headChar) {
+          if (headChar && row.index < row.maxChars) {
             ctx.fillStyle = isDark ? "#ffffff" : "#1F1A17";
             ctx.fillText(headChar, row.x, yPos);
             
@@ -151,14 +154,15 @@ export function FallingPattern({
             row.nextCharWidth = ctx.measureText(headChar).width * 1.1; // Add slight letter spacing
             row.index++;
           } else {
-            // String finished; reset offscreen left (which is Canvas X = width + random)
-            if (row.x < -width || Math.random() > 0.99) {
-              row.x = width + Math.random() * 400;
+            // String finished or max distance reached; reset randomly across the viewport!
+            if (row.x < -100 || row.index >= row.maxChars || Math.random() > 0.99) {
+              row.x = Math.random() * (width + 200);
               row.str = canonRain[Math.floor(Math.random() * canonRain.length)];
+              row.maxChars = Math.floor(Math.random() * 30) + 15;
               row.index = 0;
               row.lastCharX = row.x + 999;
               row.nextCharWidth = 0;
-              row.speed = (0.8 + Math.random() * 1.2) * speed;
+              row.speed = (1.2 + Math.random() * 1.8) * speed;
             }
           }
         }
@@ -172,7 +176,7 @@ export function FallingPattern({
     };
   }, [color, backgroundColor, speed, theme]);
 
-  const resolvedOpacity = (opacity ?? 0.15) * (theme === "matrix-mode" ? 1.0 : 3.0);
+  const resolvedOpacity = Math.min(1.0, (opacity ?? 0.2) * (theme === "matrix-mode" ? 1.4 : 3.0));
 
   return (
     <div

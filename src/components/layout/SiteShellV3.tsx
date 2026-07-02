@@ -6,6 +6,8 @@ import { BurnStream } from "@/components/ui/BurnStream";
 import { BentoGrid } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
+import { SocialLinks } from "@/components/ui/SocialLinks";
+import { BulletinCarousel } from "@/components/ui/BulletinCarousel";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import CpuIcon from "@/components/ui/cpu-icon";
@@ -22,14 +24,15 @@ import { FallingPattern } from "@/components/visual/FallingPattern";
 import { useTheme } from "@/lib/theme";
 import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
-import { EvilRadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, Dot, ActiveDot } from "@/components/evilcharts/charts/radar-chart";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
+import { BoxHeadline } from "@/components/ui/BoxHeadline";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
 const KairmaHero = dynamic(() => import("@/components/3d/KairmaHero"), { ssr: false });
+import NeuralPipelineHUD from "@/components/ui/NeuralPipelineHUD";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const InteractiveBootBox: React.FC<{
@@ -49,31 +52,54 @@ const InteractiveBootBox: React.FC<{
 
   return (
     <OSCard className={`relative flex flex-col min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none z-10" />
+      {/* CRT Scanlines Overlay */}
+      <div className={`absolute inset-0 bg-[length:100%_4px] pointer-events-none z-10 ${
+        theme === "xuan-mode" 
+          ? "bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.35)_50%)] opacity-10" 
+          : "bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(255,255,255,0.12)_50%)] opacity-25"
+      }`} />
+      
+      {/* CRT Scanning Bar */}
       <motion.div 
-        className={`absolute inset-0 h-[60px] bg-gradient-to-b from-transparent via-theme-accent/20 to-transparent pointer-events-none z-10 ${
-          theme === "xuan-mode" ? "mix-blend-multiply" : "mix-blend-screen"
+        className={`absolute inset-0 h-[70px] bg-gradient-to-b from-transparent pointer-events-none z-10 ${
+          theme === "xuan-mode" 
+            ? "via-theme-accent/10 mix-blend-multiply" 
+            : "via-theme-accent/35 mix-blend-screen opacity-90"
         }`}
-        initial={{ top: "-60px" }}
+        initial={{ top: "-70px" }}
         animate={{ top: "100%" }}
         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
       />
       
-      <div className="relative z-20 flex-1 flex flex-col w-full mx-auto p-8 overflow-y-auto no-scrollbar">
-        <div className="flex flex-col gap-6 w-full font-mono select-none my-auto animate-in fade-in duration-500">
-          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line">
+      <div className="relative z-20 flex-1 flex flex-col justify-between w-full h-full mx-auto p-6 md:p-8 overflow-y-auto no-scrollbar">
+        <div className="flex flex-col justify-between flex-1 gap-4 w-full h-full font-mono select-none animate-in fade-in duration-500">
+          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
             {siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"}
           </div>
-          <div className="grid grid-cols-2 gap-2 text-sm md:text-base font-bold">
-            {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => (
-              <button 
-                key={l}
-                onClick={() => handleNormalLanguage(l)}
-                className={`text-left p-2.5 transition-all border focus:outline-none ${language === l ? 'text-theme-text bg-theme-accent/10 border-theme-accent/30' : 'text-theme-accent hover:text-theme-text hover:bg-theme-accent/10 border-transparent hover:border-theme-accent/30'}`}
-              >
-                {"> [ " + getLangLabel(l).toUpperCase() + " ]"}
-              </button>
-            ))}
+          <div className="grid grid-cols-2 gap-3 md:gap-4 flex-1 my-2 content-stretch">
+            {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => {
+              const isActive = language === l;
+              return (
+                <button 
+                  key={l}
+                  onClick={() => handleNormalLanguage(l)}
+                  className={`group/btn relative flex items-center justify-between px-4 py-3.5 md:py-4 rounded-md transition-all duration-300 font-mono text-xs md:text-sm font-bold focus:outline-none backdrop-blur-sm ${
+                    isActive 
+                      ? 'border border-theme-border/40 bg-theme-void text-theme-accent shadow-sm' 
+                      : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/40'
+                  }`}
+                >
+                  {/* Quote Source Box Corner Brackets */}
+                  <div className={`absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  <div className={`absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  <div className={`absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  <div className={`absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
+                  
+                  <span>{"> [ " + getLangLabel(l).toUpperCase() + " ]"}</span>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 ml-2" />}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -94,6 +120,7 @@ export const SiteShellV3: React.FC = () => {
   const [openRouterModels, setOpenRouterModels] = useState<any[]>([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelsError, setModelsError] = useState<string | null>(null);
+  const [modelsSyncedAt, setModelsSyncedAt] = useState<Date | null>(null);
   const [chartMetric, setChartMetric] = useState<"intelligence_index" | "coding_index" | "agentic_index">("intelligence_index");
 
   // AI Employees icon refs
@@ -177,21 +204,24 @@ export const SiteShellV3: React.FC = () => {
 
   useEffect(() => {
     let active = true;
-    async function getModels() {
+    let initialized = false;
+    async function getModels(initial: boolean) {
       try {
-        setModelsLoading(true);
-        const res = await fetch("/api/openrouter");
+        if (initial) setModelsLoading(true);
+        const res = await fetch("/api/openrouter", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        if (active) {
-          setOpenRouterModels(data.data || []);
-          if (data.data && data.data.length > 0) {
-            // Find first model with benchmarks for the default baseline
+        if (active && Array.isArray(data.data) && data.data.length > 0) {
+          setOpenRouterModels(data.data);
+          setModelsSyncedAt(new Date());
+          // Baseline / comparison defaults only on the first successful load —
+          // background re-syncs must not reset the user's selections.
+          if (!initialized) {
+            initialized = true;
             const hasBenchmarks = data.data.find((m: any) => m.benchmarks && m.benchmarks.intelligence_index != null);
             if (hasBenchmarks) {
               setExpandedModel(hasBenchmarks.id);
             }
-            // Set comparison model to the second model with benchmarks if available
             const secondBenchmark = data.data.filter((m: any) => m.benchmarks && m.benchmarks.intelligence_index != null)[1];
             if (secondBenchmark) {
               setCompareModel(secondBenchmark.id);
@@ -199,18 +229,25 @@ export const SiteShellV3: React.FC = () => {
           }
         }
       } catch (err) {
-        if (active) {
+        // Background sync failures keep the last good data silently.
+        if (active && initial) {
           setModelsError(err instanceof Error ? err.message : "Error");
         }
       } finally {
-        if (active) {
+        if (active && initial) {
           setModelsLoading(false);
         }
       }
     }
-    getModels();
+    getModels(true);
+    // Keep the leaderboard fresh: re-sync every 5 minutes and on tab focus.
+    const interval = setInterval(() => getModels(false), 5 * 60 * 1000);
+    const onFocus = () => getModels(false);
+    window.addEventListener("focus", onFocus);
     return () => {
       active = false;
+      clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
     };
   }, []);
 
@@ -252,6 +289,31 @@ export const SiteShellV3: React.FC = () => {
     "content_ops":          { en: "Content Ops",           "zh-TW": "內容營運",           vi: "Vận hành nội dung",              ms: "Operasi Kandungan", ja: "コンテンツ運用", ko: "콘텐츠 운영" },
     "benchmarks_note":      { en: "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS.", "zh-TW": "* 基準數據由 ARTIFICIAL ANALYSIS 排行榜標準化。", vi: "* ĐIỂM CHUẨN ĐƯỢC CHUẨN HÓA BỞI BẢNG XẾP HẠNG ARTIFICIAL ANALYSIS.", ms: "* PENANDA ARAS DINORMALISASI OLEH PAPAN PENDAHULU ARTIFICIAL ANALYSIS.", ja: "* ベンチマークは ARTIFICIAL ANALYSIS のリーダーボードにより正規化されています。", ko: "* 벤치마크는 ARTIFICIAL ANALYSIS 리더보드에 의해 정규화되었습니다." },
     "top_daily_runtimes":   { en: "TOP DAILY RUNTIMES",    "zh-TW": "每日最熱運行環境",   vi: "MÔI TRƯỜNG CHẠY HÀNG ĐẦU HÀNG NGÀY", ms: "PERSEKITARAN HARIAN TERATAS", ja: "毎日の人気ランタイム", ko: "일일 최고 런타임" },
+    // Model Leaderboard / Neural Pipeline HUD
+    "model_leaderboard":    { en: "MODEL LEADERBOARD",     "zh-TW": "模型排行榜",         vi: "BẢNG XẾP HẠNG MÔ HÌNH",         ms: "PAPAN PENDAHULU MODEL", ja: "モデルリーダーボード", ko: "모델 리더보드" },
+    "data_groups":          { en: "DATA GROUPS",           "zh-TW": "數據群組",           vi: "NHÓM DỮ LIỆU",                  ms: "KUMPULAN DATA", ja: "データグループ", ko: "데이터 그룹" },
+    "select_group_hint":    { en: "select a data group to parse", "zh-TW": "選擇要解析的數據群組", vi: "chọn nhóm dữ liệu để phân tích", ms: "pilih kumpulan data untuk dihurai", ja: "解析するデータグループを選択", ko: "분석할 데이터 그룹을 선택" },
+    "output_nodes":         { en: "OUTPUT NODES",          "zh-TW": "輸出節點",           vi: "NÚT ĐẦU RA",                    ms: "NOD OUTPUT", ja: "出力ノード", ko: "출력 노드" },
+    "generated_insights":   { en: "generated insights",    "zh-TW": "生成的洞察",         vi: "thông tin được tạo",             ms: "cerapan dijana", ja: "生成されたインサイト", ko: "생성된 인사이트" },
+    "active_group":         { en: "ACTIVE GROUP",          "zh-TW": "當前群組",           vi: "NHÓM ĐANG CHỌN",                ms: "KUMPULAN AKTIF", ja: "アクティブグループ", ko: "활성 그룹" },
+    "parsing_data":         { en: "PARSING DATA...",       "zh-TW": "解析數據中...",      vi: "ĐANG PHÂN TÍCH...",             ms: "MENGHURAI DATA...", ja: "データ解析中...", ko: "데이터 분석 중..." },
+    "feed_stable":          { en: "FEED STABLE",           "zh-TW": "數據流穩定",         vi: "NGUỒN ỔN ĐỊNH",                 ms: "SUAPAN STABIL", ja: "フィード安定", ko: "피드 안정" },
+    "data_source":          { en: "DATA SOURCE",           "zh-TW": "數據來源",           vi: "NGUỒN DỮ LIỆU",                 ms: "SUMBER DATA", ja: "データソース", ko: "데이터 소스" },
+    "model_core":           { en: "MODEL CORE",            "zh-TW": "模型核心",           vi: "LÕI MÔ HÌNH",                   ms: "TERAS MODEL", ja: "モデルコア", ko: "모델 코어" },
+    "tokens_used":          { en: "TOKENS USED",           "zh-TW": "已用 TOKEN",         vi: "TOKEN ĐÃ DÙNG",                 ms: "TOKEN DIGUNA", ja: "使用トークン", ko: "사용 토큰" },
+    "context_limit":        { en: "CONTEXT LIMIT",         "zh-TW": "上下文上限",         vi: "GIỚI HẠN NGỮ CẢNH",             ms: "HAD KONTEKS", ja: "コンテキスト上限", ko: "컨텍스트 한도" },
+    "query_cost":           { en: "QUERY COST",            "zh-TW": "查詢成本",           vi: "CHI PHÍ TRUY VẤN",              ms: "KOS PERTANYAAN", ja: "クエリコスト", ko: "쿼리 비용" },
+    "search_db":            { en: "Search database...",    "zh-TW": "搜尋資料庫...",      vi: "Tìm trong cơ sở dữ liệu...",     ms: "Cari pangkalan data...", ja: "データベースを検索...", ko: "데이터베이스 검색..." },
+    "search_label":         { en: "SEARCH",                "zh-TW": "搜尋",               vi: "TÌM KIẾM",                      ms: "CARIAN", ja: "検索", ko: "검색" },
+    "select_node_hint":     { en: "SELECT A GENERATED OUTPUT NODE FOR TELEMETRY INSIGHTS...", "zh-TW": "選擇一個輸出節點以查看遙測洞察...", vi: "CHỌN MỘT NÚT ĐẦU RA ĐỂ XEM THÔNG TIN TELEMETRY...", ms: "PILIH NOD OUTPUT UNTUK CERAPAN TELEMETRI...", ja: "出力ノードを選択してテレメトリを表示...", ko: "출력 노드를 선택하면 텔레메트리 인사이트가 표시됩니다..." },
+    "no_telemetry":         { en: "[0x404] NO TELEMETRY FOUND", "zh-TW": "[0x404] 未找到遙測數據", vi: "[0x404] KHÔNG TÌM THẤY DỮ LIỆU", ms: "[0x404] TIADA TELEMETRI DITEMUI", ja: "[0x404] テレメトリが見つかりません", ko: "[0x404] 텔레메트리를 찾을 수 없음" },
+    "no_match":             { en: "No models matched",     "zh-TW": "沒有符合的模型：",   vi: "Không có mô hình khớp",          ms: "Tiada model sepadan", ja: "一致するモデルなし", ko: "일치하는 모델 없음" },
+    "grp_intel":            { en: "INTEL",                 "zh-TW": "智能",               vi: "TRÍ TUỆ",                       ms: "INTEL", ja: "知能", ko: "지능" },
+    "grp_coding":           { en: "CODING",                "zh-TW": "代碼",               vi: "LẬP TRÌNH",                     ms: "KOD", ja: "コード", ko: "코딩" },
+    "grp_agentic":          { en: "AGENTIC",               "zh-TW": "智能體",             vi: "TỰ HÀNH",                       ms: "AGENTIK", ja: "エージェント", ko: "에이전트" },
+    "grp_runtimes":         { en: "RUNTIMES",              "zh-TW": "運行時",             vi: "VẬN HÀNH",                      ms: "MASA JALAN", ja: "ランタイム", ko: "런타임" },
+    "grp_cost":             { en: "COST",                  "zh-TW": "成本",               vi: "CHI PHÍ",                       ms: "KOS", ja: "コスト", ko: "비용" },
+    "grp_context":          { en: "CONTEXT",               "zh-TW": "上下文",             vi: "NGỮ CẢNH",                      ms: "KONTEKS", ja: "文脈", ko: "컨텍스트" },
     // Model detail modal
     "runtime_module":       { en: "Runtime Module",        "zh-TW": "運行時模組",         vi: "Mô-đun vận hành",                ms: "Modul Masa Jalan", ja: "ランタイムモジュール", ko: "런타임 모듈" },
     "specs_metrics":        { en: "Specs & Metrics",       "zh-TW": "規格與指標",         vi: "Thông số & Chỉ số",              ms: "Spesifikasi & Metrik", ja: "仕様と指標", ko: "사양 및 지표" },
@@ -462,7 +524,7 @@ export const SiteShellV3: React.FC = () => {
       
       {/* Background Matrix Rain */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <FallingPattern opacity={0.3} />
+        <FallingPattern opacity={0.4} speed={1.15} />
       </div>
 
       {/* Global CRT Noise Overlay */}
@@ -481,7 +543,7 @@ export const SiteShellV3: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={bootPhase === "ready" ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32"
+        className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32 overflow-x-hidden"
       >
         
         {bootPhase === "ready" && (
@@ -517,13 +579,18 @@ export const SiteShellV3: React.FC = () => {
               <div className="group/cta">
                 <button 
                   disabled
-                  className="relative w-full py-3 mb-6 bg-theme-accent/10 border border-theme-accent/20 text-theme-accent/40 font-mono text-xs font-bold uppercase tracking-widest rounded cursor-not-allowed flex items-center justify-center gap-2"
+                  className="relative w-full py-3 mb-6 border border-theme-border/40 bg-theme-void/60 text-theme-text-muted/60 font-mono text-xs font-bold uppercase tracking-widest rounded-md cursor-not-allowed flex items-center justify-center gap-2 backdrop-blur-sm"
                 >
+                  <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-border/60" />
+                  <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-border/60" />
+                  <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-border/60" />
+                  <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-border/60" />
                   COMING SOON
                 </button>
               </div>
-              <div className="flex items-center justify-end w-full">
+              <div className="flex flex-col gap-2 w-full mt-auto">
                 <ThemeSwitcher />
+                <SocialLinks />
               </div>
             </div>
           </OSCard>
@@ -542,8 +609,8 @@ export const SiteShellV3: React.FC = () => {
               <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <h1 className="text-2xl md:text-3xl font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
-                    {siteCopy.hero_center.h1}
+                  <h1 className="text-2xl md:text-[34px] font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
+                    <BoxHeadline text={siteCopy.hero_center.h1} />
                   </h1>
                   
                   <p className="font-mono text-sm text-theme-text-muted leading-relaxed drop-shadow-md mb-8 max-w-xl">
@@ -617,8 +684,8 @@ export const SiteShellV3: React.FC = () => {
                     {t("the_shift")}
                   </span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text mb-6">
-                {siteCopy.shift.h}
+                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight text-theme-text mb-6">
+                  <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
               </div>
 
@@ -708,12 +775,9 @@ export const SiteShellV3: React.FC = () => {
 
           </OSCard>
 
-          {/* Section 3: Forward Deployment */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-6 min-h-[250px] md:min-h-[300px] relative overflow-hidden group">
-            <div>
-              <h2 className="text-xl font-mono font-bold leading-tight mb-2 text-theme-text">{siteCopy.panel_keep.h}</h2>
-              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{siteCopy.panel_keep.body}</p>
-            </div>
+          {/* Section 3: Bulletin Carousel */}
+          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
+            <BulletinCarousel />
           </OSCard>
 
           {/* Row 3: Four Moats */}
@@ -793,17 +857,22 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5 */}
           {/* 04: The Foundry (Leaderboard) */}
-          <OSCard className="col-span-1 md:col-span-3 row-span-2 p-6 flex flex-col overflow-hidden min-h-[550px]">
+          <OSCard className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">MODEL LEADERBOARD</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{t("model_leaderboard")}</h3>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
                 <span className="text-theme-text-muted">
                   {modelsLoading ? t("syncing") : t("openrouter_live")}
                 </span>
+                {!modelsLoading && modelsSyncedAt && (
+                  <span className="text-theme-text-muted/60">
+                    {modelsSyncedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -813,200 +882,15 @@ export const SiteShellV3: React.FC = () => {
                 <span>{t("fetching_rankings")}</span>
               </div>
             ) : (
-              <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
-                {/* Left: Bar Chart (6 cols) */}
-                <div className="lg:col-span-6 flex flex-col justify-between h-full min-h-[300px]">
-                  <div>
-                    {/* Metric Selector Tabs */}
-                    <div className="flex gap-1.5 p-1 bg-theme-void/80 border border-theme-border/20 rounded-md mb-6">
-                      {(["intelligence_index", "coding_index", "agentic_index"] as const).map((metric) => {
-                        const label = metric === "intelligence_index" 
-                          ? t("intel")
-                          : metric === "coding_index"
-                            ? t("coding")
-                            : t("agentic");
-                        const isActive = chartMetric === metric;
-                        return (
-                          <button
-                            key={metric}
-                            onClick={() => setChartMetric(metric)}
-                            className={`flex-1 text-center py-2 text-xs md:text-sm font-mono font-semibold uppercase tracking-wider rounded transition-all ${
-                              isActive 
-                                ? 'text-theme-void bg-theme-text font-extrabold shadow-sm' 
-                                : 'text-theme-text-muted hover:text-theme-text hover:bg-theme-text/5'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Horizontal Bar Chart */}
-                    <div className="flex flex-col gap-4">
-                      {activeModels
-                        .filter(m => m.benchmarks?.[chartMetric] != null)
-                        .slice(0, 7)
-                        .map((model, idx) => {
-                          const val = model.benchmarks?.[chartMetric] ?? 0;
-                          const maxVal = Math.max(...activeModels.map(m => m.benchmarks?.[chartMetric] ?? 0), 100);
-                          const percent = Math.max(10, Math.min(100, (val / maxVal) * 100));
-                          const isBaseline = activeModels.filter(m => m.benchmarks?.[chartMetric] != null)[0]?.id === model.id;
-                          const barColor = chartMetric === "intelligence_index" 
-                            ? "bg-gradient-to-r from-[#9C5AFF]/40 to-[#9C5AFF]" 
-                            : chartMetric === "coding_index" 
-                              ? "bg-gradient-to-r from-[#10A37F]/40 to-[#10A37F]" 
-                              : "bg-gradient-to-r from-[#D4783A]/40 to-[#D4783A]";
-
-                          return (
-                            <div 
-                              key={model.id}
-                              onClick={() => setSelectedModelForModal(model)}
-                              className="flex flex-col gap-1.5 transition-all cursor-pointer group/bar hover:opacity-100 opacity-90"
-                            >
-                              <div className="flex justify-between items-center text-xs md:text-sm font-mono text-theme-text-muted">
-                                <span className={`font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text"} group-hover/bar:text-theme-accent transition-colors`}>
-                                  #{idx + 1} {model.name.replace("Google: ", "").replace("Anthropic: ", "").replace("Cohere: ", "").replace("Sakana: ", "")}
-                                </span>
-                                <span className="font-bold text-theme-text group-hover/bar:text-theme-accent transition-colors">{val}%</span>
-                              </div>
-                              <div className="h-2.5 w-full bg-theme-void border border-theme-border/20 rounded-full overflow-hidden flex items-center">
-                                <motion.div 
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${percent}%` }}
-                                  transition={{ duration: 0.8, ease: "easeOut" }}
-                                  className={`h-full rounded-full ${barColor} transition-all`}
-                                />
-                              </div>
-                            </div>
-                          );
-                        })}
-                    </div>
-                  </div>
-                  
-                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/60 tracking-wider border-t border-theme-border/20 pt-4 mt-6">
-                    {t("benchmarks_note")}
-                  </div>
-                </div>
-
-                {/* Right: Model list (6 cols) */}
-                <div className="lg:col-span-6 flex flex-col min-h-0 border-t lg:border-t-0 lg:border-l border-theme-border/30 pt-6 lg:pt-0 lg:pl-6">
-                  <p className="font-mono text-xs md:text-sm font-semibold text-theme-text-muted mb-4 uppercase tracking-widest shrink-0">
-                    {t("top_daily_runtimes")}
-                  </p>
-                  <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
-                    <div className="flex flex-col gap-2.5">
-                      {activeModels.slice(0, 8).map((model, i) => {
-                        const isBaseline = i === 0;
-                        const specs = getModelSpecs(model);
-                        return (
-                          <div 
-                            key={model.id} 
-                            onClick={() => setSelectedModelForModal(model)}
-                            className="flex justify-between items-center font-mono text-xs md:text-sm p-3.5 border border-theme-border/30 hover:border-theme-accent/40 bg-theme-void/40 hover:bg-theme-accent/5 transition-all cursor-pointer rounded group"
-                          >
-                            <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                              <span className={`w-4 shrink-0 font-bold ${isBaseline ? "text-theme-accent" : "text-theme-text-muted"}`}>#{i + 1}</span>
-                              <span className="truncate font-bold text-theme-text group-hover:text-theme-accent transition-colors">{model.name}</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[10px] md:text-xs text-theme-text-muted/65 uppercase px-2.5 py-0.5 border border-theme-border/40 rounded bg-theme-void/80 font-semibold tracking-wider group-hover:border-theme-accent/30 group-hover:text-theme-accent transition-colors">
-                                {specs.provider.toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
+              <div className="flex-1 w-full min-h-0 flex flex-col">
+                <NeuralPipelineHUD
+                  models={activeModels}
+                  onSelectModelForModal={setSelectedModelForModal}
+                  language={language}
+                  t={t}
+                />
               </div>
             )}
-          </OSCard>
-
-          {/* Section 2: AI Digital Employees */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-2 p-6 flex flex-col justify-between overflow-hidden">
-            <div className="mb-6">
-              <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight text-theme-text text-balance">
-                {t("digital_emp_heading")}
-              </h2>
-            </div>
-            
-            <div className="flex flex-col flex-1 gap-4 justify-center">
-              {[
-                {
-                  id: "kol",
-                  title: t("kol_bd"),
-                  status: t("pilot_ready"),
-                  statusColor: "text-theme-accent",
-                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
-                  ref: kolIconRef
-                },
-                {
-                  id: "content",
-                  title: t("content_ops"),
-                  status: t("fde_configured"),
-                  statusColor: "text-theme-accent",
-                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
-                  ref: contentIconRef
-                },
-                {
-                  id: "care",
-                  title: t("customer_care"),
-                  status: t("in_development"),
-                  statusColor: "text-amber-500",
-                  dotColor: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]",
-                  ref: customerIconRef
-                },
-                {
-                  id: "compliance",
-                  title: t("compliance"),
-                  status: t("private_runtime"),
-                  statusColor: "text-theme-accent",
-                  dotColor: "bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]",
-                  ref: complianceIconRef
-                }
-              ].map((emp) => (
-                <div 
-                  key={emp.id}
-                  onMouseEnter={() => {
-                    if (emp.id === "kol") kolIconRef.current?.startAnimation();
-                    if (emp.id === "content") contentIconRef.current?.startAnimation();
-                    if (emp.id === "care") customerIconRef.current?.startAnimation();
-                    if (emp.id === "compliance") complianceIconRef.current?.startAnimation();
-                  }}
-                  onMouseLeave={() => {
-                    if (emp.id === "kol") kolIconRef.current?.stopAnimation();
-                    if (emp.id === "content") contentIconRef.current?.stopAnimation();
-                    if (emp.id === "care") customerIconRef.current?.stopAnimation();
-                    if (emp.id === "compliance") complianceIconRef.current?.stopAnimation();
-                  }}
-                  className="flex items-stretch rounded border border-theme-border/30 bg-theme-void/50 group/emp hover:bg-theme-accent/5 hover:border-theme-accent/30 transition-all cursor-default overflow-hidden"
-                >
-                  {/* Left Icon Block */}
-                  <div className="flex items-center justify-center w-16 border-r border-theme-border/30 bg-theme-void/80 py-4 shrink-0">
-                    {emp.id === "kol" && <UserIcon ref={kolIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
-                    {emp.id === "content" && <LinkIcon ref={contentIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
-                    {emp.id === "care" && <HeadsetIcon ref={customerIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-amber-500 transition-colors" />}
-                    {emp.id === "compliance" && <ShieldCheck ref={complianceIconRef} size={24} className="text-theme-text-muted group-hover/emp:text-theme-accent transition-colors" />}
-                  </div>
-                  
-                  {/* Label & Status */}
-                  <div className="flex-1 flex justify-between items-center px-4 py-3">
-                    <div className="flex flex-col gap-1 min-w-0">
-                      <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-theme-text truncate">
-                        {emp.title}
-                      </span>
-                      <span className={`font-mono text-[10px] md:text-xs tracking-wider truncate ${emp.statusColor}`}>
-                        {emp.status}
-                      </span>
-                    </div>
-                    <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${emp.dotColor}`} />
-                  </div>
-                </div>
-              ))}
-            </div>
           </OSCard>
 
           {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}
@@ -1038,11 +922,17 @@ export const SiteShellV3: React.FC = () => {
                   </span>
                   <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_developers")}</span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text">{siteCopy.dev_smithy.h}</h2>
+                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text">
+                  <BoxHeadline text={siteCopy.dev_smithy.h} />
+                </h2>
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
-              <button className="self-start mt-6 px-5 py-2.5 border border-theme-text text-theme-text font-mono text-xs uppercase tracking-widest rounded group-hover:bg-theme-text group-hover:text-theme-void transition-colors flex items-center gap-2">
-                {t("view_docs")} <span>→</span>
+              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-md hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:w-4 group-hover/btn:bg-theme-text" />
+                <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:h-4 group-hover/btn:bg-theme-text" />
+                <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:w-4 group-hover/btn:bg-theme-text" />
+                <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:h-4 group-hover/btn:bg-theme-text" />
+                {t("view_docs")} <span className="transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
               </button>
             </div>
           </OSCard>
@@ -1077,11 +967,17 @@ export const SiteShellV3: React.FC = () => {
                     </span>
                     <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_operators")}</span>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">{siteCopy.operators.h}</h2>
+                  <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
+                    <BoxHeadline text={siteCopy.operators.h} />
+                  </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">
-                  <button className="self-start px-5 py-2.5 bg-theme-accent text-theme-void font-mono text-xs font-bold uppercase tracking-widest rounded hover:bg-theme-text hover:text-theme-void transition-colors flex items-center gap-2">
+                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-md hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                    <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
+                    <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
+                    <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
+                    <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
                     {siteCopy.operators.cta}
                   </button>
                 </div>
@@ -1111,7 +1007,7 @@ export const SiteShellV3: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-theme-void/85 backdrop-blur-md z-[999] flex items-center justify-center p-4"
+              className="fixed inset-0 bg-theme-void/85 backdrop-blur-md z-[999] flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-y-auto"
               onClick={() => setSelectedModelForModal(null)}
             >
               <motion.div 
@@ -1119,7 +1015,7 @@ export const SiteShellV3: React.FC = () => {
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.95, y: 15, opacity: 0 }}
                 transition={{ type: "spring", duration: 0.5 }}
-                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-3xl p-6 md:p-10 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono"
+                className="bg-theme-void border border-theme-border/60 rounded-2xl w-full max-w-3xl p-5 sm:p-6 md:p-10 shadow-[0_0_50px_rgba(31,170,104,0.15)] relative overflow-hidden font-mono my-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Close Button */}
