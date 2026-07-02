@@ -821,7 +821,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5 */}
           {/* 04: The Foundry (Leaderboard) */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px]">
+          <OSCard className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />

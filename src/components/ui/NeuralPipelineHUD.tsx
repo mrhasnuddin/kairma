@@ -334,7 +334,10 @@ export default function NeuralPipelineHUD({
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 font-mono relative h-full">
+    <div className="w-full h-full flex flex-col font-mono relative min-h-[520px]">
+      {/* Background Matrix Grid Subtle Pattern covering the entire unified canvas */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.06] bg-[radial-gradient(var(--color-theme-accent)_1px,transparent_1px)] [background-size:16px_16px] z-0" />
+
       {/* Dynamic Keyframes Injection */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes flowHorizontal {
@@ -380,15 +383,62 @@ export default function NeuralPipelineHUD({
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+        /* Subtle CRT Screen Effects */
+        .crt-canvas::after {
+          content: " ";
+          display: block;
+          position: absolute;
+          top: 0; left: 0; bottom: 0; right: 0;
+          background: linear-gradient(
+            rgba(18, 16, 16, 0) 50%, 
+            rgba(0, 0, 0, 0.12) 50%
+          );
+          background-size: 100% 4px;
+          z-index: 40;
+          pointer-events: none;
+          opacity: 0.35;
+        }
+        .crt-vignette {
+          box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.45);
+        }
+        @keyframes crt-flicker {
+          0% { opacity: 0.99; }
+          50% { opacity: 1; }
+          100% { opacity: 0.99; }
+        }
+        .crt-flicker {
+          animation: crt-flicker 0.2s infinite;
+        }
       `}} />
 
+      {/* Inter-Column Horizontal Connections (Desktop Only) */}
+      {/* 1. Data Groups (Col 1) ➔ Parser Core (Col 2) */}
+      <div className="absolute top-[48%] left-[23.5%] w-[12.5%] h-[2px] hidden lg:block pointer-events-none z-20">
+        <div className={`w-full h-full border-t border-dashed transition-colors duration-500 ${
+          activeGroup !== "search_query" ? "border-theme-accent/60" : "border-theme-border/20"
+        }`} />
+        {activeGroup !== "search_query" && (
+          <div className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-flow-horizontal" />
+        )}
+      </div>
+
+      {/* 2. Parser Core (Col 2) ➔ Output Nodes (Col 3) */}
+      <div className="absolute top-[48%] left-[55.5%] w-[11.5%] h-[2px] hidden lg:block pointer-events-none z-20">
+        <div className={`w-full h-full border-t border-dashed transition-colors duration-500 ${
+          activeGroup !== "search_query" ? "border-theme-accent/60" : "border-theme-border/20"
+        }`} />
+        {activeGroup !== "search_query" && (
+          <div className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-flow-horizontal" />
+        )}
+      </div>
+
       {/* 3-Column Bento Pipeline Workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[520px] items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[520px] items-stretch relative z-10">
         
         {/* =========================================================
             COLUMN 1: DATA GROUPS (~3 cols on lg, ~25%)
         ========================================================= */}
-        <div className="lg:col-span-3 flex flex-col justify-between gap-3 bg-black/30 border border-theme-border/30 rounded-lg p-4">
+        <div className="lg:col-span-3 flex flex-col justify-between gap-3 relative z-10">
           <div>
             <div className="flex items-center justify-between text-xs font-bold text-theme-text-muted mb-3 uppercase tracking-wider pb-2 border-b border-theme-border/20">
               <span>DATA GROUPS</span>
@@ -445,11 +495,8 @@ export default function NeuralPipelineHUD({
         {/* =========================================================
             COLUMN 2: KAIRMA PARSER & HEXAGON CORE (~5 cols on lg, ~42%)
         ========================================================= */}
-        <div className="lg:col-span-5 flex flex-col bg-black/40 border border-theme-border/40 rounded-lg p-5 relative overflow-hidden">
+        <div className="lg:col-span-5 flex flex-col relative z-10">
           
-          {/* Background Matrix Grid Subtle Pattern */}
-          <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(var(--color-theme-accent)_1px,transparent_1px)] [background-size:16px_16px]" />
-
           <div className="relative z-10 flex-1 flex flex-col">
             <div className="flex items-center justify-between text-xs font-bold text-theme-text-muted mb-4 uppercase tracking-wider pb-2 border-b border-theme-border/20 shrink-0">
               <span>KAIRMA PARSER</span>
@@ -512,7 +559,7 @@ export default function NeuralPipelineHUD({
         {/* =========================================================
             COLUMN 3: OUTPUT NODES (~4 cols on lg, ~33%)
         ========================================================= */}
-        <div className="lg:col-span-4 flex flex-col justify-between bg-black/30 border border-theme-border/30 rounded-lg p-4 relative overflow-hidden">
+        <div className="lg:col-span-4 flex flex-col justify-between relative z-10">
           
           <div>
             <div className="flex items-center justify-between text-xs font-bold text-theme-text-muted mb-3 uppercase tracking-wider pb-2 border-b border-theme-border/20">
