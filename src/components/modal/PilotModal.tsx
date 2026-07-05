@@ -111,13 +111,8 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-xl bg-theme-void border-2 border-theme-border rounded-sm shadow-2xl p-5 sm:p-6 md:p-8 flex flex-col gap-6 my-auto"
+          className="relative w-full max-w-xl bg-theme-void border border-theme-border/60 rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 flex flex-col gap-6 my-auto backdrop-blur-md"
         >
-          {/* Gothic Technical Corners */}
-          <div className="absolute top-0 left-0 w-4.5 h-4.5 border-t-2 border-l-2 border-theme-accent pointer-events-none" />
-          <div className="absolute top-0 right-0 w-4.5 h-4.5 border-t-2 border-r-2 border-theme-accent pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-4.5 h-4.5 border-b-2 border-l-2 border-theme-accent pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-4.5 h-4.5 border-b-2 border-r-2 border-theme-accent pointer-events-none" />
 
           {/* Close button top right */}
           <button
@@ -149,7 +144,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
               {/* Form */}
               <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs md:text-sm">
                 {error && (
-                  <div className="p-2.5 border border-red-950 bg-red-950/20 text-red-500 text-xs rounded-xs select-none font-mono">
+                  <div className="p-2.5 border border-red-950 bg-red-950/20 text-red-500 text-xs rounded-xl select-none font-mono">
                     Error: {error}
                   </div>
                 )}
@@ -166,7 +161,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder={c.fields.name.placeholder}
-                      className="bg-theme-void/50 border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xs text-theme-text font-mono transition-colors duration-150 text-xs md:text-sm"
+                      className="bg-theme-void/50 border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xl text-theme-text font-mono transition-colors duration-150 text-xs md:text-sm"
                     />
                   </div>
 
@@ -181,7 +176,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder={c.fields.email.placeholder}
-                      className="bg-theme-void/50 border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xs text-theme-text font-mono transition-colors duration-150 text-xs md:text-sm"
+                      className="bg-theme-void/50 border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xl text-theme-text font-mono transition-colors duration-150 text-xs md:text-sm"
                     />
                   </div>
 
@@ -195,7 +190,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       placeholder={c.fields.company.placeholder}
-                      className="bg-theme-void/50 border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xs text-theme-text font-mono transition-colors duration-150 text-xs md:text-sm"
+                      className="bg-theme-void/50 border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xl text-theme-text font-mono transition-colors duration-150 text-xs md:text-sm"
                     />
                   </div>
 
@@ -208,7 +203,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
                       <select
                         value={formData.country}
                         onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                        className="w-full bg-theme-void border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xs text-theme-text font-mono transition-colors duration-150 appearance-none cursor-pointer text-xs md:text-sm"
+                        className="w-full bg-theme-void border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xl text-theme-text font-mono transition-colors duration-150 appearance-none cursor-pointer text-xs md:text-sm"
                       >
                         <option value="">Select country...</option>
                         {c.fields.country.options?.map((opt) => (
@@ -232,7 +227,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
                       <select
                         value={formData.workflow}
                         onChange={(e) => setFormData({ ...formData, workflow: e.target.value })}
-                        className="w-full bg-theme-void border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xs text-theme-text font-mono transition-colors duration-150 appearance-none cursor-pointer text-xs md:text-sm"
+                        className="w-full bg-theme-void border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xl text-theme-text font-mono transition-colors duration-150 appearance-none cursor-pointer text-xs md:text-sm"
                       >
                         <option value="">Select workflow...</option>
                         {c.fields.workflow.options?.map((opt) => (
@@ -256,7 +251,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
                       <select
                         value={formData.sovereignty}
                         onChange={(e) => setFormData({ ...formData, sovereignty: e.target.value })}
-                        className="w-full bg-theme-void border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xs text-theme-text font-mono transition-colors duration-150 appearance-none cursor-pointer text-xs md:text-sm"
+                        className="w-full bg-theme-void border border-theme-border hover:border-theme-accent focus:border-theme-accent p-2.5 outline-none rounded-xl text-theme-text font-mono transition-colors duration-150 appearance-none cursor-pointer text-xs md:text-sm"
                       >
                         <option value="">Select requirement...</option>
                         {c.fields.sovereignty.options?.map((opt) => (
@@ -303,7 +298,7 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
                 <a
                   href={c.success.downloadLink}
                   download
-                  className="w-full text-center px-4 py-2.5 bg-theme-accent text-theme-void hover:bg-theme-accent/90 transition-colors duration-150 text-xs font-mono uppercase tracking-[0.18em] font-bold rounded-xs select-none"
+                  className="w-full text-center px-4 py-2.5 bg-theme-accent text-theme-void hover:bg-theme-accent/90 transition-colors duration-150 text-xs font-mono uppercase tracking-[0.18em] font-bold rounded-xl select-none"
                 >
                   {c.success.downloadCta}
                 </a>

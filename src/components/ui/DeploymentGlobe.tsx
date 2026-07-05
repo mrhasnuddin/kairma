@@ -262,15 +262,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                   transition: 'transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1)'
                 }}
               >
-                <div className="relative w-8 h-8 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out">
-                  {/* Top-left bracket */}
-                  <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent" />
-                  <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent" />
-                  
-                  {/* Bottom-right bracket */}
-                  <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent" />
-                  <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent" />
-                </div>
+                <div className="relative w-8 h-8 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out rounded-full border border-theme-accent/40 bg-theme-accent/5" />
               </div>
               
               {/* Tooltip positioned below the dot to prevent clipping */}
@@ -281,7 +273,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -5, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-[280px] p-4 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded shadow-xl pointer-events-none z-[100]"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-[280px] p-4 bg-theme-void/90 backdrop-blur-md border border-theme-accent/30 rounded-2xl shadow-xl pointer-events-none z-[100]"
                   >
                     <div className="font-mono text-xs uppercase tracking-wider mb-2.5 pb-1.5 border-b border-theme-border/50 text-theme-accent flex justify-between">
                       <span>{route.role}</span>
@@ -362,7 +354,7 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <span className="w-2 h-2 rounded-full bg-theme-accent shadow-[0_0_8px_var(--color-theme-accent)] animate-pulse" />
-                      <span className="text-[10px] md:text-xs text-theme-accent font-bold uppercase tracking-widest bg-theme-accent/10 px-2 py-0.5 rounded">
+                      <span className="text-[10px] md:text-xs text-theme-accent font-bold uppercase tracking-widest bg-theme-accent/10 px-2 py-0.5 rounded-full">
                         Node Active
                       </span>
                     </div>
@@ -372,10 +364,10 @@ export const DeploymentGlobe = ({ theme = "matrix-mode" }: { theme?: string }) =
                   
                   {/* Pagination Controls */}
                   <div className="flex items-center gap-2 mb-1">
-                    <button onClick={handlePrevRoute} className="p-2 border border-theme-border/30 rounded hover:border-theme-accent/50 hover:text-theme-accent text-theme-text-muted transition-colors">
+                    <button onClick={handlePrevRoute} className="p-2 border border-theme-border/30 rounded-xl hover:border-theme-accent/50 hover:text-theme-accent text-theme-text-muted transition-colors">
                       <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <button onClick={handleNextRoute} className="p-2 border border-theme-border/30 rounded hover:border-theme-accent/50 hover:text-theme-accent text-theme-text-muted transition-colors">
+                    <button onClick={handleNextRoute} className="p-2 border border-theme-border/30 rounded-xl hover:border-theme-accent/50 hover:text-theme-accent text-theme-text-muted transition-colors">
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>

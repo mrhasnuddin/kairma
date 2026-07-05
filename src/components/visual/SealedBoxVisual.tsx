@@ -290,7 +290,7 @@ export const SealedBoxVisual: React.FC = () => {
   }, [theme]);
 
   return (
-    <div className="relative w-full h-[230px] flex items-center justify-center overflow-hidden bg-theme-void/35 border border-theme-border/60 rounded-xs select-none">
+    <div className="relative w-full h-[230px] flex items-center justify-center overflow-hidden bg-theme-void/35 border border-theme-border/60 rounded-2xl select-none shadow-inner">
       <canvas ref={canvasRef} className="w-full h-full block" />
       
       {/* Telemetry labels overlay */}

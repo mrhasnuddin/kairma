@@ -11,13 +11,13 @@ export const ArchitectureArrows: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"lake" | "sop" | "cloud" | null>(null);
 
   return (
-    <div className="w-full h-full min-h-[320px] flex flex-col justify-between p-4 border border-theme-border bg-theme-void/30 rounded-sm select-none text-xs font-mono">
+    <div className="w-full h-full min-h-[320px] flex flex-col justify-between p-4 border border-theme-border bg-theme-void/30 rounded-2xl select-none text-xs font-mono">
       
       {/* Node Layout */}
       <div className="flex-1 flex flex-col md:flex-row items-center justify-between gap-6 my-auto relative">
         
         {/* CUSTOMER PREMISE (Local) */}
-        <div className="w-full md:w-5/12 p-3 border border-theme-border bg-theme-void/85 rounded-sm relative flex flex-col gap-2">
+        <div className="w-full md:w-5/12 p-3 border border-theme-border bg-theme-void/85 rounded-xl relative flex flex-col gap-2">
           <div className="absolute top-0.5 left-2 text-[9px] text-theme-accent tracking-[0.18em] font-semibold font-mono uppercase">
             // LOCAL
           </div>
@@ -29,7 +29,7 @@ export const ArchitectureArrows: React.FC = () => {
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
               <span className="font-bold text-theme-text">{c.premise.box}</span>
-              <span className="text-[9px] opacity-75 font-mono px-1 py-0.2 border border-theme-border rounded-sm">{c.premise.specs}</span>
+              <span className="text-[9px] opacity-75 font-mono px-1 py-0.2 border border-theme-border rounded-md">{c.premise.specs}</span>
             </div>
             
             {/* Interactive Data Lake Node */}
@@ -37,7 +37,7 @@ export const ArchitectureArrows: React.FC = () => {
               onMouseEnter={() => setActiveTab("lake")}
               onMouseLeave={() => setActiveTab(null)}
               onClick={() => setActiveTab(activeTab === "lake" ? null : "lake")}
-              className={`p-2 border rounded-xs cursor-help transition-all duration-200 ${
+              className={`p-2 border rounded-lg cursor-help transition-all duration-200 ${
                 activeTab === "lake" ? "border-theme-accent bg-theme-accent/5" : "border-dashed border-theme-border/60 bg-theme-void/40"
               }`}
             >
@@ -55,7 +55,7 @@ export const ArchitectureArrows: React.FC = () => {
               onMouseEnter={() => setActiveTab("sop")}
               onMouseLeave={() => setActiveTab(null)}
               onClick={() => setActiveTab(activeTab === "sop" ? null : "sop")}
-              className={`p-2 border rounded-xs cursor-help transition-all duration-200 ${
+              className={`p-2 border rounded-lg cursor-help transition-all duration-200 ${
                 activeTab === "sop" ? "border-theme-accent bg-theme-accent/5" : "border-theme-border bg-theme-void/40"
               }`}
             >
@@ -156,7 +156,7 @@ export const ArchitectureArrows: React.FC = () => {
           onMouseEnter={() => setActiveTab("cloud")}
           onMouseLeave={() => setActiveTab(null)}
           onClick={() => setActiveTab(activeTab === "cloud" ? null : "cloud")}
-          className={`w-full md:w-5/12 p-3 border bg-theme-void/85 rounded-sm relative flex flex-col gap-1.5 cursor-help transition-all duration-200 ${
+          className={`w-full md:w-5/12 p-3 border bg-theme-void/85 rounded-xl relative flex flex-col gap-1.5 cursor-help transition-all duration-200 ${
             activeTab === "cloud" ? "border-theme-accent" : "border-theme-border"
           }`}
         >
@@ -172,7 +172,7 @@ export const ArchitectureArrows: React.FC = () => {
             {c.cloud.models.map((m) => (
               <div 
                 key={m} 
-                className="py-0.5 border border-theme-border bg-theme-void/60 text-center rounded-xs"
+                className="py-0.5 border border-theme-border bg-theme-void/60 text-center rounded-md"
               >
                 {m}
               </div>

@@ -99,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header
-        className="sticky lg:relative lg:top-0 top-4 z-40 h-16 w-full flex items-center justify-between px-6 md:px-8 border border-theme-border/60 bg-theme-void/85 backdrop-blur-md rounded-sm transition-all duration-300 font-mono flex-shrink-0"
+        className="sticky lg:relative lg:top-0 top-4 z-40 h-16 w-full flex items-center justify-between px-6 md:px-8 border border-theme-border/60 bg-theme-void/85 backdrop-blur-md rounded-2xl transition-all duration-300 font-mono flex-shrink-0 shadow-lg"
       >
         {/* Left Section */}
         <div className="flex items-center gap-6 md:gap-8 flex-1">
@@ -191,7 +191,7 @@ export const MobileNav: React.FC<HeaderProps> = ({
 
   return (
     <nav
-      className="lg:hidden w-full h-14 flex-shrink-0 border border-theme-border/60 bg-theme-void/90 backdrop-blur-md rounded-sm flex items-center justify-evenly px-2"
+      className="lg:hidden w-full h-14 flex-shrink-0 border border-theme-border/60 bg-theme-void/90 backdrop-blur-md rounded-2xl flex items-center justify-evenly px-2 shadow-md"
     >
       {renderMobileNavButton("solutions", t.solutions)}
       {renderMobileNavButton("about", t.about)}

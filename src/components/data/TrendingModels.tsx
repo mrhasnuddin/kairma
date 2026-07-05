@@ -71,7 +71,7 @@ function getProviderLogo(id: string) {
   else domain = `${provider}.com`;
 
   return (
-    <div className="w-7 h-7 md:w-8 md:h-8 shrink-0 rounded-sm overflow-hidden bg-white/5 border border-theme-border/30 flex items-center justify-center p-0.5">
+    <div className="w-7 h-7 md:w-8 md:h-8 shrink-0 rounded-lg overflow-hidden bg-white/5 border border-theme-border/30 flex items-center justify-center p-0.5">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img 
         src={`https://icon.horse/icon/${domain}`} 
@@ -163,7 +163,7 @@ export function TrendingModels() {
 
   if (error) {
     return (
-      <div className="p-4 text-sm text-red-400 font-mono border border-red-900/30 rounded-xs bg-red-950/10">
+      <div className="p-4 text-sm text-red-400 font-mono border border-red-900/30 rounded-xl bg-red-950/10">
         Error: {error}
       </div>
     );
@@ -218,7 +218,7 @@ export function TrendingModels() {
           href="https://openrouter.ai/rankings"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-theme-text-muted hover:text-theme-accent transition-colors tracking-wider border border-theme-border/30 px-3 py-1.5 rounded-xs hover:border-theme-accent/40"
+          className="text-xs text-theme-text-muted hover:text-theme-accent transition-colors tracking-wider border border-theme-border/30 px-3 py-1.5 rounded-xl hover:border-theme-accent/40"
         >
           {t.fullRankings}
         </a>
@@ -226,7 +226,7 @@ export function TrendingModels() {
 
       {/* ── Chart Section ── */}
       {chartModels.length > 0 && (
-        <div className="border border-theme-border/30 rounded-xs p-5 bg-theme-void/40">
+        <div className="border border-theme-border/30 rounded-2xl p-5 bg-theme-void/40">
           {/* Metric Switcher */}
           <div className="flex items-center gap-3 mb-5">
             {(
@@ -237,7 +237,7 @@ export function TrendingModels() {
               <button
                 key={key}
                 onClick={() => setChartMetric(key)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xs text-xs font-bold uppercase tracking-widest transition-all border ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all border ${
                   chartMetric === key
                     ? "text-theme-void border-transparent"
                     : "text-theme-text-muted border-theme-border/30 hover:border-theme-border/60"
@@ -283,9 +283,9 @@ export function TrendingModels() {
                   </span>
                   {/* Bar */}
                   <div className="flex-1 relative h-5 flex items-center">
-                    <div className="absolute inset-y-0 left-0 w-full bg-white/3 rounded-sm" />
+                    <div className="absolute inset-y-0 left-0 w-full bg-white/3 rounded-md" />
                     <div
-                      className="absolute left-0 top-0 h-full rounded-sm transition-all duration-500"
+                      className="absolute left-0 top-0 h-full rounded-md transition-all duration-500"
                       style={{
                         width: `${pct}%`,
                         backgroundColor: provColor,
@@ -309,7 +309,7 @@ export function TrendingModels() {
       {/* ── Selected Model Detail Card (Hero Position) ── */}
       {selectedModel && (
         <div
-          className="border rounded-xs p-5 flex flex-col gap-4 transition-all sticky top-0 z-10 bg-theme-void/95 backdrop-blur-md shadow-md"
+          className="border rounded-2xl p-5 flex flex-col gap-4 transition-all sticky top-0 z-10 bg-theme-void/95 backdrop-blur-md shadow-md"
           style={{ borderColor: `${getProviderColor(selectedModel.id)}40` }}
         >
           <div className="flex items-start gap-4">
@@ -322,11 +322,11 @@ export function TrendingModels() {
                   {selectedModel.name}
                 </h3>
                 {selectedModel.pricing.isFree && (
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-theme-accent border border-theme-accent/40 px-2 py-0.5 rounded-xs">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-theme-accent border border-theme-accent/40 px-2 py-0.5 rounded-md">
                     {t.detailLabels.free}
                   </span>
                 )}
-                <span className="text-[10px] text-theme-text-muted border border-theme-border/30 px-2 py-0.5 rounded-xs">
+                <span className="text-[10px] text-theme-text-muted border border-theme-border/30 px-2 py-0.5 rounded-md">
                   {t.detailLabels.rank} #{selectedModel.rank}
                 </span>
               </div>
@@ -487,7 +487,7 @@ export function TrendingModels() {
                   </span>
                 </div>
                 {model.pricing.isFree && (
-                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-widest text-theme-accent border border-theme-accent/40 px-1.5 py-0.5 rounded-xs ml-2">
+                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-widest text-theme-accent border border-theme-accent/40 px-1.5 py-0.5 rounded-md ml-2">
                     {t.detailLabels.free}
                   </span>
                 )}
