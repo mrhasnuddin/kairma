@@ -178,14 +178,7 @@ const sourceGroupFor = (m: ModelData): DataGroupId => {
 
 // Design-system corner brackets: top-left + bottom-right hairlines.
 // Parent must be positioned (relative/absolute).
-const CornerBrackets: React.FC<{ tone?: string }> = ({ tone = "bg-theme-accent" }) => (
-  <>
-    <span className={`absolute -top-[1px] -left-[1px] w-2.5 h-[1px] ${tone}`} />
-    <span className={`absolute -top-[1px] -left-[1px] w-[1px] h-2.5 ${tone}`} />
-    <span className={`absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] ${tone}`} />
-    <span className={`absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 ${tone}`} />
-  </>
-);
+const CornerBrackets: React.FC<{ tone?: string }> = () => null;
 
 // Derive a display provider when the live feed omits one.
 const deriveProvider = (m: ModelData) => {
@@ -935,9 +928,9 @@ export default function NeuralPipelineHUD({
                     <button
                       key={model.id}
                       onClick={() => handleNodeClick(model)}
-                      className={`relative w-full p-3 border text-left transition-colors ${
+                      className={`relative w-full p-3 rounded-xl border text-left transition-colors ${
                         isSelected
-                          ? "border-theme-accent bg-theme-void/80"
+                          ? "border-theme-accent bg-theme-void/80 shadow-[0_0_15px_var(--theme-border-glow)]"
                           : "border-theme-border/30 bg-theme-void/60 active:bg-theme-accent/5"
                       }`}
                       style={{ opacity: isParsing ? 0.4 : 1 }}
@@ -1082,7 +1075,7 @@ export default function NeuralPipelineHUD({
 
             {/* Active-group readout inside the arc mouth (DS box). */}
             <div
-              className="absolute w-[172px] p-2.5 -translate-y-1/2 bg-theme-void/85 border border-theme-border/40 pointer-events-none"
+              className="absolute w-[172px] p-2.5 -translate-y-1/2 rounded-xl bg-theme-void/85 border border-theme-border/40 pointer-events-none shadow-lg"
               style={{ left: MENU.cx - 90, top: MENU.cy }}
             >
               <CornerBrackets />
@@ -1127,7 +1120,7 @@ export default function NeuralPipelineHUD({
           {/* Right: 5 output node rows (terminal cards, upright). */}
           {outputNodes.length === 0 ? (
             <div
-              className="absolute z-20 top-1/2 -translate-y-1/2 p-6 rounded border border-theme-border/40 bg-theme-void/70 text-center flex flex-col items-center gap-2"
+              className="absolute z-20 top-1/2 -translate-y-1/2 p-6 rounded-2xl border border-theme-border/40 bg-theme-void/85 text-center flex flex-col items-center gap-2 shadow-xl backdrop-blur-md"
               style={{ right: "1.5%", width: 260 }}
             >
               <AlertTriangle className="w-7 h-7 text-theme-accent" />
@@ -1154,9 +1147,9 @@ export default function NeuralPipelineHUD({
                     width: nodeW,
                     opacity: isParsing ? 0.25 : 1,
                   }}
-                  className={`absolute top-0 left-0 z-20 p-3 border cursor-pointer transition-colors will-change-transform bg-theme-void/80 ${
+                  className={`absolute top-0 left-0 z-20 p-3 rounded-xl border cursor-pointer transition-colors will-change-transform bg-theme-void/80 shadow-lg ${
                     isSelected
-                      ? "border-theme-accent"
+                      ? "border-theme-accent shadow-[0_0_15px_var(--theme-border-glow)]"
                       : "border-theme-border/30 hover:border-theme-border/60"
                   }`}
                 >
@@ -1164,7 +1157,7 @@ export default function NeuralPipelineHUD({
 
                   {/* Wire connector nub on the left edge. */}
                   <div
-                    className={`absolute -left-[3px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 ${
+                    className={`absolute -left-[3px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full ${
                       isSelected ? "bg-theme-accent" : "bg-theme-border/70"
                     }`}
                   />
@@ -1218,7 +1211,7 @@ export default function NeuralPipelineHUD({
       {/* ---------- METRIC CELLS + DECRYPTED_SPEC ---------- */}
       <div className="pt-3 border-t border-theme-border/30 w-full relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-xs">
-          <div className="relative bg-theme-void/80 p-2 border border-theme-border/40 flex flex-col justify-center min-h-[56px]">
+          <div className="relative bg-theme-void/80 p-2.5 rounded-xl border border-theme-border/40 flex flex-col justify-center min-h-[56px] shadow-sm">
             <CornerBrackets tone="bg-theme-border/70" />
             <span className="text-theme-text-muted/50 text-xs font-bold uppercase tracking-wider block leading-none mb-1">{t("data_source")}</span>
             <span className="font-extrabold text-theme-text truncate leading-tight flex items-center gap-1">
@@ -1227,7 +1220,7 @@ export default function NeuralPipelineHUD({
             </span>
           </div>
 
-          <div className="relative bg-theme-void/80 p-2 border border-theme-border/40 flex flex-col justify-center min-h-[56px]">
+          <div className="relative bg-theme-void/80 p-2.5 rounded-xl border border-theme-border/40 flex flex-col justify-center min-h-[56px] shadow-sm">
             <CornerBrackets tone="bg-theme-border/70" />
             <span className="text-theme-text-muted/50 text-xs font-bold uppercase tracking-wider block leading-none mb-1">{t("model_core")}</span>
             <span className="font-extrabold text-theme-accent truncate leading-tight uppercase">
@@ -1235,7 +1228,7 @@ export default function NeuralPipelineHUD({
             </span>
           </div>
 
-          <div className="relative bg-theme-void/80 p-2 border border-theme-border/40 flex flex-col justify-center min-h-[56px]">
+          <div className="relative bg-theme-void/80 p-2.5 rounded-xl border border-theme-border/40 flex flex-col justify-center min-h-[56px] shadow-sm">
             <CornerBrackets tone="bg-theme-border/70" />
             <span className="text-theme-text-muted/50 text-xs font-bold uppercase tracking-wider block leading-none mb-1">{t("latency_ttft")}</span>
             <span className="font-extrabold text-theme-text truncate leading-tight">
@@ -1243,13 +1236,13 @@ export default function NeuralPipelineHUD({
             </span>
           </div>
 
-          <div className="relative bg-theme-void/80 p-2 border border-theme-border/40 flex flex-col justify-center min-h-[56px]">
+          <div className="relative bg-theme-void/80 p-2.5 rounded-xl border border-theme-border/40 flex flex-col justify-center min-h-[56px] shadow-sm">
             <CornerBrackets tone="bg-theme-border/70" />
             <span className="text-theme-text-muted/50 text-xs font-bold uppercase tracking-wider block leading-none mb-1">{t("tokens_used")}</span>
             <span className="font-extrabold text-theme-text truncate leading-tight">{tokensUsed}</span>
           </div>
 
-          <div className="relative bg-theme-void/80 p-2 border border-theme-border/40 flex flex-col justify-center min-h-[56px]">
+          <div className="relative bg-theme-void/80 p-2.5 rounded-xl border border-theme-border/40 flex flex-col justify-center min-h-[56px] shadow-sm">
             <CornerBrackets tone="bg-theme-border/70" />
             <span className="text-theme-text-muted/50 text-xs font-bold uppercase tracking-wider block leading-none mb-1">{t("context_limit")}</span>
             <span className="font-extrabold text-theme-text truncate leading-tight">
@@ -1257,7 +1250,7 @@ export default function NeuralPipelineHUD({
             </span>
           </div>
 
-          <div className="relative bg-theme-void/80 p-2 border border-theme-border/40 flex flex-col justify-center min-h-[56px]">
+          <div className="relative bg-theme-void/80 p-2.5 rounded-xl border border-theme-border/40 flex flex-col justify-center min-h-[56px] shadow-sm">
             <CornerBrackets tone="bg-theme-border/70" />
             <span className="text-theme-text-muted/50 text-xs font-bold uppercase tracking-wider block leading-none mb-1">{t("query_cost")}</span>
             <span className="font-extrabold text-theme-accent truncate leading-tight">
@@ -1267,7 +1260,7 @@ export default function NeuralPipelineHUD({
         </div>
 
         {/* DECRYPTED_SPEC — typewriter + completion progress bar. */}
-        <div className="relative mt-2.5 p-2.5 bg-theme-void/80 border border-theme-border/40 flex items-center justify-between text-xs text-theme-text-muted min-h-[36px] leading-none gap-3">
+        <div className="relative mt-2.5 p-3 rounded-xl bg-theme-void/80 border border-theme-border/40 flex items-center justify-between text-xs text-theme-text-muted min-h-[40px] leading-none gap-3 shadow-sm">
           <CornerBrackets />
           <span className="truncate flex-1">
             {isParsing ? (

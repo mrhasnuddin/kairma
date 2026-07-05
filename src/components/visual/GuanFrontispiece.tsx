@@ -250,7 +250,7 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
     >
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-xl px-6 pt-12 pb-8 z-10 relative">
         {/* Thumbnail Image */}
-        <div className="w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto bg-theme-void rounded-sm overflow-hidden mb-8 border border-theme-border/50 relative">
+        <div className="w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto bg-theme-void rounded-2xl overflow-hidden mb-8 border border-theme-border/50 relative shadow-xl">
            <img 
               src={`/quotes/thumbnail/${quote.quoteNo.toString().padStart(2, '0')}.jpg`} 
               alt={`Quote ${quote.quoteNo}`} 
@@ -281,12 +281,7 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
            <ScrambleText text={`English: ${quote.english}`} duration={2000} delay={quote.original ? 1500 : 400} cursor={!quote.original} />
         </p>
         
-        {/* Source - Stylized Box */}
-        <div className="text-theme-text-muted/70 text-xs md:text-sm font-mono mt-4 p-4 border border-theme-border/40 bg-theme-void/60 rounded-sm flex flex-col gap-2 relative mx-auto text-center items-center backdrop-blur-sm">
-           <div className="absolute -top-[1px] -left-[1px] w-3 h-[1px] bg-theme-accent" />
-           <div className="absolute -top-[1px] -left-[1px] w-[1px] h-3 bg-theme-accent" />
-           <div className="absolute -bottom-[1px] -right-[1px] w-3 h-[1px] bg-theme-accent" />
-           <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-3 bg-theme-accent" />
+        <div className="text-theme-text-muted/70 text-xs md:text-sm font-mono mt-4 p-4 border border-theme-border/40 bg-theme-void/60 rounded-xl flex flex-col gap-2 relative mx-auto text-center items-center backdrop-blur-sm shadow-sm">
            
            <ScrambleText 
              text={`SOURCE: ${quote.source}`} 

@@ -358,11 +358,11 @@ export default function ModelLeaderboard3D({
   };
 
   return (
-    <div className="relative w-full h-full min-h-[480px] flex flex-col bg-theme-void/80 rounded-lg border border-theme-border/40 overflow-hidden shadow-2xl">
+    <div className="relative w-full h-full min-h-[480px] flex flex-col bg-theme-void/80 rounded-3xl border border-theme-border/40 overflow-hidden shadow-2xl">
       {/* Top Hacker Terminal HUD Controls Overlay */}
       <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
         {/* Metric Selector Tabs */}
-        <div className="flex items-center gap-1 border border-theme-border/60 p-1 rounded bg-theme-void/95 backdrop-blur-md pointer-events-auto shadow-lg font-mono">
+        <div className="flex items-center gap-1 border border-theme-border/60 p-1 rounded-xl bg-theme-void/95 backdrop-blur-md pointer-events-auto shadow-lg font-mono">
           {(["intelligence_index", "coding_index", "agentic_index"] as const).map((metric) => {
             const label =
               metric === "intelligence_index"
@@ -375,7 +375,7 @@ export default function ModelLeaderboard3D({
               <button
                 key={metric}
                 onClick={() => handleMetricChange(metric)}
-                className={`relative px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${
+                className={`relative px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${
                   isActive
                     ? "bg-theme-accent text-theme-void shadow-[0_0_12px_var(--color-theme-accent)]"
                     : "text-theme-text-muted hover:text-theme-text hover:bg-white/5"
@@ -390,7 +390,7 @@ export default function ModelLeaderboard3D({
         </div>
 
         {/* Hacker Status Banner */}
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded border border-theme-border/50 bg-theme-void/90 backdrop-blur-md font-mono text-[11px] text-theme-text-muted pointer-events-auto shadow-md">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-theme-border/50 bg-theme-void/90 backdrop-blur-md font-mono text-[11px] text-theme-text-muted pointer-events-auto shadow-md">
           <Terminal size={14} className="text-emerald-400 animate-pulse" />
           <span className="text-theme-accent font-bold">root@kairma:~#</span>
           <span>ORBIT_GRID: ACTIVE // CLICK PILLAR FOR HEX DUMP</span>
@@ -445,8 +445,7 @@ export default function ModelLeaderboard3D({
             initial={{ opacity: 0, x: 340 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 340 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-16 right-4 bottom-4 w-full sm:w-85 bg-theme-void/95 border-2 border-theme-accent rounded p-5 flex flex-col justify-between z-30 shadow-[0_0_35px_rgba(0,0,0,0.9)] backdrop-blur-2xl font-mono overflow-y-auto no-scrollbar"
+            className="absolute top-16 right-4 bottom-4 w-full sm:w-85 bg-theme-void/95 border-2 border-theme-accent rounded-2xl p-5 flex flex-col justify-between z-30 shadow-[0_0_35px_rgba(0,0,0,0.9)] backdrop-blur-2xl font-mono overflow-y-auto no-scrollbar"
           >
             {/* Terminal Header */}
             <div>
@@ -459,14 +458,14 @@ export default function ModelLeaderboard3D({
                 </div>
                 <button
                   onClick={() => setSelectedModel(null)}
-                  className="text-xs text-theme-text-muted hover:text-theme-accent px-2 py-0.5 border border-theme-border/50 rounded hover:border-theme-accent transition-all cursor-pointer font-bold"
+                  className="text-xs text-theme-text-muted hover:text-theme-accent px-2 py-0.5 border border-theme-border/50 rounded-lg hover:border-theme-accent transition-all cursor-pointer font-bold"
                 >
                   [ kill -9 ]
                 </button>
               </div>
 
               {/* Hex Dump Memory Box */}
-              <div className="p-2.5 bg-black/60 border border-theme-accent/40 rounded mb-4 text-[10px] text-theme-text-muted font-mono leading-tight">
+              <div className="p-2.5 bg-black/60 border border-theme-accent/40 rounded-xl mb-4 text-[10px] text-theme-text-muted font-mono leading-tight">
                 <div className="text-emerald-400 font-bold mb-1">[+] SYSCALL: INTRUSION_DETECTED // ACCESS GRANTED</div>
                 <div className="text-theme-text-muted/70 truncate">0x00F8A2: 4B 41 49 52 4D 41 20 4F 53 20 4B 45 52</div>
                 <div className="text-theme-accent/90 mt-1 flex items-center gap-1">
@@ -481,7 +480,7 @@ export default function ModelLeaderboard3D({
                 <span>{selectedModel.name}</span>
               </h3>
               <div className="flex items-center gap-2 mb-5">
-                <span className="px-2 py-0.5 bg-theme-accent text-theme-void text-[10px] font-bold rounded uppercase tracking-wider">
+                <span className="px-2 py-0.5 bg-theme-accent text-theme-void text-[10px] font-bold rounded-md uppercase tracking-wider">
                   {selectedModel.provider || "OPENROUTER"}
                 </span>
                 <span className="text-[11px] text-theme-text-muted flex items-center gap-1">
@@ -491,7 +490,7 @@ export default function ModelLeaderboard3D({
               </div>
 
               {/* Active Metric Score Decoder Bar */}
-              <div className="p-3.5 bg-white/5 border border-theme-border/40 rounded mb-4 shadow-inner">
+              <div className="p-3.5 bg-white/5 border border-theme-border/40 rounded-xl mb-4 shadow-inner">
                 <div className="flex justify-between items-center text-xs mb-2 font-bold">
                   <span className="text-theme-text-muted uppercase flex items-center gap-1.5">
                     <Zap size={13} className="text-theme-accent" />
@@ -501,19 +500,19 @@ export default function ModelLeaderboard3D({
                     {selectedModel.benchmarks?.[activeMetric] ?? selectedModel.score}%
                   </span>
                 </div>
-                <div className="h-2.5 w-full bg-theme-void rounded overflow-hidden border border-theme-border/30 p-0.5">
+                <div className="h-2.5 w-full bg-theme-void rounded-full overflow-hidden border border-theme-border/30 p-0.5">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${selectedModel.benchmarks?.[activeMetric] ?? selectedModel.score}%` }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="h-full bg-gradient-to-r from-theme-accent/40 via-theme-accent to-emerald-400 rounded-sm shadow-[0_0_10px_var(--color-theme-accent)]"
+                    className="h-full bg-gradient-to-r from-theme-accent/40 via-theme-accent to-emerald-400 rounded-full shadow-[0_0_10px_var(--color-theme-accent)]"
                   />
                 </div>
               </div>
 
               {/* Key Diagnostic Registers */}
               <div className="grid grid-cols-2 gap-2.5 mb-4 text-xs">
-                <div className="p-2.5 bg-white/5 rounded border border-theme-border/30">
+                <div className="p-2.5 bg-white/5 rounded-xl border border-theme-border/30">
                   <div className="text-[9px] text-theme-text-muted mb-0.5 uppercase tracking-wider flex items-center gap-1">
                     <Database size={11} className="text-theme-accent" /> REG_CTX_WIN
                   </div>
@@ -521,7 +520,7 @@ export default function ModelLeaderboard3D({
                     {(selectedModel.context_length / 1000).toFixed(0)}k Tokens
                   </div>
                 </div>
-                <div className="p-2.5 bg-white/5 rounded border border-theme-border/30">
+                <div className="p-2.5 bg-white/5 rounded-xl border border-theme-border/30">
                   <div className="text-[9px] text-theme-text-muted mb-0.5 uppercase tracking-wider flex items-center gap-1">
                     <Radio size={11} className="text-emerald-400" /> REG_LATENCY
                   </div>
@@ -529,7 +528,7 @@ export default function ModelLeaderboard3D({
                     {selectedModel.ttft ? `${selectedModel.ttft}ms` : "110ms"}
                   </div>
                 </div>
-                <div className="p-2.5 bg-white/5 rounded border border-theme-border/30 col-span-2">
+                <div className="p-2.5 bg-white/5 rounded-xl border border-theme-border/30 col-span-2">
                   <div className="text-[9px] text-theme-text-muted mb-0.5 uppercase tracking-wider flex items-center gap-1">
                     <Cpu size={11} className="text-theme-accent" /> REG_TOKEN_PRICING (PROMPT / COMP)
                   </div>
@@ -542,7 +541,7 @@ export default function ModelLeaderboard3D({
               </div>
 
               {/* Architectural Verdict */}
-              <div className="p-3 bg-black/40 border-l-2 border-theme-accent rounded text-xs text-theme-text-muted leading-relaxed mb-4 italic">
+              <div className="p-3 bg-black/40 border-l-2 border-theme-accent rounded-xl text-xs text-theme-text-muted leading-relaxed mb-4 italic">
                 <span className="text-theme-accent not-italic font-bold block mb-1">{"// ARCHITECTURAL_VERDICT:"}</span>
                 {selectedModel.verdict || selectedModel.description}
               </div>
@@ -552,14 +551,14 @@ export default function ModelLeaderboard3D({
             <div className="flex flex-col gap-2 pt-3 border-t border-theme-border/40">
               <button
                 onClick={() => onSelectModelForModal(selectedModel)}
-                className="w-full py-3 bg-theme-accent text-theme-void font-extrabold text-xs uppercase tracking-widest rounded hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_var(--color-theme-accent)] cursor-pointer group"
+                className="w-full py-3 bg-theme-accent text-theme-void font-extrabold text-xs uppercase tracking-widest rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_var(--color-theme-accent)] cursor-pointer group"
               >
                 <span>./LAUNCH_FULL_SPECS.sh</span>
                 <ExternalLink size={14} className="group-hover:translate-x-0.5 transition-transform" />
               </button>
               <button
                 onClick={() => setSelectedModel(null)}
-                className="w-full py-1.5 bg-transparent border border-theme-border/50 text-theme-text-muted hover:text-theme-text font-bold text-[11px] uppercase tracking-wider rounded transition-colors cursor-pointer"
+                className="w-full py-1.5 bg-transparent border border-theme-border/50 text-theme-text-muted hover:text-theme-text font-bold text-[11px] uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
               >
                 [ RESET_CAMERA_ORBIT ]
               </button>

@@ -96,11 +96,7 @@ const panelTranslations = {
 
 const LeakingPipeVisual: React.FC = () => {
   return (
-    <div className="w-[120px] h-[135px] border border-theme-border/30 bg-theme-void/60 rounded-xs flex items-center justify-center relative overflow-hidden select-none flex-shrink-0">
-      <div className="absolute top-1 left-1 text-theme-border text-[6px]">+</div>
-      <div className="absolute top-1 right-1 text-theme-border text-[6px]">+</div>
-      <div className="absolute bottom-1 left-1 text-theme-border text-[6px]">+</div>
-      <div className="absolute bottom-1 right-1 text-theme-border text-[6px]">+</div>
+    <div className="w-[120px] h-[135px] border border-theme-border/30 bg-theme-void/60 rounded-xl flex items-center justify-center relative overflow-hidden select-none flex-shrink-0">
 
       <svg width="90" height="115" viewBox="0 0 90 115" className="text-theme-chrome">
         <line x1="0" y1="20" x2="90" y2="20" stroke="currentColor" strokeWidth="0.2" className="opacity-15" strokeDasharray="2 4" />
@@ -151,9 +147,7 @@ const PyramidVisual: React.FC<{ selectedIdx: number | null; onSelect: (idx: numb
   ];
 
   return (
-    <div className="w-[105px] h-[135px] flex items-center justify-center border border-theme-border/30 bg-theme-void/50 rounded-xs select-none relative flex-shrink-0">
-      <div className="absolute top-0.5 left-0.5 text-theme-border/40 text-[5px]">+</div>
-      <div className="absolute bottom-0.5 right-0.5 text-theme-border/40 text-[5px]">+</div>
+    <div className="w-[105px] h-[135px] flex items-center justify-center border border-theme-border/30 bg-theme-void/50 rounded-xl select-none relative flex-shrink-0">
       
       <svg width="85" height="120" viewBox="0 0 80 115" className="text-theme-chrome">
         {slabs.map((slab, idx) => {
@@ -272,7 +266,7 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
             <button
               key={t.id}
               onClick={() => setTab(t.id as any)}
-              className={`flex-shrink-0 text-xs font-mono font-bold uppercase tracking-widest px-3.5 py-1.5 transition-all duration-200 cursor-pointer rounded-xs border ${
+              className={`flex-shrink-0 text-xs font-mono font-bold uppercase tracking-widest px-3.5 py-1.5 transition-all duration-200 cursor-pointer rounded-xl border ${
                 activeTab === t.id
                   ? "bg-theme-accent border-theme-accent text-theme-void shadow-[0_0_8px_rgba(var(--theme-accent-rgb),0.4)]"
                   : "bg-theme-void/40 border-theme-border/40 text-theme-text-muted hover:border-theme-accent/50 hover:text-theme-text"
@@ -342,9 +336,9 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
                 <PyramidVisual selectedIdx={null} onSelect={() => {}} />
                 <div className="flex-1 min-w-0 flex flex-col gap-2.5 overflow-y-auto min-h-0 pr-1 w-full">
                   {cwk.layers.map((layer) => (
-                    <div key={layer.id} className="p-3.5 border border-theme-border/40 rounded-xs bg-theme-void/65 flex flex-col gap-0.5">
+                    <div key={layer.id} className="p-3.5 border border-theme-border/40 rounded-xl bg-theme-void/65 flex flex-col gap-0.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-theme-accent border border-theme-border/60 px-2 py-0.5 rounded-xs">{layer.id}</span>
+                        <span className="text-[10px] font-bold text-theme-accent border border-theme-border/60 px-2 py-0.5 rounded-md">{layer.id}</span>
                         <span className="text-xs md:text-sm font-bold text-theme-text uppercase tracking-wider">{layer.title}</span>
                       </div>
                       <p className="text-xs md:text-sm text-theme-text-muted leading-relaxed mt-1">{layer.desc}</p>
@@ -362,7 +356,7 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
               </h4>
               <div className={`flex flex-col ${isCompact ? "lg:flex-col" : "lg:flex-row"} md:flex-row gap-4 mt-2 overflow-y-auto pr-1`}>
                 {/* Customer Premise */}
-                <div className="flex-1 min-w-0 p-4 border border-theme-border/40 rounded-xs bg-theme-void/60 flex flex-col gap-2.5">
+                <div className="flex-1 min-w-0 p-4 border border-theme-border/40 rounded-xl bg-theme-void/60 flex flex-col gap-2.5">
                   <span className="text-xs font-bold text-theme-accent uppercase tracking-wider">{car.premise.title}</span>
                   <div className="flex flex-col gap-1.5 text-xs md:text-sm">
                     <div><span className="font-bold text-theme-text">Edge Node:</span> <span className="text-theme-text-muted">{car.premise.box} ({car.premise.specs})</span></div>
@@ -372,19 +366,19 @@ export const SolutionsPanel: React.FC<PanelProps> = ({
                   </div>
                 </div>
                 {/* Cloud Models */}
-                <div className="flex-1 min-w-0 p-4 border border-theme-border/40 rounded-xs bg-theme-void/60 flex flex-col justify-start gap-2.5">
+                <div className="flex-1 min-w-0 p-4 border border-theme-border/40 rounded-xl bg-theme-void/60 flex flex-col justify-start gap-2.5">
                   <div className="flex flex-col gap-3">
                     <span className="text-xs font-bold text-theme-accent uppercase tracking-wider">{car.cloud.title}</span>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {car.cloud.models.map((m) => (
-                        <span key={m} className="px-2 py-0.5 border border-theme-border/60 text-[10px] md:text-xs text-theme-text-muted uppercase rounded-xs font-semibold">{m}</span>
+                        <span key={m} className="px-2 py-0.5 border border-theme-border/60 text-[10px] md:text-xs text-theme-text-muted uppercase rounded-md font-semibold">{m}</span>
                       ))}
                     </div>
                   </div>
                   <p className="text-xs text-theme-text-muted leading-relaxed mt-3">{car.cloud.desc}</p>
                 </div>
               </div>
-              <p className="text-xs md:text-sm text-theme-accent border border-theme-accent/20 bg-theme-accent/5 p-3.5 rounded-xs leading-relaxed mt-auto">
+              <p className="text-xs md:text-sm text-theme-accent border border-theme-accent/20 bg-theme-accent/5 p-3.5 rounded-xl leading-relaxed mt-auto">
                 ◆ {car.footer}
               </p>
             </div>

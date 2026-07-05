@@ -217,7 +217,7 @@ export const SonicVocabularyCard: React.FC = () => {
           {/* Mute / Audio Toggle Button */}
           <button
             onClick={() => setAudioEnabled(!audioEnabled)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs transition-all duration-200 border cursor-pointer select-none ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs transition-all duration-200 border cursor-pointer select-none ${
               audioEnabled
                 ? "bg-theme-accent/15 border-theme-accent/40 text-theme-accent shadow-[0_0_8px_var(--color-theme-accent)]"
                 : "bg-theme-void border-theme-border/50 text-theme-text-muted hover:text-theme-text"
@@ -237,12 +237,7 @@ export const SonicVocabularyCard: React.FC = () => {
       </div>
 
       {/* Center: Cybernetic Spectrum Visualizer & Oscilloscope Box */}
-      <div className="relative rounded-lg bg-theme-void/90 border border-theme-border/60 p-3.5 mb-4 overflow-hidden shadow-inner flex flex-col gap-3 group">
-        {/* Quote-style Corner Brackets */}
-        <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-theme-accent/80 pointer-events-none transition-all duration-300 group-hover:w-4 group-hover:h-4" />
-        <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-theme-accent/80 pointer-events-none transition-all duration-300 group-hover:w-4 group-hover:h-4" />
-        <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-theme-accent/80 pointer-events-none transition-all duration-300 group-hover:w-4 group-hover:h-4" />
-        <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-theme-accent/80 pointer-events-none transition-all duration-300 group-hover:w-4 group-hover:h-4" />
+      <div className="relative rounded-2xl bg-theme-void/90 border border-theme-border/60 p-3.5 mb-4 overflow-hidden shadow-inner flex flex-col gap-3 group">
 
         {/* CRT Scanline Overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.35)_50%)] bg-[length:100%_4px] opacity-15 pointer-events-none z-10" />
@@ -291,7 +286,7 @@ export const SonicVocabularyCard: React.FC = () => {
             <button
               key={asset.id}
               onClick={() => handleAssetSelect(idx)}
-              className={`flex items-center justify-between px-3 py-2 rounded text-left transition-all duration-200 border cursor-pointer outline-none group/pad relative overflow-hidden ${
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all duration-200 border cursor-pointer outline-none group/pad relative overflow-hidden ${
                 isActive
                   ? "bg-theme-accent/15 border-theme-accent/60 text-theme-text shadow-[0_0_12px_var(--color-theme-accent)]"
                   : "bg-theme-void/50 border-theme-border/40 text-theme-text-muted hover:bg-theme-accent/5 hover:border-theme-accent/30 hover:text-theme-text"
@@ -318,7 +313,7 @@ export const SonicVocabularyCard: React.FC = () => {
 
               {/* Frequency Tag & Live Pulse Dot */}
               <div className="flex items-center gap-2 shrink-0">
-                <span className={`font-mono text-[10px] tracking-widest px-1.5 py-0.5 rounded ${
+                <span className={`font-mono text-[10px] tracking-widest px-1.5 py-0.5 rounded-md ${
                   isActive ? "bg-theme-accent/20 text-theme-accent border border-theme-accent/40" : "bg-theme-void text-theme-text-muted border border-theme-border/30"
                 }`}>
                   {asset.freq}

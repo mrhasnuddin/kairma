@@ -65,7 +65,7 @@ export const SocialLinks: React.FC = () => {
             e.currentTarget.style.setProperty('--mx', `0px`);
             e.currentTarget.style.setProperty('--my', `0px`);
           }}
-          className="group relative flex-1 flex items-center justify-center py-2 px-2 rounded-md cursor-pointer transition-colors duration-300 outline-none select-none text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 overflow-hidden"
+          className="group relative flex-1 flex items-center justify-center py-2 px-2 rounded-xl cursor-pointer transition-colors duration-300 outline-none select-none text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 overflow-hidden"
           aria-label={social.label}
         >
           <div 
@@ -77,15 +77,7 @@ export const SocialLinks: React.FC = () => {
           >
             <social.Icon size={14} />
 
-            {/* Quote-source Corner Brackets that snap around icon on hover */}
-            <div className="absolute inset-0 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out pointer-events-none">
-              {/* Top-left bracket */}
-              <div className="absolute top-0 left-0 w-1.5 h-[1px] bg-theme-accent" />
-              <div className="absolute top-0 left-0 w-[1px] h-1.5 bg-theme-accent" />
-              {/* Bottom-right bracket */}
-              <div className="absolute bottom-0 right-0 w-1.5 h-[1px] bg-theme-accent" />
-              <div className="absolute bottom-0 right-0 w-[1px] h-1.5 bg-theme-accent" />
-            </div>
+            <div className="absolute inset-0 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out pointer-events-none rounded-full border border-theme-accent/40 bg-theme-accent/5" />
           </div>
         </a>
       ))}

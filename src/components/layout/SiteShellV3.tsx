@@ -83,17 +83,12 @@ const InteractiveBootBox: React.FC<{
                 <button 
                   key={l}
                   onClick={() => handleNormalLanguage(l)}
-                  className={`group/btn relative flex items-center justify-between px-4 py-3.5 md:py-4 rounded-md transition-all duration-300 font-mono text-xs md:text-sm font-bold focus:outline-none backdrop-blur-sm ${
+                  className={`group/btn relative flex items-center justify-between px-4 py-3.5 md:py-4 rounded-xl transition-all duration-300 font-mono text-xs md:text-sm font-bold focus:outline-none backdrop-blur-sm ${
                     isActive 
                       ? 'border border-theme-border/40 bg-theme-void text-theme-accent shadow-sm' 
                       : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/40'
                   }`}
                 >
-                  {/* Quote Source Box Corner Brackets */}
-                  <div className={`absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
-                  <div className={`absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
-                  <div className={`absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
-                  <div className={`absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-100'}`} />
                   
                   <span>{"> [ " + getLangLabel(l).toUpperCase() + " ]"}</span>
                   {isActive && <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse shrink-0 ml-2" />}
@@ -579,12 +574,8 @@ export const SiteShellV3: React.FC = () => {
               <div className="group/cta">
                 <button 
                   disabled
-                  className="relative w-full py-3 mb-6 border border-theme-border/40 bg-theme-void/60 text-theme-text-muted/60 font-mono text-xs font-bold uppercase tracking-widest rounded-md cursor-not-allowed flex items-center justify-center gap-2 backdrop-blur-sm"
+                  className="relative w-full py-3 mb-6 border border-theme-border/40 bg-theme-void/60 text-theme-text-muted/60 font-mono text-xs font-bold uppercase tracking-widest rounded-xl cursor-not-allowed flex items-center justify-center gap-2 backdrop-blur-sm"
                 >
-                  <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-border/60" />
-                  <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-border/60" />
-                  <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-border/60" />
-                  <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-border/60" />
                   COMING SOON
                 </button>
               </div>
@@ -805,7 +796,7 @@ export const SiteShellV3: React.FC = () => {
                 return (
                   <React.Fragment key={idx}>
                     <div 
-                      className={`flex-1 p-5 border rounded-lg transition-all duration-500 relative bg-theme-void/80 backdrop-blur-sm flex flex-col gap-4 group/card ${
+                      className={`flex-1 p-5 border rounded-2xl transition-all duration-500 relative bg-theme-void/80 backdrop-blur-sm flex flex-col gap-4 group/card ${
                         isActive ? 'border-theme-accent shadow-[0_0_20px_rgba(31,170,104,0.15)] -translate-y-1' : 'border-theme-border/30 hover:border-theme-accent/50'
                       }`}
                       onMouseEnter={() => iconRefs.current[idx]?.startAnimation?.()}
@@ -927,11 +918,7 @@ export const SiteShellV3: React.FC = () => {
                 </h2>
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
-              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-md hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
-                <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:w-4 group-hover/btn:bg-theme-text" />
-                <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:h-4 group-hover/btn:bg-theme-text" />
-                <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:w-4 group-hover/btn:bg-theme-text" />
-                <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:h-4 group-hover/btn:bg-theme-text" />
+              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
                 {t("view_docs")} <span className="transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
               </button>
             </div>
@@ -973,11 +960,7 @@ export const SiteShellV3: React.FC = () => {
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                 </div>
                 <div className="mt-6">
-                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-md hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
-                    <div className="absolute -top-[1px] -left-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
-                    <div className="absolute -top-[1px] -left-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
-                    <div className="absolute -bottom-[1px] -right-[1px] w-2.5 h-[1px] bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
-                    <div className="absolute -bottom-[1px] -right-[1px] w-[1px] h-2.5 bg-theme-accent transition-all duration-300 group-hover/btn:bg-theme-void" />
+                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
                     {siteCopy.operators.cta}
                   </button>
                 </div>
@@ -1111,7 +1094,7 @@ export const SiteShellV3: React.FC = () => {
                 </div>
 
                 {/* Operational Speeds */}
-                <div className="grid grid-cols-3 gap-2.5 p-4 md:p-5 bg-theme-void/50 border border-theme-border/20 rounded-xl mb-8">
+                <div className="grid grid-cols-3 gap-2.5 p-4 md:p-5 bg-theme-void/50 border border-theme-border/20 rounded-2xl mb-8">
                   <div className="text-center">
                     <span className="block text-[10px] md:text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("latency_ttft")}</span>
                     <span className="text-sm md:text-xl font-bold text-theme-text">{specs.ttft}ms</span>

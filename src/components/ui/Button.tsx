@@ -16,7 +16,7 @@ export const Button: React.FC<ButtonProps> = ({
   className = "",
   ...props
 }) => {
-  const baseStyle = "font-mono uppercase tracking-wider relative overflow-hidden transition-all duration-200 select-none cursor-pointer flex items-center justify-center rounded-xs outline-none focus-visible:ring-1 focus-visible:ring-theme-accent";
+  const baseStyle = "font-mono uppercase tracking-wider relative overflow-hidden transition-all duration-200 select-none cursor-pointer flex items-center justify-center rounded-xl outline-none focus-visible:ring-1 focus-visible:ring-theme-accent";
 
   const sizeStyles = {
     sm: "px-3 py-1.5 text-[10px]",
@@ -36,15 +36,6 @@ export const Button: React.FC<ButtonProps> = ({
       className={`${baseStyle} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
       {...props}
     >
-      {/* Tiny decorative elements on corners for buttons */}
-      {variant !== "flat" && (
-        <>
-          <span className="absolute top-0 left-0 w-1 h-1 bg-theme-chrome/40" />
-          <span className="absolute top-0 right-0 w-1 h-1 bg-theme-chrome/40" />
-          <span className="absolute bottom-0 left-0 w-1 h-1 bg-theme-chrome/40" />
-          <span className="absolute bottom-0 right-0 w-1 h-1 bg-theme-chrome/40" />
-        </>
-      )}
       <span className="relative z-10 flex items-center gap-1.5">{children}</span>
     </button>
   );
