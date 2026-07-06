@@ -44,17 +44,15 @@ export const siteCopyEnV6: SiteCopyTypeV6 = {
     routing_strip: "Model-neutral — routed live across Claude · GPT · Gemini · DeepSeek · Qwen · Kimi, by task and cost."
   },
   dev_smithy: {
-    label: "FOR BUILDERS",
-    h: "Shipping is free now. Being used is not.",
-    chart: "+180% → +50% → +30% → flat",
-    body: "You don't need another launch. Forge your playbook into a self-hosted AI employee; we deploy it into live cross-border operations — hired from day one. Sealed in the Keep. Yours.",
+    label: "FOR DEVELOPERS",
+    h: "Forge the next AI digital employee in the Smithy.",
+    body: "Your logic runs sealed in the Keep — it stays yours. We deploy it into live operations.",
     cta: "View docs →"
   },
   operators: {
-    label: "EMPLOYEE №1 · CREATOR-BD · SEA E-COMMERCE",
-    h: "Meet your first hire.",
-    body: "Finds, vets, and negotiates creators across TikTok Shop, Shopee, Lazada — on a playbook from ~18 months of real cross-border BD, run by a human team first. Deployed into your operation, run to booked collaborations.",
-    anchor: "The honest comparison isn't a subscription. It's the full cost of an overseas hire — and of starting over when they leave.",
+    label: "FOR OPERATORS",
+    h: "Get a workforce deployed into your operation.",
+    body: "We land it with you — outcomes, not a hand-off.",
     cta: "Request a pilot →"
   },
   workforce_rail: {
