@@ -1035,30 +1035,85 @@ export const SiteShellV3: React.FC = () => {
               </div>
             </div>
           </OSCard>
-        </BentoGrid>
 
-        {/* Section 4: The Roster (Workforce Rail) */}
-        <div className="mt-12 p-6 md:p-8 border border-theme-border/70 bg-theme-void/80 rounded-3xl backdrop-blur-sm relative overflow-hidden">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-            <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm md:text-base">
-              {siteCopy.workforce_rail.h}
-            </h3>
-          </div>
-          <div className="flex flex-wrap items-center gap-y-2 gap-x-4 font-mono text-xs md:text-sm text-theme-text-muted">
-            {siteCopy.workforce_rail.items.split('·').map((item, idx, arr) => (
-              <React.Fragment key={idx}>
-                <span className="text-theme-text font-bold">{item.trim()}</span>
-                {idx < arr.length - 1 && <span className="text-theme-accent/50">·</span>}
-              </React.Fragment>
-            ))}
-          </div>
-          {siteCopy.workforce_rail.discipline_line && (
-            <p className="mt-4 pt-4 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted/70 italic">
-              {siteCopy.workforce_rail.discipline_line}
-            </p>
-          )}
-        </div>
+          {/* Section 4: The Roster (Interactive Telemetry Strip / Marquee) inside Bento Grid */}
+          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
+            {/* Ambient background glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-theme-border/20">
+              <div className="flex items-center gap-3">
+                <span className="w-9 h-9 rounded-xl border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center shrink-0 shadow-sm">
+                  <UserIcon size={18} className="text-theme-accent" />
+                </span>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent">
+                      {siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE" : "SYS_ROSTER // LIVE"}
+                    </span>
+                  </div>
+                  <h3 className="font-mono font-bold uppercase tracking-wide text-theme-text text-sm md:text-base leading-tight">
+                    {siteCopy.workforce_rail.h}
+                  </h3>
+                </div>
+              </div>
+              
+              <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border border-theme-border/40 bg-theme-void/60 font-mono text-[10px] text-theme-text-muted uppercase tracking-wider self-start md:self-auto shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>TELEMETRY STRIP // HOVER TO PAUSE</span>
+              </div>
+            </div>
+
+            {/* Marquee Ticker Container with gradient fade edges */}
+            <div 
+              className="relative w-full overflow-hidden py-2"
+              style={{
+                WebkitMaskImage: "linear-gradient(to right, transparent, black 3%, black 97%, transparent)",
+                maskImage: "linear-gradient(to right, transparent, black 3%, black 97%, transparent)"
+              }}
+            >
+              <div className="animate-marquee flex items-center gap-4">
+                {(() => {
+                  const items = siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
+                    const cleanItem = rawItem.replace(/[●•]/g, '').trim();
+                    const parts = cleanItem.split(/—|–| - /);
+                    const role = parts[0]?.trim() || cleanItem;
+                    const status = parts[1]?.trim() || "LIVE";
+                    return { id: idx, role, status };
+                  });
+                  const repeated = [...items, ...items, ...items, ...items];
+                  return repeated.map((item, idx) => (
+                    <div 
+                      key={`${item.id}-${idx}`}
+                      className="flex items-center gap-3 px-5 py-2.5 rounded-full border border-theme-border/60 bg-theme-void/90 hover:border-theme-accent hover:bg-theme-accent/10 transition-all duration-300 shadow-sm backdrop-blur-md shrink-0 cursor-default group/pill"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-theme-accent opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-theme-accent"></span>
+                        </span>
+                        <span className="font-mono text-xs md:text-sm font-bold text-theme-text group-hover/pill:text-theme-accent transition-colors whitespace-nowrap">
+                          {item.role}
+                        </span>
+                      </div>
+                      <span className="text-theme-border/50 select-none">/</span>
+                      <span className="font-mono text-[10px] md:text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md border border-theme-accent/30 bg-theme-accent/5 text-theme-accent whitespace-nowrap">
+                        {item.status}
+                      </span>
+                    </div>
+                  ));
+                })()}
+              </div>
+            </div>
+
+            {siteCopy.workforce_rail.discipline_line && (
+              <p className="mt-6 pt-4 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted/70 italic text-center md:text-left">
+                {siteCopy.workforce_rail.discipline_line}
+              </p>
+            )}
+          </OSCard>
+        </BentoGrid>
 
         {/* Footer */}
         <footer className="mt-12 pt-8 border-t border-theme-border/20 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-theme-text-muted">
