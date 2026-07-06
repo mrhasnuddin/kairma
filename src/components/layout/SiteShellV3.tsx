@@ -8,6 +8,7 @@ import { OSCard } from "@/components/ui/OSCard";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { BulletinCarousel } from "@/components/ui/BulletinCarousel";
+import { MoatsAccordion } from "@/components/ui/MoatsAccordion";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import CpuIcon from "@/components/ui/cpu-icon";
@@ -850,46 +851,56 @@ export const SiteShellV3: React.FC = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mt-8">
-              {[
-                { text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon },
-                { text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon },
-                { text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon },
-                { text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck }
-              ].map((moat, idx) => {
-                const firstDashIdx = moat.text.search(/—|-/);
-                const title = firstDashIdx !== -1 ? moat.text.slice(0, firstDashIdx).trim() : moat.text;
-                const description = firstDashIdx !== -1 ? moat.text.slice(firstDashIdx + 1).trim() : "";
-
-                return (
-                  <div 
-                    key={idx}
-                    className="p-6 border border-theme-border/70 hover:border-theme-accent rounded-2xl transition-all duration-300 relative bg-theme-void/80 backdrop-blur-sm flex flex-col justify-between gap-4 group/card hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(31,170,104,0.12)]"
-                    onMouseEnter={() => iconRefs.current[idx + 4]?.startAnimation?.()}
-                    onMouseLeave={() => iconRefs.current[idx + 4]?.stopAnimation?.()}
-                  >
-                    <div className="flex flex-col gap-3">
-                      <div className="flex items-center justify-between pb-2 border-b border-theme-border/20">
-                        <div className="text-theme-accent font-mono text-lg font-bold opacity-70 group-hover/card:opacity-100 transition-opacity">
-                          {String(idx + 1).padStart(2, '0')}
-                        </div>
-                        <div className="text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover/card:scale-110">
-                          <moat.Icon ref={(el: any) => { iconRefs.current[idx + 4] = el; }} size={22} color="var(--theme-accent)" />
-                        </div>
-                      </div>
-                      <h4 className="font-mono font-bold text-sm text-theme-text mt-1 group-hover/card:text-theme-accent transition-colors">
-                        {title}
-                      </h4>
-                      <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
-                        {description}
-                      </p>
-                    </div>
-                    <div className="font-mono text-[10px] tracking-widest uppercase text-left mt-4 pt-3 border-t border-theme-border/10 text-theme-accent/50 group-hover/card:text-theme-accent transition-colors font-bold">
-                      [ {moat.tag} ]
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="mt-8">
+              <MoatsAccordion
+                items={[
+                  {
+                    text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon,
+                    readout: [
+                      "$ keep run --moat 01_LOGIC",
+                      "> sop_engine ...... ONLINE",
+                      "> data_lake ....... DEEPENS / RUN",
+                      "> status .......... HELD",
+                    ],
+                  },
+                  {
+                    text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon,
+                    readout: [
+                      "$ keep deploy --fde",
+                      "> standardized .... ~80%",
+                      "> last_mile ....... FDE_CLOSED",
+                      "> status .......... HELD",
+                    ],
+                  },
+                  {
+                    text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon,
+                    readout: [
+                      "$ keep sync --flywheel",
+                      "> deployments ..... COMPOUNDING",
+                      "> context_gain .... +1 / RUN",
+                      "> status .......... HELD",
+                    ],
+                  },
+                  {
+                    text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck,
+                    readout: [
+                      "$ keep audit --egress",
+                      "> data_egress ..... 0 BYTES",
+                      "> runtime ......... SEALED",
+                      "> status .......... HELD",
+                    ],
+                  },
+                ].map(({ text, tag, Icon, readout }) => {
+                  const firstDashIdx = text.search(/—|-/);
+                  return {
+                    title: firstDashIdx !== -1 ? text.slice(0, firstDashIdx).trim() : text,
+                    description: firstDashIdx !== -1 ? text.slice(firstDashIdx + 1).trim() : "",
+                    tag,
+                    Icon,
+                    readout,
+                  };
+                })}
+              />
             </div>
             {siteCopy.moats.routing_strip && (
               <div className="mt-8 pt-4 border-t border-theme-border/20 flex items-center justify-center text-center">
