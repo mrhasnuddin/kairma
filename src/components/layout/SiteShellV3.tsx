@@ -1036,7 +1036,7 @@ export const SiteShellV3: React.FC = () => {
             </div>
           </OSCard>
 
-          {/* Section 4: The Roster (Interactive Telemetry Strip / Marquee) inside Bento Grid */}
+          {/* Section 4: The Roster (Command & Telemetry Ticker / Interactive Badges) inside Bento Grid */}
           <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
             {/* Ambient background glow */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
@@ -1050,7 +1050,7 @@ export const SiteShellV3: React.FC = () => {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
                     <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent">
-                      {siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE" : "SYS_ROSTER // LIVE"}
+                      {siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE // ACTIVE ROSTER" : "SYS_ROSTER // LIVE"}
                     </span>
                   </div>
                   <h3 className="font-mono font-bold uppercase tracking-wide text-theme-text text-sm md:text-base leading-tight">
@@ -1060,51 +1060,50 @@ export const SiteShellV3: React.FC = () => {
               </div>
               
               <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border border-theme-border/40 bg-theme-void/60 font-mono text-[10px] text-theme-text-muted uppercase tracking-wider self-start md:self-auto shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>TELEMETRY STRIP // HOVER TO PAUSE</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                <span>SYSTEM TELEMETRY // ONLINE</span>
               </div>
             </div>
 
-            {/* Marquee Ticker Container with gradient fade edges */}
-            <div 
-              className="relative w-full overflow-hidden py-2"
-              style={{
-                WebkitMaskImage: "linear-gradient(to right, transparent, black 3%, black 97%, transparent)",
-                maskImage: "linear-gradient(to right, transparent, black 3%, black 97%, transparent)"
-              }}
-            >
-              <div className="animate-marquee flex items-center gap-4">
-                {(() => {
-                  const items = siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
-                    const cleanItem = rawItem.replace(/[●•]/g, '').trim();
-                    const parts = cleanItem.split(/—|–| - /);
-                    const role = parts[0]?.trim() || cleanItem;
-                    const status = parts[1]?.trim() || "LIVE";
-                    return { id: idx, role, status };
-                  });
-                  const repeated = [...items, ...items, ...items, ...items];
-                  return repeated.map((item, idx) => (
-                    <div 
-                      key={`${item.id}-${idx}`}
-                      className="flex items-center gap-3 px-5 py-2.5 rounded-full border border-theme-border/60 bg-theme-void/90 hover:border-theme-accent hover:bg-theme-accent/10 transition-all duration-300 shadow-sm backdrop-blur-md shrink-0 cursor-default group/pill"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-theme-accent opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-theme-accent"></span>
-                        </span>
-                        <span className="font-mono text-xs md:text-sm font-bold text-theme-text group-hover/pill:text-theme-accent transition-colors whitespace-nowrap">
-                          {item.role}
-                        </span>
-                      </div>
-                      <span className="text-theme-border/50 select-none">/</span>
-                      <span className="font-mono text-[10px] md:text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md border border-theme-accent/30 bg-theme-accent/5 text-theme-accent whitespace-nowrap">
-                        {item.status}
+            {/* Responsive 4-Column Interactive Micro-Cards Grid */}
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {(() => {
+                const items = siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
+                  const cleanItem = rawItem.replace(/[●•]/g, '').trim();
+                  const parts = cleanItem.split(/—|–| - /);
+                  const role = parts[0]?.trim() || cleanItem;
+                  const status = parts[1]?.trim() || "LIVE";
+                  return { id: idx, role, status };
+                });
+                return items.map((item, idx) => (
+                  <div 
+                    key={`${item.id}-${idx}`}
+                    className="flex flex-col justify-between p-5 rounded-2xl border border-theme-border/60 bg-theme-void/90 hover:border-theme-accent hover:bg-theme-accent/5 transition-all duration-300 shadow-sm backdrop-blur-md relative overflow-hidden group/card cursor-default"
+                  >
+                    {/* Subtle corner glow on hover */}
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-theme-accent/10 rounded-full blur-xl -mr-10 -mt-10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    
+                    <div className="flex items-center justify-between gap-2 mb-6">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-text-muted/80 group-hover/card:text-theme-text-muted transition-colors">
+                        AGENT // 0{idx + 1}
+                      </span>
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-theme-accent opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-theme-accent" />
                       </span>
                     </div>
-                  ));
-                })()}
-              </div>
+
+                    <div>
+                      <h4 className="font-mono text-base font-bold text-theme-text group-hover/card:text-theme-accent transition-colors mb-3">
+                        {item.role}
+                      </h4>
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-theme-accent/30 bg-theme-accent/10 font-mono text-[11px] font-semibold uppercase tracking-wider text-theme-accent">
+                        {item.status}
+                      </div>
+                    </div>
+                  </div>
+                ));
+              })()}
             </div>
 
             {siteCopy.workforce_rail.discipline_line && (
