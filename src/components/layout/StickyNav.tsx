@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useLanguage } from "@/lib/language";
 import { Language } from "@/data/site-translations";
 
@@ -28,35 +27,48 @@ const jumpToBox = (id: string) => {
   }, 700);
 };
 
-/** Magnetic hover: the child is pulled toward the cursor and springs back. */
-const Magnetic: React.FC<{ children: React.ReactNode; strength?: number }> = ({
-  children,
-  strength = 0.35,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 320, damping: 18, mass: 0.4 });
-  const sy = useSpring(y, { stiffness: 320, damping: 18, mass: 0.4 });
-
+/** Social-bar style magnetic button: container stays, inner content floats toward cursor with subtle glow overlay. */
+const SocialNavButton: React.FC<{
+  onClick: () => void;
+  children: React.ReactNode;
+  className?: string;
+  isPill?: boolean;
+  ariaLabel?: string;
+}> = ({ onClick, children, className = "", isPill = false, ariaLabel }) => {
   return (
-    <motion.div
-      ref={ref}
-      style={{ x: sx, y: sy }}
-      onMouseMove={(e) => {
-        const rect = ref.current?.getBoundingClientRect();
-        if (!rect) return;
-        x.set((e.clientX - (rect.left + rect.width / 2)) * strength);
-        y.set((e.clientY - (rect.top + rect.height / 2)) * strength);
+    <button
+      onClick={onClick}
+      aria-label={ariaLabel}
+      onPointerMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - (rect.left + rect.width / 2);
+        const y = e.clientY - (rect.top + rect.height / 2);
+        e.currentTarget.style.setProperty("--mx", `${x * 0.45}px`);
+        e.currentTarget.style.setProperty("--my", `${y * 0.45}px`);
       }}
-      onMouseLeave={() => {
-        x.set(0);
-        y.set(0);
+      onMouseLeave={(e) => {
+        e.currentTarget.style.setProperty("--mx", "0px");
+        e.currentTarget.style.setProperty("--my", "0px");
       }}
-      className="inline-flex"
+      className={`group relative flex items-center justify-center py-1.5 px-2.5 rounded-xl cursor-pointer transition-colors duration-300 outline-none select-none overflow-hidden ${
+        isPill
+          ? "bg-theme-accent text-theme-void rounded-full hover:opacity-100 opacity-90 px-4 py-1.5"
+          : "text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10"
+      } ${className}`}
     >
-      {children}
-    </motion.div>
+      <div
+        className="relative flex items-center justify-center px-1 py-0.5"
+        style={{
+          transform: "translate(var(--mx, 0px), var(--my, 0px))",
+          transition: "transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1)",
+        }}
+      >
+        {children}
+        {!isPill && (
+          <div className="absolute -inset-x-2 -inset-y-1 opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out pointer-events-none rounded-xl border border-theme-accent/40 bg-theme-accent/5" />
+        )}
+      </div>
+    </button>
   );
 };
 
@@ -87,11 +99,13 @@ export const StickyNav = () => {
               : "bg-transparent border-transparent text-theme-accent"
           }`}
         >
-          <Magnetic>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              aria-label="Back to top"
-              className="h-5 w-24 mr-3 bg-theme-accent cursor-pointer"
+          <SocialNavButton
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            ariaLabel="Back to top"
+            className="mr-2"
+          >
+            <div
+              className="h-5 w-24 bg-theme-accent"
               style={{
                 WebkitMaskImage: "url(/kairma-logo.svg)",
                 WebkitMaskSize: "contain",
@@ -103,29 +117,29 @@ export const StickyNav = () => {
                 maskPosition: "left center",
               }}
             />
-          </Magnetic>
+          </SocialNavButton>
 
           {NAV_LINKS.map((link) => (
-            <Magnetic key={link.key}>
-              <button
-                onClick={() => jumpToBox(link.target)}
-                className="px-2.5 py-1.5 text-xs font-mono font-bold uppercase tracking-widest text-theme-text-muted hover:text-theme-accent transition-colors whitespace-nowrap"
-              >
+            <SocialNavButton
+              key={link.key}
+              onClick={() => jumpToBox(link.target)}
+            >
+              <span className="text-xs font-mono font-bold uppercase tracking-widest whitespace-nowrap relative z-10">
                 {labelFor(link)}
-              </button>
-            </Magnetic>
+              </span>
+            </SocialNavButton>
           ))}
 
           <div className="w-px h-4 bg-theme-border mx-2" />
 
-          <Magnetic>
-            <button
-              onClick={() => jumpToBox("deploy")}
-              className="text-xs font-mono font-bold uppercase tracking-widest text-theme-void bg-theme-accent px-4 py-1.5 rounded-full transition-colors opacity-90 hover:opacity-100"
-            >
+          <SocialNavButton
+            onClick={() => jumpToBox("deploy")}
+            isPill
+          >
+            <span className="text-xs font-mono font-bold uppercase tracking-widest whitespace-nowrap relative z-10">
               Apply
-            </button>
-          </Magnetic>
+            </span>
+          </SocialNavButton>
         </div>
       </div>
 
