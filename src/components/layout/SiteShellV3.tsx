@@ -946,7 +946,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}
           {/* Developers Box */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-0 min-h-[280px] cursor-pointer relative overflow-hidden group"
+          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
             onMouseEnter={() => codeIconRef.current?.startAnimation()}
             onMouseLeave={() => codeIconRef.current?.stopAnimation()}
           >
@@ -991,7 +991,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Operators Box */}
           <OSCard 
-            className="col-span-1 md:col-span-2 row-span-1 p-0 min-h-[280px] cursor-pointer relative overflow-hidden group"
+            className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
             onMouseEnter={() => shieldCtaIconRef.current?.startAnimation()}
             onMouseLeave={() => shieldCtaIconRef.current?.stopAnimation()}
           >
@@ -1029,14 +1029,9 @@ export const SiteShellV3: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <div className="mt-6">
-                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/70 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm mb-4">
-                    {siteCopy.operators.cta}
-                  </button>
-                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/70 leading-relaxed max-w-sm border-t border-theme-border/20 pt-3">
-                    {siteCopy.fde_annotation.body}
-                  </div>
-                </div>
+                <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/70 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                  {siteCopy.operators.cta}
+                </button>
               </div>
             </div>
           </OSCard>
