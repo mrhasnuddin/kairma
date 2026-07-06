@@ -190,6 +190,35 @@ body::after {
   box-shadow: 0 0 10px var(--theme-border-glow), inset 0 0 4px var(--theme-border-glow);
 }
 
+/* Design System Rule: THEME DUOTONE THUMBNAILS (Hermes-agent style).
+   Add `.thumb-duotone` to the thumbnail wrapper — every <img> inside is
+   desaturated and blended against --theme-accent, so ONE source image
+   follows the active theme automatically:
+     dark (matrix)  → `darken`:  highlights clamp to the red accent on black
+     light (xuan)   → `lighten`: shadows lift to the green accent on paper
+   `isolation: isolate` stops the blend leaking into layers painted behind
+   the wrapper. Overlays (scanlines, fades, status bars) painted after
+   the image are unaffected. Use this for ALL future thumbnails.
+   IMPORTANT: if any ancestor animates opacity/transform/filter (e.g. a
+   framer-motion slide), that ancestor becomes its own compositing group
+   and the blend cannot see backdrops outside it — so apply this class ON
+   the animated element itself (or inside it), never outside it. The class
+   does not set `position`; the wrapper keeps its own positioning. */
+.thumb-duotone {
+  isolation: isolate;
+  background-color: var(--theme-accent);
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+.thumb-duotone img {
+  filter: grayscale(1) contrast(1.08);
+  mix-blend-mode: darken; /* dark theme: brights take the accent */
+}
+.xuan-mode .thumb-duotone img,
+[data-theme="xuan-mode"] .thumb-duotone img {
+  mix-blend-mode: lighten; /* light theme: darks take the accent */
+}
+
 /* Utilities */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

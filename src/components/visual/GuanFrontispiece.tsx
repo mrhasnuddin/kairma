@@ -250,7 +250,7 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
     >
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-xl px-6 pt-12 pb-8 z-10 relative">
         {/* Thumbnail Image */}
-        <div className="w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto bg-theme-void rounded-2xl overflow-hidden mb-8 border border-theme-border/50 relative shadow-xl">
+        <div className="thumb-duotone w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto rounded-2xl overflow-hidden mb-8 border border-theme-border/50 relative shadow-xl">
            <img 
               src={`/quotes/thumbnail/${quote.quoteNo.toString().padStart(2, '0')}.jpg`} 
               alt={`Quote ${quote.quoteNo}`} 
