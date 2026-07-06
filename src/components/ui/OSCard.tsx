@@ -136,16 +136,25 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
 
       {/* Nav-jump flash: the hover overlays, centered, blinking twice. */}
       {flashing && (
-        <div
-          className="absolute inset-0 rounded-3xl pointer-events-none box-flash-anim border-[2.5px] border-transparent"
-          style={{
-            background: `radial-gradient(350px circle at 50% 50%, var(--color-theme-accent), transparent 100%) border-box`,
-            WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
-            zIndex: 1,
-          }}
-        />
+        <>
+          <div
+            className="absolute inset-0 pointer-events-none box-flash-anim"
+            style={{
+              background: `radial-gradient(800px circle at 50% 50%, var(--color-theme-accent-glow), transparent 60%)`,
+              zIndex: 0,
+            }}
+          />
+          <div
+            className="absolute inset-0 rounded-3xl pointer-events-none box-flash-anim border-[2.5px] border-transparent"
+            style={{
+              background: `radial-gradient(350px circle at 50% 50%, var(--color-theme-accent), transparent 100%) border-box`,
+              WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+              zIndex: 1,
+            }}
+          />
+        </>
       )}
 
       {/* Content wrapper */}
