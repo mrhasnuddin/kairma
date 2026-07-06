@@ -250,24 +250,17 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
     >
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-xl px-6 pt-12 pb-8 z-10 relative">
         {/* Thumbnail Image */}
-        <div className="thumb-duotone w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto rounded-2xl overflow-hidden mb-8 border border-theme-border/50 relative shadow-xl">
-           <img 
-              src={`/quotes/thumbnail/${quote.quoteNo.toString().padStart(2, '0')}.jpg`} 
-              alt={`Quote ${quote.quoteNo}`} 
-              className="absolute inset-0 w-full h-full object-cover" 
-              onError={(e) => {
-                // Fallback for when image isn't generated yet
-                e.currentTarget.style.display = 'none';
-              }}
-           />
-           {/* Scanline / Dither Overlay — sits on top of image, subtle */}
-           <div 
-             className="absolute inset-0 pointer-events-none opacity-[0.12]" 
-             style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.4) 1px, rgba(0,0,0,0.4) 2px)' }} 
-           />
-           {/* Soft bottom fade */}
-           <div className="absolute inset-0 bg-gradient-to-t from-theme-void/60 via-transparent to-transparent pointer-events-none" />
-        </div>
+         <div className="thumb-duotone w-full aspect-square max-w-[300px] md:max-w-[360px] mx-auto rounded-2xl overflow-hidden mb-8 border border-theme-border/50 relative shadow-xl">
+            <img 
+               src={`/quotes/thumbnail/${quote.quoteNo.toString().padStart(2, '0')}.jpg`} 
+               alt={`Quote ${quote.quoteNo}`} 
+               className="absolute inset-0 w-full h-full object-cover" 
+               onError={(e) => {
+                 // Fallback for when image isn't generated yet
+                 e.currentTarget.style.display = 'none';
+               }}
+            />
+         </div>
         
         {/* Original Text */}
         {quote.original && (
