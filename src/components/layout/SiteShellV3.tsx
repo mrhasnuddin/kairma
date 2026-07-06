@@ -27,6 +27,7 @@ import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
 import { BoxHeadline } from "@/components/ui/BoxHeadline";
+import { EyebrowText } from "@/components/ui/EyebrowText";
 import { PilotModal } from "@/components/modal/PilotModal";
 import { HowDeploymentWorksModal } from "@/components/modal/HowDeploymentWorksModal";
 import { motion, AnimatePresence } from "framer-motion";
@@ -76,8 +77,12 @@ const InteractiveBootBox: React.FC<{
       
       <div className="relative z-20 flex-1 flex flex-col justify-between w-full h-full mx-auto p-6 md:p-8 overflow-y-auto no-scrollbar">
         <div className="flex flex-col justify-between flex-1 gap-4 w-full h-full font-mono select-none animate-in fade-in duration-500">
-          <div className="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent leading-relaxed pb-2 border-b border-theme-border/30">
-            {siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"}
+          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
+            <EyebrowText 
+              text={siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"} 
+              className="font-mono text-sm md:text-base font-bold tracking-widest text-theme-accent/80 uppercase whitespace-pre-line" 
+              capitalClassName="font-gothic font-normal text-lg md:text-xl tracking-wide text-theme-accent inline" 
+            />
           </div>
           <div className="grid grid-cols-2 gap-3 md:gap-4 flex-1 my-2 content-stretch">
             {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => {
@@ -681,8 +686,12 @@ export const SiteShellV3: React.FC = () => {
               <div className="max-w-2xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                  <span className="font-gothic font-normal text-sm md:text-base text-theme-accent tracking-wide">
-                    {t("the_shift")}
+                  <span className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest">
+                    <EyebrowText 
+                      text={t("the_shift")} 
+                      className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest" 
+                      capitalClassName="font-gothic font-normal text-sm md:text-base text-theme-accent tracking-wide inline" 
+                    />
                   </span>
                 </div>
                 <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight text-theme-text mb-4">
@@ -847,7 +856,13 @@ export const SiteShellV3: React.FC = () => {
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg">{siteCopy.moats.label}</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">
+                  <EyebrowText 
+                    text={siteCopy.moats.label} 
+                    className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm" 
+                    capitalClassName="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg inline" 
+                  />
+                </h3>
               </div>
             </div>
             
@@ -917,7 +932,13 @@ export const SiteShellV3: React.FC = () => {
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg">{t("model_leaderboard")}</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">
+                  <EyebrowText 
+                    text={t("model_leaderboard")} 
+                    className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm" 
+                    capitalClassName="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg inline" 
+                  />
+                </h3>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
@@ -982,7 +1003,13 @@ export const SiteShellV3: React.FC = () => {
                   <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                     <CodeXmlIcon ref={codeIconRef} size={18} className="text-theme-accent" />
                   </span>
-                  <span className="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent">{siteCopy.dev_smithy.label}</span>
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">
+                    <EyebrowText 
+                      text={siteCopy.dev_smithy.label} 
+                      className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent" 
+                      capitalClassName="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent inline" 
+                    />
+                  </span>
                 </div>
                 <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text">
                   <BoxHeadline text={siteCopy.dev_smithy.h} />
@@ -1028,7 +1055,13 @@ export const SiteShellV3: React.FC = () => {
                     <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                       <ShieldCheck ref={shieldCtaIconRef} size={18} className="text-theme-accent" />
                     </span>
-                    <span className="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent">{siteCopy.operators.label}</span>
+                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">
+                      <EyebrowText 
+                        text={siteCopy.operators.label} 
+                        className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent" 
+                        capitalClassName="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent inline" 
+                      />
+                    </span>
                   </div>
                   <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
                     <BoxHeadline text={siteCopy.operators.h} />
@@ -1060,8 +1093,12 @@ export const SiteShellV3: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                    <span className="font-gothic font-normal text-sm md:text-base text-theme-accent tracking-wide">
-                      {siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE // ACTIVE ROSTER" : "SYS_ROSTER // LIVE"}
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent">
+                      <EyebrowText 
+                        text={siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE // ACTIVE ROSTER" : "SYS_ROSTER // LIVE"} 
+                        className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent" 
+                        capitalClassName="font-gothic font-normal text-sm md:text-base tracking-wide text-theme-accent inline" 
+                      />
                     </span>
                   </div>
                   <h3 className="font-serif font-medium text-theme-text text-base md:text-xl leading-snug">
