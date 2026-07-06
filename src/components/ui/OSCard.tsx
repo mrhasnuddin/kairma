@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 
 interface OSCardProps {
   children: React.ReactNode;
@@ -10,9 +10,18 @@ interface OSCardProps {
   overflowVisible?: boolean;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  /** Entrance slide direction. When set, the card reveals itself (slide + fade). */
+  reveal?: "left" | "right" | "bottom";
+  /** Seconds to wait before the entrance plays (used for the boot sequence). */
+  revealDelay?: number;
+  /** Play the entrance when the card scrolls into view (once) instead of on mount. */
+  revealInView?: boolean;
 }
 
-export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disableEffects = false, overflowVisible = false, onMouseEnter, onMouseLeave }) => {
+const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
+
+export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disableEffects = false, overflowVisible = false, onMouseEnter, onMouseLeave, reveal, revealDelay = 0, revealInView = false }) => {
+  const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   
   // Track mouse for glow
@@ -54,9 +63,31 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
     onMouseEnter?.();
   };
 
+  // Entrance reveal: slide in from the card's nearest edge + fade. Reduced
+  // motion collapses it to a plain fade.
+  const revealOffset =
+    reveal === "left" ? { x: -56 } : reveal === "right" ? { x: 56 } : { y: 56 };
+  const revealProps = reveal
+    ? {
+        initial: reducedMotion ? { opacity: 0 } : { opacity: 0, ...revealOffset },
+        transition: {
+          duration: reducedMotion ? 0.3 : 0.7,
+          delay: revealDelay,
+          ease: REVEAL_EASE,
+        },
+        ...(revealInView
+          ? {
+              whileInView: { opacity: 1, x: 0, y: 0 },
+              viewport: { once: true, margin: "0px 0px -80px 0px" },
+            }
+          : { animate: { opacity: 1, x: 0, y: 0 } }),
+      }
+    : {};
+
   return (
     <motion.div
       ref={ref}
+      {...revealProps}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}

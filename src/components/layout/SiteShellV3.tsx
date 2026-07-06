@@ -45,7 +45,9 @@ const InteractiveBootBox: React.FC<{
   triggerCrt: () => void;
   getLangLabel: (lang: Language) => string;
   className?: string;
-}> = ({ language, setLanguage, triggerCrt, getLangLabel, className }) => {
+  reveal?: "left" | "right" | "bottom";
+  revealDelay?: number;
+}> = ({ language, setLanguage, triggerCrt, getLangLabel, className, reveal, revealDelay }) => {
   const { theme } = useTheme();
   const siteCopy = useSiteCopyV6();
 
@@ -55,7 +57,7 @@ const InteractiveBootBox: React.FC<{
   };
 
   return (
-    <OSCard className={`relative flex flex-col min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
+    <OSCard reveal={reveal} revealDelay={revealDelay} className={`relative flex flex-col min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
       {/* CRT Scanlines Overlay */}
       <div className={`absolute inset-0 bg-[length:100%_4px] pointer-events-none z-10 ${
         theme === "xuan-mode" 
@@ -269,7 +271,7 @@ export const SiteShellV3: React.FC = () => {
     "system_online":        { en: "System: Online",        "zh-TW": "系統狀態: 上線",     vi: "Hệ thống: Trực tuyến",           ms: "Sistem: Dalam Talian", ja: "システム: オンライン", ko: "시스템: 온라인" },
     "the_shift":            { en: "The Shift",             "zh-TW": "轉移",               vi: "Sự chuyển đổi",                  ms: "Anjakan", ja: "転換", ko: "전환" },
     // Digital Employees box
-    "digital_emp_heading":  { en: "Your first AI digital employees, deployed – not downloaded.", "zh-TW": "您的第一批 AI 數位員工，已部署，無需下載。", vi: "Nhân viên kỹ thuật số AI đầu tiên — được triển khai, không phải tải xuống.", ms: "Pekerja digital AI pertama anda — ditempatkan, bukan dimuat turun.", ja: "あなたの最初のAIデジタル従業員——ダウンロードではなく、配備。", ko: "당신의 첫 AI 디지털 직원 — 다운로드가 아니라 배치." },
+    "digital_emp_heading":  { en: "Your first AI employees, deployed – not downloaded.", "zh-TW": "您的第一批 AI 員工，已部署，無需下載。", vi: "Nhân viên AI đầu tiên — được triển khai, không phải tải xuống.", ms: "Pekerja AI pertama anda — ditempatkan, bukan dimuat turun.", ja: "あなたの最初のAI従業員——ダウンロードではなく、配備。", ko: "당신의 첫 AI 직원 — 다운로드가 아니라 배치." },
     "pilot_ready":          { en: "Pilot-ready",           "zh-TW": "試點就緒",           vi: "Sẵn sàng thử nghiệm",            ms: "Sedia perintis", ja: "パイロット可", ko: "파일럿 준비" },
     "fde_configured":       { en: "FDE configured",        "zh-TW": "已配置 FDE",         vi: "Đã cấu hình FDE",                ms: "FDE dikonfigurasi", ja: "FDE構成済み", ko: "FDE 구성됨" },
     "customer_care":        { en: "Customer Care",         "zh-TW": "客戶服務",           vi: "Chăm sóc khách hàng",            ms: "Khidmat Pelanggan", ja: "カスタマーケア", ko: "고객 지원" },
@@ -543,10 +545,10 @@ export const SiteShellV3: React.FC = () => {
       )}
 
       {/* --- Main Bento Grid --- */}
-      <motion.main 
-        initial={{ opacity: 0, y: 20 }}
-        animate={bootPhase === "ready" ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={bootPhase === "ready" ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
         className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32 overflow-x-hidden"
       >
         
@@ -555,7 +557,7 @@ export const SiteShellV3: React.FC = () => {
         <BentoGrid>
           {/* Row 1 */}
           {/* 00: The Anchor (Hero Command Card) */}
-          <OSCard className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
+          <OSCard reveal="left" revealDelay={0.05} className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-50 pointer-events-none" />
             <div className="relative z-10">
               <div 
@@ -602,7 +604,7 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* 01: Main Hero Canvas */}
-          <OSCard overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
+          <OSCard reveal="right" revealDelay={0.2} overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
             <div className="w-full h-full flex flex-col md:flex-row relative">
               
               {/* Top-Right Mini Status */}
@@ -654,16 +656,18 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 2 */}
           {/* 02: The Boot (Interactive Box) - 1x1 */}
-          <InteractiveBootBox 
+          <InteractiveBootBox
             language={language}
             setLanguage={setLanguage}
             triggerCrt={triggerCrt}
             getLangLabel={getLangLabel}
+            reveal="left"
+            revealDelay={0.35}
             className="col-span-1 md:col-span-1 row-span-1"
           />
 
           {/* Section 1: The Shift - 2x1 */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
+          <OSCard reveal="bottom" revealDelay={0.5} className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
             
             {/* Absolute background torus image hugging the right side with fade-out masks */}
             <div className="absolute top-0 right-0 bottom-0 w-[50%] md:w-[46%] pointer-events-none z-0 select-none">
@@ -847,12 +851,12 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 3: Bulletin Carousel */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
+          <OSCard reveal="right" revealDelay={0.65} className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
             <BulletinCarousel />
           </OSCard>
 
           {/* Row 3: Four Moats */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
+          <OSCard reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
@@ -928,7 +932,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5 */}
           {/* 04: The Foundry (Leaderboard) */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
+          <OSCard reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
@@ -978,7 +982,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}
           {/* Developers Box */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
+          <OSCard reveal="left" revealInView className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
             onMouseEnter={() => codeIconRef.current?.startAnimation()}
             onMouseLeave={() => codeIconRef.current?.stopAnimation()}
           >
@@ -1028,7 +1032,10 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Operators Box */}
-          <OSCard 
+          <OSCard
+            reveal="right"
+            revealInView
+            revealDelay={0.12}
             className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
             onMouseEnter={() => shieldCtaIconRef.current?.startAnimation()}
             onMouseLeave={() => shieldCtaIconRef.current?.stopAnimation()}
@@ -1081,7 +1088,7 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 4: The Roster (Command & Telemetry Ticker / Interactive Badges) inside Bento Grid */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
+          <OSCard reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
             {/* Ambient background glow */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
             
