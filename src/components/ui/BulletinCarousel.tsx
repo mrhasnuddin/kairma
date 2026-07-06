@@ -78,17 +78,6 @@ export const BulletinCarousel: React.FC = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* CRT Scanlines Overlay (slightly reduced intensity and opacity) */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.35)_50%)] bg-[length:100%_4px] opacity-10 pointer-events-none z-30" />
-      
-      {/* CRT Scanning Bar */}
-      <motion.div 
-        className="absolute inset-0 h-[80px] bg-gradient-to-b from-transparent via-theme-accent/10 to-transparent pointer-events-none z-30 mix-blend-screen"
-        initial={{ top: "-80px" }}
-        animate={{ top: "100%" }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
-      />
-
       {/* Slide Carousel */}
       <AnimatePresence mode="wait">
         <motion.div
