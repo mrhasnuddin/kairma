@@ -29,7 +29,7 @@ export const siteCopyEnV6: SiteCopyTypeV6 = {
   shift: {
     label: "THE SHIFT",
     h: "Building AI is no longer scarce. Outcomes are. Ownership is.",
-    stat_strip: "Commits +180% · Projects +50% · Releases +30% · Usage: flat",
+    stat_strip: "",
     body: "Building is solved. We work in what isn't: deployment, outcomes, ownership.",
     stepper: "WRITE → SHIP → DEPLOY → OUTCOME"
   },

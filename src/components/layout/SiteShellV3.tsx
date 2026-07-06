@@ -26,6 +26,8 @@ import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
 import { BoxHeadline } from "@/components/ui/BoxHeadline";
+import { PilotModal } from "@/components/modal/PilotModal";
+import { HowDeploymentWorksModal } from "@/components/modal/HowDeploymentWorksModal";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -132,6 +134,7 @@ export const SiteShellV3: React.FC = () => {
   const [time, setTime] = useState<Date | null>(null);
   const [crtFlash, setCrtFlash] = useState(false);
   const [pilotOpen, setPilotOpen] = useState(false);
+  const [deploymentWorksOpen, setDeploymentWorksOpen] = useState(false);
   const [ipLocation, setIpLocation] = useState<{city: string, region: string, country: string, timezone: string} | null>(null);
   const [bootPhase, setBootPhase] = useState<"guan" | "terminal" | "ready">("guan");
   const [isDeployHovered, setIsDeployHovered] = useState(false);
@@ -579,8 +582,8 @@ export const SiteShellV3: React.FC = () => {
                   {siteCopy.hero_left.cta_1}
                 </button>
                 <button
-                  onClick={() => setPilotOpen(true)}
-                  className="w-full text-center font-mono text-[10px] uppercase tracking-widest text-theme-text-muted hover:text-theme-accent transition-colors mb-4 block"
+                  onClick={() => setDeploymentWorksOpen(true)}
+                  className="w-full text-center font-mono text-[10px] uppercase tracking-widest text-theme-text-muted hover:text-theme-accent transition-colors mb-4 block cursor-pointer"
                 >
                   {siteCopy.hero_left.cta_2}
                 </button>
@@ -672,9 +675,9 @@ export const SiteShellV3: React.FC = () => {
               />
             </div>
 
-            {/* Left Column Content: 65% width to overlay on top of bg with padding */}
-            <div className="w-full md:w-[65%] p-6 md:p-8 flex flex-col justify-between min-h-[300px] relative z-10">
-              <div>
+            {/* Full Width Content overlay on top of bg with padding */}
+            <div className="w-full p-6 md:p-8 flex flex-col justify-between min-h-[320px] relative z-10">
+              <div className="max-w-2xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
                   <span className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest">
@@ -684,94 +687,146 @@ export const SiteShellV3: React.FC = () => {
                 <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight text-theme-text mb-4">
                   <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
-                {siteCopy.shift.stat_strip && (
+                {siteCopy.shift.stat_strip ? (
                   <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 border border-theme-accent/30 bg-theme-accent/10 rounded-xl text-xs font-mono font-bold text-theme-accent">
                     <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
                     <span>{siteCopy.shift.stat_strip}</span>
                   </div>
-                )}
+                ) : null}
               </div>
 
               {/* Pipeline Node Flow Layout */}
-              <div className="relative w-full flex items-center justify-between my-6 py-2 px-1">
+              <div className="relative w-full flex items-center justify-between my-6 py-4 px-2 sm:px-6 bg-theme-void/80 border border-theme-border/40 rounded-2xl backdrop-blur-md shadow-[0_0_30px_rgba(31,170,104,0.05)]">
                 
-                {/* Node 0: Model Capability */}
+                {/* Node 0: Model */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 0 || pipelineState === 1
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/40 bg-theme-void opacity-70"
+                    }`}
                   >
                     <CpuIcon 
+                      ref={(el: any) => { iconRefs.current[0] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 0 || pipelineState === 1 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    {siteCopy.shift.stepper.split(/→|->/)[0]?.trim() || "Model"}
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 0 || pipelineState === 1 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
+                    {siteCopy.shift.stepper.split(/→|->/)[0]?.trim() || "Write"}
                   </span>
                 </div>
 
                 {/* Connector Line 0 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
+                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <div className={`absolute inset-0 bg-theme-accent transition-opacity duration-500 ${pipelineState === 1 || pipelineState === 2 ? "opacity-100" : "opacity-15"}`} />
+                  {(pipelineState === 1 || pipelineState === 2) && (
+                    <motion.div
+                      className="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_12px_var(--color-theme-accent)]"
+                      initial={{ left: "-40px" }}
+                      animate={{ left: "100%" }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+                    />
+                  )}
                 </div>
 
-                {/* Node 1: Workflow */}
+                {/* Node 1: Ship */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 2 || pipelineState === 3
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/40 bg-theme-void opacity-70"
+                    }`}
                   >
                     <GearIcon 
+                      ref={(el: any) => { iconRefs.current[1] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 2 || pipelineState === 3 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    {siteCopy.shift.stepper.split(/→|->/)[1]?.trim() || "Workflow"}
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 2 || pipelineState === 3 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
+                    {siteCopy.shift.stepper.split(/→|->/)[1]?.trim() || "Ship"}
                   </span>
                 </div>
 
                 {/* Connector Line 1 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
+                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <div className={`absolute inset-0 bg-theme-accent transition-opacity duration-500 ${pipelineState === 3 || pipelineState === 4 ? "opacity-100" : "opacity-15"}`} />
+                  {(pipelineState === 3 || pipelineState === 4) && (
+                    <motion.div
+                      className="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_12px_var(--color-theme-accent)]"
+                      initial={{ left: "-40px" }}
+                      animate={{ left: "100%" }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+                    />
+                  )}
                 </div>
 
-                {/* Node 2: Deployment */}
+                {/* Node 2: Deploy */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 4 || pipelineState === 5
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/40 bg-theme-void opacity-70"
+                    }`}
                   >
                     <PlugConnectedIcon 
+                      ref={(el: any) => { iconRefs.current[2] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 4 || pipelineState === 5 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    {siteCopy.shift.stepper.split(/→|->/)[2]?.trim() || "Deployment"}
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 4 || pipelineState === 5 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
+                    {siteCopy.shift.stepper.split(/→|->/)[2]?.trim() || "Deploy"}
                   </span>
                 </div>
 
                 {/* Connector Line 2 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
+                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <div className={`absolute inset-0 bg-theme-accent transition-opacity duration-500 ${pipelineState === 5 || pipelineState === 6 ? "opacity-100" : "opacity-15"}`} />
+                  {(pipelineState === 5 || pipelineState === 6) && (
+                    <motion.div
+                      className="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_12px_var(--color-theme-accent)]"
+                      initial={{ left: "-40px" }}
+                      animate={{ left: "100%" }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+                    />
+                  )}
                 </div>
 
                 {/* Node 3: Outcome */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 6 || pipelineState === 7
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/40 bg-theme-void opacity-70"
+                    }`}
                   >
                     <DoubleCheckIcon 
+                      ref={(el: any) => { iconRefs.current[3] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 6 || pipelineState === 7 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 6 || pipelineState === 7 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
                     {siteCopy.shift.stepper.split(/→|->/)[3]?.trim() || "Outcome"}
                   </span>
                 </div>
               </div>
 
-              <div className="mt-4 font-mono text-sm text-theme-text-muted leading-relaxed whitespace-pre-line">
+              <div className="mt-2 font-mono text-sm text-theme-text-muted leading-relaxed whitespace-pre-line max-w-3xl">
                 {siteCopy.shift.body}
               </div>
             </div>
@@ -792,7 +847,7 @@ export const SiteShellV3: React.FC = () => {
               </div>
             </div>
             
-            <div className="relative w-full flex flex-col md:flex-row items-stretch justify-between gap-4 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mt-8">
               {[
                 { text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon },
                 { text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon },
@@ -802,57 +857,34 @@ export const SiteShellV3: React.FC = () => {
                 const firstDashIdx = moat.text.search(/—|-/);
                 const title = firstDashIdx !== -1 ? moat.text.slice(0, firstDashIdx).trim() : moat.text;
                 const description = firstDashIdx !== -1 ? moat.text.slice(firstDashIdx + 1).trim() : "";
-                const isActive = pipelineState === idx * 2;
-                const isLineActive = pipelineState === idx * 2 + 1 || pipelineState === idx * 2 + 2; 
 
                 return (
-                  <React.Fragment key={idx}>
-                    <div 
-                      className={`flex-1 p-5 border rounded-2xl transition-all duration-500 relative bg-theme-void/80 backdrop-blur-sm flex flex-col gap-4 group/card ${
-                        isActive ? 'border-theme-accent shadow-[0_0_20px_rgba(31,170,104,0.15)] -translate-y-1' : 'border-theme-border/30 hover:border-theme-accent/50'
-                      }`}
-                      onMouseEnter={() => iconRefs.current[idx]?.startAnimation?.()}
-                      onMouseLeave={() => iconRefs.current[idx]?.stopAnimation?.()}
-                    >
-                      <div className="flex flex-col gap-4 h-full">
-                        <div className="flex items-center justify-between">
-                          <div className={`text-theme-accent font-mono text-xl font-bold transition-opacity ${isActive ? 'opacity-100' : 'opacity-50 group-hover/card:opacity-100'}`}>
-                            {String(idx + 1).padStart(2, '0')}
-                          </div>
-                          <div className={`text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center transition-transform ${isActive ? 'scale-110' : ''}`}>
-                            <moat.Icon ref={(el: any) => { iconRefs.current[idx] = el; }} size={24} color={isActive ? "var(--theme-accent)" : "currentColor"} />
-                          </div>
+                  <div 
+                    key={idx}
+                    className="p-6 border border-theme-border/30 hover:border-theme-accent rounded-2xl transition-all duration-300 relative bg-theme-void/80 backdrop-blur-sm flex flex-col justify-between gap-4 group/card hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(31,170,104,0.12)]"
+                    onMouseEnter={() => iconRefs.current[idx + 4]?.startAnimation?.()}
+                    onMouseLeave={() => iconRefs.current[idx + 4]?.stopAnimation?.()}
+                  >
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between pb-2 border-b border-theme-border/20">
+                        <div className="text-theme-accent font-mono text-lg font-bold opacity-70 group-hover/card:opacity-100 transition-opacity">
+                          {String(idx + 1).padStart(2, '0')}
                         </div>
-                        <div className="flex-1">
-                          <h4 className={`font-mono font-bold text-sm mb-2 transition-colors ${isActive ? 'text-theme-text' : 'text-theme-text'}`}>{title}</h4>
-                          <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{description}</p>
-                        </div>
-                        <div className={`font-mono text-[10px] tracking-widest uppercase text-left mt-auto transition-colors ${isActive ? 'text-theme-accent' : 'text-theme-accent/40 group-hover/card:text-theme-accent'}`}>
-                          [ {moat.tag} ]
+                        <div className="text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover/card:scale-110">
+                          <moat.Icon ref={(el: any) => { iconRefs.current[idx + 4] = el; }} size={22} color="var(--theme-accent)" />
                         </div>
                       </div>
+                      <h4 className="font-mono font-bold text-sm text-theme-text mt-1 group-hover/card:text-theme-accent transition-colors">
+                        {title}
+                      </h4>
+                      <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
+                        {description}
+                      </p>
                     </div>
-
-                    {/* Connector arrow/line (except for last item) */}
-                    {idx < 3 && (
-                      <div className="hidden md:flex items-center justify-center w-8 relative shrink-0">
-                         <div className="w-full h-[2px] bg-theme-border/20 relative overflow-hidden rounded-full">
-                           <div className={`absolute inset-0 bg-theme-accent/30 transition-opacity duration-500 ${isLineActive ? 'opacity-100' : 'opacity-0'}`} />
-                           {(pipelineState === idx * 2 + 1) && (
-                             <motion.div
-                               className="absolute top-0 bottom-0 w-4 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                               initial={{ left: "-20px" }}
-                               animate={{ left: "100%" }}
-                               transition={{ duration: 1.2, ease: "easeInOut" }}
-                             />
-                           )}
-                         </div>
-                         <div className={`absolute right-[-4px] text-[10px] transition-colors duration-500 ${isLineActive ? 'text-theme-accent' : 'text-theme-border/20'}`}>
-                            ▶
-                         </div>
-                      </div>
-                    )}
-                  </React.Fragment>
+                    <div className="font-mono text-[10px] tracking-widest uppercase text-left mt-4 pt-3 border-t border-theme-border/10 text-theme-accent/50 group-hover/card:text-theme-accent transition-colors font-bold">
+                      [ {moat.tag} ]
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -1206,6 +1238,9 @@ export const SiteShellV3: React.FC = () => {
           );
         })()}
       </AnimatePresence>
+
+      <PilotModal isOpen={pilotOpen} onClose={() => setPilotOpen(false)} />
+      <HowDeploymentWorksModal isOpen={deploymentWorksOpen} onClose={() => setDeploymentWorksOpen(false)} />
 
       <StickyNav />
     </div>
