@@ -51,7 +51,7 @@ export const BulletinCarousel: React.FC = () => {
       id: 4,
       tag: "BULLETIN 04",
       title: "Automated SOP Engine",
-      body: "Codify complex operational procedures into autonomous digital employees that execute seamlessly 24/7/365.",
+      body: "Codify complex operational procedures into autonomous AI employees that execute seamlessly 24/7/365.",
       image: "/quotes/thumbnail/17.jpg",
     },
     {

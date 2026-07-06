@@ -10,12 +10,12 @@ export const siteCopyEnV6: SiteCopyTypeV6 = {
   wordmark: "Kairma",
   hero_left: {
     h1: "We don't ship you AI. We deploy it into your operations.",
-    sub: "AI digital employees, forward-deployed into the markets you enter. Outcomes, not headcount. Sovereign.",
+    sub: "AI employees, forward-deployed into the markets you enter. Outcomes, not headcount. Sovereign.",
     cta_1: "Request a pilot →",
     cta_2: "How deployment works"
   },
   hero_center: {
-    h1: "Forward-deployed AI digital employees for the markets you expand into.",
+    h1: "Forward-deployed AI employees for the markets you expand into.",
     body: "We don't hand you a tool and leave. A forward-deployed team lands the workforce in your operation — and stays until it produces results."
   },
   fde_annotation: {
@@ -45,7 +45,7 @@ export const siteCopyEnV6: SiteCopyTypeV6 = {
   },
   dev_smithy: {
     label: "FOR DEVELOPERS",
-    h: "Forge the next AI digital employee in the Smithy.",
+    h: "Forge the next AI employee in the Smithy.",
     body: "Your logic runs sealed in the Keep — it stays yours. We deploy it into live operations.",
     cta: "View docs →"
   },
@@ -56,7 +56,7 @@ export const siteCopyEnV6: SiteCopyTypeV6 = {
     cta: "Request a pilot →"
   },
   workforce_rail: {
-    h: "Your first AI digital employees — deployed, not downloaded.",
+    h: "Your first AI employees — deployed, not downloaded.",
     items: "KOL BD — Pilot-ready ● · Content Ops — FDE configured ● · Customer Care — In development ● · Compliance — Private runtime ●"
   },
   footer: {

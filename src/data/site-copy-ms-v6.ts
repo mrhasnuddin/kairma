@@ -10,12 +10,12 @@ export const siteCopyMsV6: SiteCopyTypeV6 = {
   wordmark: "Kairma",
   hero_left: {
     h1: "Kami tidak sekadar menyerahkan AI kepada anda. Kami menggerakkannya ke dalam operasi anda.",
-    sub: "Pekerja digital AI, digerakkan ke barisan hadapan (FDE) ke setiap pasaran yang anda masuki. Hasil, bukan bilangan kepala. Kedaulatan data, di pihak anda.",
+    sub: "Pekerja AI, digerakkan ke barisan hadapan (FDE) ke setiap pasaran yang anda masuki. Hasil, bukan bilangan kepala. Kedaulatan data, di pihak anda.",
     cta_1: "Mohon program perintis →",
     cta_2: "Cara penggerakan berfungsi"
   },
   hero_center: {
-    h1: "Pekerja digital AI barisan hadapan untuk pasaran yang anda kembangkan.",
+    h1: "Pekerja AI barisan hadapan untuk pasaran yang anda kembangkan.",
     body: "Kami tidak menyerahkan alat lalu pergi. Satu pasukan barisan hadapan menurunkan tenaga kerja ini ke dalam operasi anda — dan kekal sehingga ia membuahkan hasil."
   },
   fde_annotation: {
@@ -45,7 +45,7 @@ export const siteCopyMsV6: SiteCopyTypeV6 = {
   },
   dev_smithy: {
     label: "UNTUK PEMBANGUN",
-    h: "Tempa pekerja digital AI seterusnya dalam the Smithy (tempat tempaan pembangun).",
+    h: "Tempa pekerja AI seterusnya dalam the Smithy (tempat tempaan pembangun).",
     body: "Logik anda berjalan termeterai dalam the Keep — ia kekal milik anda. Kami menggerakkannya ke dalam operasi sebenar.",
     cta: "Lihat dokumen →"
   },
@@ -56,7 +56,7 @@ export const siteCopyMsV6: SiteCopyTypeV6 = {
     cta: "Mohon program perintis →"
   },
   workforce_rail: {
-    h: "Pekerja digital AI pertama anda — digerakkan, bukan dimuat turun.",
+    h: "Pekerja AI pertama anda — digerakkan, bukan dimuat turun.",
     items: "KOL BD (pembangunan perniagaan KOL) — Sedia perintis ● · Operasi Kandungan — FDE dikonfigur ● · Khidmat Pelanggan — Dalam pembangunan ● · Pematuhan — Runtime peribadi ●"
   },
   footer: {
