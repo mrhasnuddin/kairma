@@ -76,7 +76,7 @@ const InteractiveBootBox: React.FC<{
       
       <div className="relative z-20 flex-1 flex flex-col justify-between w-full h-full mx-auto p-6 md:p-8 overflow-y-auto no-scrollbar">
         <div className="flex flex-col justify-between flex-1 gap-4 w-full h-full font-mono select-none animate-in fade-in duration-500">
-          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
+          <div className="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent leading-relaxed pb-2 border-b border-theme-border/30">
             {siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"}
           </div>
           <div className="grid grid-cols-2 gap-3 md:gap-4 flex-1 my-2 content-stretch">
@@ -610,7 +610,7 @@ export const SiteShellV3: React.FC = () => {
               <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <h1 className="text-2xl md:text-[34px] font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
+                  <h1 className="text-2xl md:text-[34px] font-serif font-medium tracking-normal mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
                     <BoxHeadline text={siteCopy.hero_center.h1} />
                   </h1>
                   
@@ -681,11 +681,11 @@ export const SiteShellV3: React.FC = () => {
               <div className="max-w-2xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                  <span className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest">
+                  <span className="font-gothic font-normal text-sm md:text-base text-theme-accent tracking-wide">
                     {t("the_shift")}
                   </span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight text-theme-text mb-4">
+                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight text-theme-text mb-4">
                   <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
                 {siteCopy.shift.stat_strip ? (
@@ -847,7 +847,7 @@ export const SiteShellV3: React.FC = () => {
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.moats.label}</h3>
+                <h3 className="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg">{siteCopy.moats.label}</h3>
               </div>
             </div>
             
@@ -917,7 +917,7 @@ export const SiteShellV3: React.FC = () => {
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{t("model_leaderboard")}</h3>
+                <h3 className="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg">{t("model_leaderboard")}</h3>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
@@ -982,9 +982,9 @@ export const SiteShellV3: React.FC = () => {
                   <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                     <CodeXmlIcon ref={codeIconRef} size={18} className="text-theme-accent" />
                   </span>
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{siteCopy.dev_smithy.label}</span>
+                  <span className="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent">{siteCopy.dev_smithy.label}</span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text">
+                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text">
                   <BoxHeadline text={siteCopy.dev_smithy.h} />
                 </h2>
                 {siteCopy.dev_smithy.chart && (
@@ -1028,9 +1028,9 @@ export const SiteShellV3: React.FC = () => {
                     <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                       <ShieldCheck ref={shieldCtaIconRef} size={18} className="text-theme-accent" />
                     </span>
-                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{siteCopy.operators.label}</span>
+                    <span className="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent">{siteCopy.operators.label}</span>
                   </div>
-                  <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
+                  <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
                     <BoxHeadline text={siteCopy.operators.h} />
                   </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
@@ -1060,11 +1060,11 @@ export const SiteShellV3: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent">
+                    <span className="font-gothic font-normal text-sm md:text-base text-theme-accent tracking-wide">
                       {siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE // ACTIVE ROSTER" : "SYS_ROSTER // LIVE"}
                     </span>
                   </div>
-                  <h3 className="font-mono font-bold uppercase tracking-wide text-theme-text text-sm md:text-base leading-tight">
+                  <h3 className="font-serif font-medium text-theme-text text-base md:text-xl leading-snug">
                     {siteCopy.workforce_rail.h}
                   </h3>
                 </div>
