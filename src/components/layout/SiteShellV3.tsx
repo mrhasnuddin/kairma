@@ -87,8 +87,8 @@ const InteractiveBootBox: React.FC<{
                   onClick={() => handleNormalLanguage(l)}
                   className={`group/btn relative flex items-center justify-between px-4 py-3.5 md:py-4 rounded-xl transition-all duration-300 font-mono text-xs md:text-sm font-bold focus:outline-none backdrop-blur-sm ${
                     isActive 
-                      ? 'border border-theme-border/40 bg-theme-void text-theme-accent shadow-sm' 
-                      : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/40'
+                      ? 'border border-theme-border/70 bg-theme-void text-theme-accent shadow-sm' 
+                      : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/70'
                   }`}
                 >
                   
@@ -577,7 +577,7 @@ export const SiteShellV3: React.FC = () => {
               <div className="group/cta">
                 <button 
                   onClick={() => setPilotOpen(true)}
-                  className="relative w-full py-3 mb-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(31,170,104,0.1)] hover:shadow-[0_0_20px_var(--color-theme-accent)]"
+                  className="relative w-full py-3 mb-3 border border-theme-border/70 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(31,170,104,0.1)] hover:shadow-[0_0_20px_var(--color-theme-accent)]"
                 >
                   {siteCopy.hero_left.cta_1}
                 </button>
@@ -696,7 +696,7 @@ export const SiteShellV3: React.FC = () => {
               </div>
 
               {/* Pipeline Node Flow Layout */}
-              <div className="relative w-full flex items-center justify-between my-6 py-4 px-2 sm:px-6 bg-theme-void/80 border border-theme-border/40 rounded-2xl backdrop-blur-md shadow-[0_0_30px_rgba(31,170,104,0.05)]">
+              <div className="relative w-full flex items-center justify-between my-6 py-4 px-2 sm:px-6 bg-theme-void/80 border border-theme-border/70 rounded-2xl backdrop-blur-md shadow-[0_0_30px_rgba(31,170,104,0.05)]">
                 
                 {/* Node 0: Model */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
@@ -704,7 +704,7 @@ export const SiteShellV3: React.FC = () => {
                     className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
                       pipelineState === 0 || pipelineState === 1
                         ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
-                        : "border-theme-border/40 bg-theme-void opacity-70"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
                     }`}
                   >
                     <CpuIcon 
@@ -721,16 +721,17 @@ export const SiteShellV3: React.FC = () => {
                 </div>
 
                 {/* Connector Line 0 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
-                  <div className={`absolute inset-0 bg-theme-accent transition-opacity duration-500 ${pipelineState === 1 || pipelineState === 2 ? "opacity-100" : "opacity-15"}`} />
-                  {(pipelineState === 1 || pipelineState === 2) && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_12px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-                    />
-                  )}
+                <div className="flex-1 h-[3px] bg-theme-border/30 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <motion.div
+                    className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
+                    initial={{ width: "0%" }}
+                    animate={{ width: pipelineState >= 1 ? "100%" : "0%" }}
+                    transition={{ duration: pipelineState === 0 ? 0.3 : 1.5, ease: "easeInOut" }}
+                  >
+                    {pipelineState === 1 && (
+                      <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
+                    )}
+                  </motion.div>
                 </div>
 
                 {/* Node 1: Ship */}
@@ -739,7 +740,7 @@ export const SiteShellV3: React.FC = () => {
                     className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
                       pipelineState === 2 || pipelineState === 3
                         ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
-                        : "border-theme-border/40 bg-theme-void opacity-70"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
                     }`}
                   >
                     <GearIcon 
@@ -756,16 +757,17 @@ export const SiteShellV3: React.FC = () => {
                 </div>
 
                 {/* Connector Line 1 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
-                  <div className={`absolute inset-0 bg-theme-accent transition-opacity duration-500 ${pipelineState === 3 || pipelineState === 4 ? "opacity-100" : "opacity-15"}`} />
-                  {(pipelineState === 3 || pipelineState === 4) && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_12px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-                    />
-                  )}
+                <div className="flex-1 h-[3px] bg-theme-border/30 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <motion.div
+                    className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
+                    initial={{ width: "0%" }}
+                    animate={{ width: pipelineState >= 3 ? "100%" : "0%" }}
+                    transition={{ duration: pipelineState === 0 ? 0.3 : 1.5, ease: "easeInOut" }}
+                  >
+                    {pipelineState === 3 && (
+                      <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
+                    )}
+                  </motion.div>
                 </div>
 
                 {/* Node 2: Deploy */}
@@ -774,7 +776,7 @@ export const SiteShellV3: React.FC = () => {
                     className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
                       pipelineState === 4 || pipelineState === 5
                         ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
-                        : "border-theme-border/40 bg-theme-void opacity-70"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
                     }`}
                   >
                     <PlugConnectedIcon 
@@ -791,16 +793,17 @@ export const SiteShellV3: React.FC = () => {
                 </div>
 
                 {/* Connector Line 2 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
-                  <div className={`absolute inset-0 bg-theme-accent transition-opacity duration-500 ${pipelineState === 5 || pipelineState === 6 ? "opacity-100" : "opacity-15"}`} />
-                  {(pipelineState === 5 || pipelineState === 6) && (
-                    <motion.div
-                      className="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_12px_var(--color-theme-accent)]"
-                      initial={{ left: "-40px" }}
-                      animate={{ left: "100%" }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-                    />
-                  )}
+                <div className="flex-1 h-[3px] bg-theme-border/30 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <motion.div
+                    className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
+                    initial={{ width: "0%" }}
+                    animate={{ width: pipelineState >= 5 ? "100%" : "0%" }}
+                    transition={{ duration: pipelineState === 0 ? 0.3 : 1.5, ease: "easeInOut" }}
+                  >
+                    {pipelineState === 5 && (
+                      <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
+                    )}
+                  </motion.div>
                 </div>
 
                 {/* Node 3: Outcome */}
@@ -809,7 +812,7 @@ export const SiteShellV3: React.FC = () => {
                     className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
                       pipelineState === 6 || pipelineState === 7
                         ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
-                        : "border-theme-border/40 bg-theme-void opacity-70"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
                     }`}
                   >
                     <DoubleCheckIcon 
@@ -861,7 +864,7 @@ export const SiteShellV3: React.FC = () => {
                 return (
                   <div 
                     key={idx}
-                    className="p-6 border border-theme-border/30 hover:border-theme-accent rounded-2xl transition-all duration-300 relative bg-theme-void/80 backdrop-blur-sm flex flex-col justify-between gap-4 group/card hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(31,170,104,0.12)]"
+                    className="p-6 border border-theme-border/70 hover:border-theme-accent rounded-2xl transition-all duration-300 relative bg-theme-void/80 backdrop-blur-sm flex flex-col justify-between gap-4 group/card hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(31,170,104,0.12)]"
                     onMouseEnter={() => iconRefs.current[idx + 4]?.startAnimation?.()}
                     onMouseLeave={() => iconRefs.current[idx + 4]?.stopAnimation?.()}
                   >
@@ -980,7 +983,7 @@ export const SiteShellV3: React.FC = () => {
                 )}
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
-              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/70 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
                 {t("view_docs")} <span className="transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
               </button>
             </div>
@@ -1021,13 +1024,13 @@ export const SiteShellV3: React.FC = () => {
                   </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                   {siteCopy.operators.anchor && (
-                    <div className="mt-4 p-3 border border-theme-border/40 bg-theme-void/60 rounded-xl font-mono text-xs text-theme-text-muted/90 leading-relaxed italic max-w-sm">
+                    <div className="mt-4 p-3 border border-theme-border/70 bg-theme-void/60 rounded-xl font-mono text-xs text-theme-text-muted/90 leading-relaxed italic max-w-sm">
                       "{siteCopy.operators.anchor}"
                     </div>
                   )}
                 </div>
                 <div className="mt-6">
-                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm mb-4">
+                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/70 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm mb-4">
                     {siteCopy.operators.cta}
                   </button>
                   <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/70 leading-relaxed max-w-sm border-t border-theme-border/20 pt-3">
@@ -1040,7 +1043,7 @@ export const SiteShellV3: React.FC = () => {
         </BentoGrid>
 
         {/* Section 4: The Roster (Workforce Rail) */}
-        <div className="mt-12 p-6 md:p-8 border border-theme-border/30 bg-theme-void/80 rounded-3xl backdrop-blur-sm relative overflow-hidden">
+        <div className="mt-12 p-6 md:p-8 border border-theme-border/70 bg-theme-void/80 rounded-3xl backdrop-blur-sm relative overflow-hidden">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
             <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm md:text-base">

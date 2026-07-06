@@ -96,7 +96,7 @@ export const BentoBox = ({
       className={cx(
         "relative rounded-3xl overflow-hidden flex flex-col group",
         "bg-theme-void text-theme-text transition-all duration-300",
-        withBorder && "border border-theme-border/50",
+        withBorder && "border border-theme-border/70",
         isDesktop && "hover:border-[var(--color-theme-accent)]/50",
         // Text lift on hover
         isDesktop && "[&_h1]:transition-transform [&_h2]:transition-transform [&_h3]:transition-transform [&_p]:transition-transform [&_span]:transition-transform hover:[&_h1]:-translate-y-1 hover:[&_h2]:-translate-y-1 hover:[&_h3]:-translate-y-1 hover:[&_p]:-translate-y-1 hover:[&_span]:-translate-y-1",

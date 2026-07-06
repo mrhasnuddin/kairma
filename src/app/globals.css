@@ -36,8 +36,8 @@
   --theme-accent: var(--kairma-matrix-green);
   --theme-chrome: var(--kairma-chrome-silver);
   --theme-text: var(--kairma-pixel-white);
-  --theme-border: rgba(201, 64, 43, 0.2);
-  --theme-border-glow: rgba(201, 64, 43, 0.45);
+  --theme-border: rgba(201, 64, 43, 0.35);
+  --theme-border-glow: rgba(201, 64, 43, 0.6);
   --theme-text-muted: rgba(255, 255, 255, 0.6);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

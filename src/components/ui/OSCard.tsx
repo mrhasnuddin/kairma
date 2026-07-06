@@ -60,7 +60,7 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      className={`relative rounded-3xl border border-theme-border/30 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
+      className={`relative rounded-3xl border border-theme-border/70 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
     >
       {/* Background glow effect that follows mouse */}
       {isDesktop && !disableEffects && (
