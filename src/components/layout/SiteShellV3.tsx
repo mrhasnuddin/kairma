@@ -727,7 +727,7 @@ export const SiteShellV3: React.FC = () => {
                     className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
                     initial={{ width: "0%" }}
                     animate={{ width: pipelineState >= 1 ? "100%" : "0%" }}
-                    transition={{ duration: pipelineState === 0 ? 0.3 : 1.5, ease: "easeInOut" }}
+                    transition={{ duration: pipelineState === 0 ? 0 : 1.5, ease: "easeInOut" }}
                   >
                     {pipelineState === 1 && (
                       <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
@@ -763,7 +763,7 @@ export const SiteShellV3: React.FC = () => {
                     className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
                     initial={{ width: "0%" }}
                     animate={{ width: pipelineState >= 3 ? "100%" : "0%" }}
-                    transition={{ duration: pipelineState === 0 ? 0.3 : 1.5, ease: "easeInOut" }}
+                    transition={{ duration: pipelineState === 0 ? 0 : 1.5, ease: "easeInOut" }}
                   >
                     {pipelineState === 3 && (
                       <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
@@ -799,7 +799,7 @@ export const SiteShellV3: React.FC = () => {
                     className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
                     initial={{ width: "0%" }}
                     animate={{ width: pipelineState >= 5 ? "100%" : "0%" }}
-                    transition={{ duration: pipelineState === 0 ? 0.3 : 1.5, ease: "easeInOut" }}
+                    transition={{ duration: pipelineState === 0 ? 0 : 1.5, ease: "easeInOut" }}
                   >
                     {pipelineState === 5 && (
                       <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
