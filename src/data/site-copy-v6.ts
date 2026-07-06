@@ -27,6 +27,7 @@ export interface SiteCopyTypeV6 {
   shift: {
     label: string;
     h: string;
+    stat_strip?: string;
     body: string;
     stepper: string;
   };
@@ -44,6 +45,7 @@ export interface SiteCopyTypeV6 {
   dev_smithy: {
     label: string;
     h: string;
+    chart?: string;
     body: string;
     cta: string;
   };
@@ -51,11 +53,13 @@ export interface SiteCopyTypeV6 {
     label: string;
     h: string;
     body: string;
+    anchor?: string;
     cta: string;
   };
   workforce_rail: {
     h: string;
     items: string;
+    discipline_line?: string;
   };
   footer: {
     closing: string;

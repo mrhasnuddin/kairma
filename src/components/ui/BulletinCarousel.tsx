@@ -97,7 +97,7 @@ export const BulletinCarousel: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.03 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-0 w-full h-full"
+          className="thumb-duotone absolute inset-0 w-full h-full"
         >
           {/* Poster Image */}
           <img

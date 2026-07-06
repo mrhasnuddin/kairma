@@ -280,12 +280,12 @@ export const SiteShellV3: React.FC = () => {
     "intel":                { en: "Intel",                 "zh-TW": "智能",               vi: "Trí tuệ",                        ms: "Kepintaran", ja: "知能", ko: "지능" },
     "coding":               { en: "Coding",                "zh-TW": "代碼",               vi: "Lập trình",                      ms: "Pengekodan", ja: "コーディング", ko: "코딩" },
     "agentic":              { en: "Agentic",               "zh-TW": "智能體",             vi: "Tự hành",                        ms: "Agentik", ja: "エージェント", ko: "에이전틱" },
-    "kol_bd":               { en: "KOL BD",                "zh-TW": "KOL BD",             vi: "KOL BD",                         ms: "KOL BD", ja: "KOL BD", ko: "KOL BD" },
+    "kol_bd":               { en: "Creator BD",            "zh-TW": "KOL BD",             vi: "KOL BD",                         ms: "KOL BD", ja: "KOL BD", ko: "KOL BD" },
     "content_ops":          { en: "Content Ops",           "zh-TW": "內容營運",           vi: "Vận hành nội dung",              ms: "Operasi Kandungan", ja: "コンテンツ運用", ko: "콘텐츠 운영" },
     "benchmarks_note":      { en: "* BENCHMARKS NORMALIZED BY ARTIFICIAL ANALYSIS LEADERBOARDS.", "zh-TW": "* 基準數據由 ARTIFICIAL ANALYSIS 排行榜標準化。", vi: "* ĐIỂM CHUẨN ĐƯỢC CHUẨN HÓA BỞI BẢNG XẾP HẠNG ARTIFICIAL ANALYSIS.", ms: "* PENANDA ARAS DINORMALISASI OLEH PAPAN PENDAHULU ARTIFICIAL ANALYSIS.", ja: "* ベンチマークは ARTIFICIAL ANALYSIS のリーダーボードにより正規化されています。", ko: "* 벤치마크는 ARTIFICIAL ANALYSIS 리더보드에 의해 정규화되었습니다." },
     "top_daily_runtimes":   { en: "TOP DAILY RUNTIMES",    "zh-TW": "每日最熱運行環境",   vi: "MÔI TRƯỜNG CHẠY HÀNG ĐẦU HÀNG NGÀY", ms: "PERSEKITARAN HARIAN TERATAS", ja: "毎日の人気ランタイム", ko: "일일 최고 런타임" },
     // Model Leaderboard / Neural Pipeline HUD
-    "model_leaderboard":    { en: "MODEL LEADERBOARD",     "zh-TW": "模型排行榜",         vi: "BẢNG XẾP HẠNG MÔ HÌNH",         ms: "PAPAN PENDAHULU MODEL", ja: "モデルリーダーボード", ko: "모델 리더보드" },
+    "model_leaderboard":    { en: "ROUTED ACROSS THE CLOUD", "zh-TW": "模型排行榜",         vi: "BẢNG XẾP HẠNG MÔ HÌNH",         ms: "PAPAN PENDAHULU MODEL", ja: "モデルリーダーボード", ko: "모델 리더보드" },
     "data_groups":          { en: "DATA GROUPS",           "zh-TW": "數據群組",           vi: "NHÓM DỮ LIỆU",                  ms: "KUMPULAN DATA", ja: "データグループ", ko: "데이터 그룹" },
     "select_group_hint":    { en: "select a data group to parse", "zh-TW": "選擇要解析的數據群組", vi: "chọn nhóm dữ liệu để phân tích", ms: "pilih kumpulan data untuk dihurai", ja: "解析するデータグループを選択", ko: "분석할 데이터 그룹을 선택" },
     "output_nodes":         { en: "OUTPUT NODES",          "zh-TW": "輸出節點",           vi: "NÚT ĐẦU RA",                    ms: "NOD OUTPUT", ja: "出力ノード", ko: "출력 노드" },
@@ -573,10 +573,16 @@ export const SiteShellV3: React.FC = () => {
             <div className="mt-6 relative z-10 flex flex-col justify-between flex-1">
               <div className="group/cta">
                 <button 
-                  disabled
-                  className="relative w-full py-3 mb-6 border border-theme-border/40 bg-theme-void/60 text-theme-text-muted/60 font-mono text-xs font-bold uppercase tracking-widest rounded-xl cursor-not-allowed flex items-center justify-center gap-2 backdrop-blur-sm"
+                  onClick={() => setPilotOpen(true)}
+                  className="relative w-full py-3 mb-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(31,170,104,0.1)] hover:shadow-[0_0_20px_var(--color-theme-accent)]"
                 >
-                  COMING SOON
+                  {siteCopy.hero_left.cta_1}
+                </button>
+                <button
+                  onClick={() => setPilotOpen(true)}
+                  className="w-full text-center font-mono text-[10px] uppercase tracking-widest text-theme-text-muted hover:text-theme-accent transition-colors mb-4 block"
+                >
+                  {siteCopy.hero_left.cta_2}
                 </button>
               </div>
               <div className="flex flex-col gap-2 w-full mt-auto">
@@ -675,9 +681,15 @@ export const SiteShellV3: React.FC = () => {
                     {t("the_shift")}
                   </span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight text-theme-text mb-6">
+                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight text-theme-text mb-4">
                   <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
+                {siteCopy.shift.stat_strip && (
+                  <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 border border-theme-accent/30 bg-theme-accent/10 rounded-xl text-xs font-mono font-bold text-theme-accent">
+                    <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                    <span>{siteCopy.shift.stat_strip}</span>
+                  </div>
+                )}
               </div>
 
               {/* Pipeline Node Flow Layout */}
@@ -694,7 +706,7 @@ export const SiteShellV3: React.FC = () => {
                     />
                   </div>
                   <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    Model
+                    {siteCopy.shift.stepper.split(/→|->/)[0]?.trim() || "Model"}
                   </span>
                 </div>
 
@@ -714,7 +726,7 @@ export const SiteShellV3: React.FC = () => {
                     />
                   </div>
                   <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    Workflow
+                    {siteCopy.shift.stepper.split(/→|->/)[1]?.trim() || "Workflow"}
                   </span>
                 </div>
 
@@ -734,7 +746,7 @@ export const SiteShellV3: React.FC = () => {
                     />
                   </div>
                   <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    Deployment
+                    {siteCopy.shift.stepper.split(/→|->/)[2]?.trim() || "Deployment"}
                   </span>
                 </div>
 
@@ -754,13 +766,13 @@ export const SiteShellV3: React.FC = () => {
                     />
                   </div>
                   <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    Outcome
+                    {siteCopy.shift.stepper.split(/→|->/)[3]?.trim() || "Outcome"}
                   </span>
                 </div>
               </div>
 
               <div className="mt-4 font-mono text-sm text-theme-text-muted leading-relaxed whitespace-pre-line">
-                {t("quote")}
+                {siteCopy.shift.body}
               </div>
             </div>
 
@@ -787,9 +799,9 @@ export const SiteShellV3: React.FC = () => {
                 { text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon },
                 { text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck }
               ].map((moat, idx) => {
-                const parts = moat.text.split(/—|-/);
-                const title = parts[0]?.trim();
-                const description = parts.slice(1).join('-').trim();
+                const firstDashIdx = moat.text.search(/—|-/);
+                const title = firstDashIdx !== -1 ? moat.text.slice(0, firstDashIdx).trim() : moat.text;
+                const description = firstDashIdx !== -1 ? moat.text.slice(firstDashIdx + 1).trim() : "";
                 const isActive = pipelineState === idx * 2;
                 const isLineActive = pipelineState === idx * 2 + 1 || pipelineState === idx * 2 + 2; 
 
@@ -844,6 +856,13 @@ export const SiteShellV3: React.FC = () => {
                 );
               })}
             </div>
+            {siteCopy.moats.routing_strip && (
+              <div className="mt-8 pt-4 border-t border-theme-border/20 flex items-center justify-center text-center">
+                <p className="font-mono text-xs md:text-sm text-theme-text font-bold tracking-wide">
+                  {siteCopy.moats.routing_strip}
+                </p>
+              </div>
+            )}
           </OSCard>
 
           {/* Row 4+5 */}
@@ -866,6 +885,12 @@ export const SiteShellV3: React.FC = () => {
                 )}
               </div>
             </div>
+
+            {language === "en" && (
+              <p className="font-mono text-xs text-theme-text-muted mb-6 max-w-3xl leading-relaxed">
+                We don't build foundation models. We route your tasks across whichever model wins on speed, cost, and task fit today — Claude, GPT, Gemini, DeepSeek, Qwen, Kimi. Model-neutral, vendor-neutral.
+              </p>
+            )}
 
             {modelsLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center text-theme-text-muted font-mono text-xs uppercase tracking-widest gap-2">
@@ -911,11 +936,16 @@ export const SiteShellV3: React.FC = () => {
                   <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                     <CodeXmlIcon ref={codeIconRef} size={18} className="text-theme-accent" />
                   </span>
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_developers")}</span>
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{siteCopy.dev_smithy.label}</span>
                 </div>
                 <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text">
                   <BoxHeadline text={siteCopy.dev_smithy.h} />
                 </h2>
+                {siteCopy.dev_smithy.chart && (
+                  <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 border border-theme-accent/30 bg-theme-accent/5 rounded-xl text-xs font-mono font-bold text-theme-accent">
+                    <span>{siteCopy.dev_smithy.chart}</span>
+                  </div>
+                )}
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
               <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
@@ -952,22 +982,67 @@ export const SiteShellV3: React.FC = () => {
                     <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                       <ShieldCheck ref={shieldCtaIconRef} size={18} className="text-theme-accent" />
                     </span>
-                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{t("for_operators")}</span>
+                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{siteCopy.operators.label}</span>
                   </div>
                   <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
                     <BoxHeadline text={siteCopy.operators.h} />
                   </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
+                  {siteCopy.operators.anchor && (
+                    <div className="mt-4 p-3 border border-theme-border/40 bg-theme-void/60 rounded-xl font-mono text-xs text-theme-text-muted/90 leading-relaxed italic max-w-sm">
+                      "{siteCopy.operators.anchor}"
+                    </div>
+                  )}
                 </div>
                 <div className="mt-6">
-                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm mb-4">
                     {siteCopy.operators.cta}
                   </button>
+                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/70 leading-relaxed max-w-sm border-t border-theme-border/20 pt-3">
+                    {siteCopy.fde_annotation.body}
+                  </div>
                 </div>
               </div>
             </div>
           </OSCard>
         </BentoGrid>
+
+        {/* Section 4: The Roster (Workforce Rail) */}
+        <div className="mt-12 p-6 md:p-8 border border-theme-border/30 bg-theme-void/80 rounded-3xl backdrop-blur-sm relative overflow-hidden">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
+            <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm md:text-base">
+              {siteCopy.workforce_rail.h}
+            </h3>
+          </div>
+          <div className="flex flex-wrap items-center gap-y-2 gap-x-4 font-mono text-xs md:text-sm text-theme-text-muted">
+            {siteCopy.workforce_rail.items.split('·').map((item, idx, arr) => (
+              <React.Fragment key={idx}>
+                <span className="text-theme-text font-bold">{item.trim()}</span>
+                {idx < arr.length - 1 && <span className="text-theme-accent/50">·</span>}
+              </React.Fragment>
+            ))}
+          </div>
+          {siteCopy.workforce_rail.discipline_line && (
+            <p className="mt-4 pt-4 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted/70 italic">
+              {siteCopy.workforce_rail.discipline_line}
+            </p>
+          )}
+        </div>
+
+        {/* Footer */}
+        <footer className="mt-12 pt-8 border-t border-theme-border/20 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-theme-text-muted">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
+            <span className="font-bold text-theme-text">{siteCopy.wordmark}</span>
+          </div>
+          <p>{siteCopy.footer.closing}</p>
+          <div className="flex items-center gap-4 text-theme-text-muted/60">
+            <span>{siteCopy.guan.label}</span>
+            <span>·</span>
+            <span>{siteCopy.bios_locale.options}</span>
+          </div>
+        </footer>
           </div>
         )}
       </motion.main>
