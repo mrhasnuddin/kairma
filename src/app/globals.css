@@ -100,6 +100,7 @@
   --color-theme-text: var(--theme-text);
   --color-theme-border: var(--theme-border);
   --color-theme-border-glow: var(--theme-border-glow);
+  --color-theme-accent-glow: var(--theme-border-glow);
   --color-theme-text-muted: var(--theme-text-muted);
 
   --font-gothic: var(--font-gothic);
@@ -217,6 +218,16 @@ body::after {
 .xuan-mode .thumb-duotone img,
 [data-theme="xuan-mode"] .thumb-duotone img {
   mix-blend-mode: lighten; /* light theme: darks take the accent */
+}
+
+/* Nav-jump box flash: two blinks of the hover-effect overlays, used when a
+   sticky-nav link scrolls a bento box into view. */
+@keyframes box-flash {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+.box-flash-anim {
+  animation: box-flash 0.8s ease-in-out 2;
 }
 
 /* Utilities */
