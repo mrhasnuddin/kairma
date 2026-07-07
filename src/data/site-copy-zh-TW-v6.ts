@@ -15,8 +15,8 @@ export const siteCopyZhTwV6: SiteCopyTypeV6 = {
     cta_2: "部署如何運作"
   },
   hero_center: {
-    h1: "為你要拓展的市場，前置部署 AI 員工。",
-    body: "我們不會把工具丟給你就走。一支前置部署團隊把這支勞動力落地進你的運營——並留下來，直到它跑出結果。"
+    h1: "擁有你的 AI 勞動力，掌握鑰匙。",
+    body: "前置部署至跨境營運中的 AI 員工。以結果為導向。恪守因果，賬目分明。"
   },
   fde_annotation: {
     body: "↳ FDE — 前置部署工程（Forward-Deployed Engineering）。 我們不是交付軟件就離開，而是在你這一側派駐團隊，對結果負責，把產品變成成果，再把所學餵回平台。短期是成本，長期是讓每一次部署都更便宜的研發。（由 Palantir 開創，如今通行於企業級 AI。）"

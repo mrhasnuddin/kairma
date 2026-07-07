@@ -15,8 +15,8 @@ export const siteCopyMsV6: SiteCopyTypeV6 = {
     cta_2: "Cara penggerakan berfungsi"
   },
   hero_center: {
-    h1: "Pekerja AI barisan hadapan untuk pasaran yang anda kembangkan.",
-    body: "Kami tidak menyerahkan alat lalu pergi. Satu pasukan barisan hadapan menurunkan tenaga kerja ini ke dalam operasi anda — dan kekal sehingga ia membuahkan hasil."
+    h1: "Miliki tenaga kerja AI anda. Pegang Kunci utama.",
+    body: "Pekerja AI yang digerakkan ke medan operasi merentas sempadan. Berpacukan hasil. Kairma menyimpan kira-kira sebab-akibat."
   },
   fde_annotation: {
     body: "↳ FDE — Forward-Deployed Engineering (kejuruteraan penggerakan barisan hadapan). Bukannya menghantar perisian lalu pergi, kami menempatkan pasukan di pihak anda yang bertanggungjawab atas hasil, menukar produk menjadi hasil, lalu menyuap balik pembelajaran ke platform. Jangka pendek satu kos; jangka panjang R&D yang menjadikan setiap penggerakan seterusnya lebih murah. (Dipelopori Palantir; kini merata dalam AI perusahaan.)"

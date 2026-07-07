@@ -15,8 +15,8 @@ export const siteCopyViV6: SiteCopyTypeV6 = {
     cta_2: "Cách triển khai vận hành"
   },
   hero_center: {
-    h1: "Nhân viên AI triển khai tiền tuyến cho thị trường bạn mở rộng.",
-    body: "Chúng tôi không trao công cụ rồi rời đi. Một đội triển khai tiền tuyến đưa lực lượng này vào vận hành của bạn — và ở lại cho đến khi nó tạo ra kết quả."
+    h1: "Làm chủ lực lượng lao động AI. Nắm giữ chìa khóa.",
+    body: "Nhân viên AI được triển khai tiền phương vào các hoạt động xuyên biên giới. Chạy hướng tới kết quả. Kairma giữ sổ nhân quả."
   },
   fde_annotation: {
     body: "↳ FDE — Forward-Deployed Engineering (kỹ thuật triển khai tiền tuyến). Thay vì giao phần mềm rồi rời đi, chúng tôi cử một đội ở phía bạn chịu trách nhiệm về kết quả, biến sản phẩm thành kết quả, rồi đưa những gì học được trở lại nền tảng. Ngắn hạn là chi phí; dài hạn là R&D khiến mỗi lần triển khai sau rẻ hơn. (Khởi xướng bởi Palantir; nay phổ biến trong AI doanh nghiệp.)"

@@ -559,9 +559,9 @@ export const SiteShellV3: React.FC = () => {
           {/* 00: The Anchor (Hero Command Card) */}
           <OSCard reveal="left" revealDelay={0.05} className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-50 pointer-events-none" />
-            <div className="relative z-10">
+            <div className="relative z-10 my-2 md:my-4">
               <div 
-                className="w-48 md:w-56 h-12 mb-6 bg-theme-text"
+                className="w-full h-16 md:h-20 lg:h-24 bg-theme-text transition-all duration-500"
                 style={{
                   WebkitMaskImage: 'url(/kairma-logo.svg)',
                   WebkitMaskSize: 'contain',
@@ -573,27 +573,15 @@ export const SiteShellV3: React.FC = () => {
                   maskPosition: 'left center',
                 }}
               />
-              <p className="font-mono text-sm tracking-tight text-theme-text font-bold mb-4">
-                {siteCopy.hero_left.h1}
-              </p>
-              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
-                {siteCopy.hero_left.sub}
-              </p>
             </div>
             
             <div className="mt-6 relative z-10 flex flex-col justify-between flex-1">
-              <div className="group/cta">
+              <div className="group/cta mb-4">
                 <button 
                   onClick={() => setPilotOpen(true)}
-                  className="relative w-full py-3 mb-3 border border-theme-border/70 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(31,170,104,0.1)] hover:shadow-[0_0_20px_var(--color-theme-accent)]"
+                  className="relative w-full py-3 border border-theme-border/70 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(31,170,104,0.1)] hover:shadow-[0_0_20px_var(--color-theme-accent)] cursor-pointer"
                 >
                   {siteCopy.hero_left.cta_1}
-                </button>
-                <button
-                  onClick={() => setDeploymentWorksOpen(true)}
-                  className="w-full text-center font-mono text-[10px] uppercase tracking-widest text-theme-text-muted hover:text-theme-accent transition-colors mb-4 block cursor-pointer"
-                >
-                  {siteCopy.hero_left.cta_2}
                 </button>
               </div>
               <div className="flex flex-col gap-2 w-full mt-auto">

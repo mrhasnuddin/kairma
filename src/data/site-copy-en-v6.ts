@@ -15,8 +15,8 @@ export const siteCopyEnV6: SiteCopyTypeV6 = {
     cta_2: "How deployment works"
   },
   hero_center: {
-    h1: "Forward-deployed AI employees for the markets you expand into.",
-    body: "We don't hand you a tool and leave. A forward-deployed team lands the workforce in your operation — and stays until it produces results."
+    h1: "Own your AI workforce. Hold the Key",
+    body: "AI employees, forward-deployed into cross-border operations. Run to outcomes. Kairma keeps the accounts."
   },
   fde_annotation: {
     body: "↳ FDE — Forward-Deployed Engineering. Instead of shipping software and leaving, we embed a team on your side that owns the outcome, turns the product into results, and feeds what it learns back into the platform. Short-term a cost; long-term the R&D that makes every next deployment cheaper. (Pioneered by Palantir; now across enterprise AI.)"

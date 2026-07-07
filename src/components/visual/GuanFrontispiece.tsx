@@ -273,22 +273,6 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
         <p className="text-theme-text-muted text-sm md:text-base font-serif mb-8 leading-relaxed drop-shadow-sm text-center">
            <ScrambleText text={`English: ${quote.english}`} duration={2000} delay={quote.original ? 1500 : 400} cursor={!quote.original} />
         </p>
-        
-        <div className="text-theme-text-muted/70 text-xs md:text-sm font-mono mt-4 p-4 border border-theme-border/40 bg-theme-void/60 rounded-xl flex flex-col gap-2 relative mx-auto text-center items-center backdrop-blur-sm shadow-sm">
-           
-           <ScrambleText 
-             text={`SOURCE: ${quote.source}`} 
-             duration={1000} 
-             delay={quote.original ? 3000 : 2000} 
-             cursor={false}
-           />
-           <ScrambleText 
-             text={`ORIGIN: ${quote.language}`} 
-             duration={1000} 
-             delay={quote.original ? 3200 : 2200} 
-             cursor={false}
-           />
-        </div>
       </div>
 
       {/* Boot Sequence Overlay at bottom */}
