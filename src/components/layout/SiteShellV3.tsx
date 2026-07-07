@@ -1354,7 +1354,7 @@ export const SiteShellV3: React.FC = () => {
       <PilotModal isOpen={pilotOpen} onClose={() => setPilotOpen(false)} />
       <HowDeploymentWorksModal isOpen={deploymentWorksOpen} onClose={() => setDeploymentWorksOpen(false)} />
 
-      <StickyNav />
+      {bootPhase === "ready" && <StickyNav />}
     </div>
   );
 };
