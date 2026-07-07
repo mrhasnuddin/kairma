@@ -89,7 +89,7 @@ export const KairmaFooter: React.FC = () => {
         </h2>
 
         {/* Short description — CourierPrime (mono). */}
-        <p className="mt-3 max-w-xl text-center font-mono text-xs md:text-sm font-bold text-white/85 leading-relaxed uppercase tracking-wider">
+        <p className="mt-3 max-w-xl text-center font-mono text-xs md:text-sm font-normal text-white/85 leading-relaxed uppercase tracking-wider">
           {siteCopy.hero_left.sub}
         </p>
 

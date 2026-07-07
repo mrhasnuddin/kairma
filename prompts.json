@@ -1,0 +1,406 @@
+[
+  {
+    "num": 1,
+    "prompt": "01–100). Each prompt generates        the image only       — never the words. The epigraph is set afterward in live type, exactly as a        Bleach       frontispiece: one stark image, one quiet line laid over the negative space.              Workflow (AI base → human post).       (1) Generate the base with one prompt below. (2) De-AI pass: regrain, add real plate/paper texture, fix density and crop, flatten any gloss, strip any stray sparkle/garbled mark. (3) Brand layer (the moat, all by hand): the live epigraph in Inter / Source Han Sans; the Kairma wordmark with the        r-gap intact      ; the dual-palette grade; the poster/OOH/editorial lockup. The base image is ~10%; the finishing is the 90% no model can supply.              Colour is fixed by the line’s origin (this edition).       Western canon →        [WEST] Matrix Mode, cold green      . Eastern canon →        [EAST] Xuan Mode, warm vermilion      . One mode per image; never both. Append the matching palette block, then the global negatives, to whichever prompt you run.                                                    100000                            GLOBAL NEGATIVES"
+  },
+  {
+    "num": 1,
+    "prompt": "01 · WEST · cold green · intaglio              A fine-line copperplate intaglio in the old-master banknote tradition: a single antique hand-mirror, its engraved face holding one human countenance already warped and asymmetric — the flaw is in the face, not the glass. The rim&apos;s burin hatching tightens into Kairma trace-DNA with chip-form nodes and a few broken line-ends. One matrix-green motivated glow rises from behind the glass as the sole light, with real spill across the plate tone; generous negative space at left for vertical type. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 2,
+    "prompt": "02 · EAST · warm vermilion · intaglio + cat aperture              A fine intaglio engraving on warm rice-paper cream: a bronze mirror hanging in still warm dark, holding not a face but an inward-collapsing vortex of engraved line, like a whirlpool of hatching drawn down to a single point. Compose the whole through a clean flat cat silhouette (pointed ears, one vermilion eye-glint at the mirror&apos;s rim). One vermilion glow at the vortex heart is the sole light; ample negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 3,
+    "prompt": "03 · EAST · warm vermilion · intaglio              A fine intaglio engraving on rice-paper cream: several disembodied hands emerge from warm shadow, each holding up a small mirror; what every mirror returns is not the hand but a faint, finely engraved human face — the act of holding the mirror breeds the apparition. One vermilion glow is the sole light, raking low; trace-DNA in the hatching. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 4,
+    "prompt": "04 · EAST · warm vermilion · intaglio              A fine intaglio engraving on rice-paper cream: a hand-mirror whose face holds a miniature rivers-and-mountains landscape; read from afar it is Creation itself, read up close it resolves entirely into PCB trace routing with chip-form nodes. Old-master banknote hatching, true plate tone. One thin vermilion dawn-light is the sole light. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 5,
+    "prompt": "05 · EAST · warm vermilion · intaglio              A fine intaglio engraving on rice-paper cream: an antique mirror half-veiled behind a fall of raw silk, revealing only a narrow vertical slit of reflection — most of the plate held in restrained negative space. One faint vermilion glow leaks from the slit as the sole light; trace-DNA at the visible edges. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 6,
+    "prompt": "06 · WEST · cold green · intaglio (default opening)              A fine-line copperplate intaglio: a dust-clouded antique mirror, its face dimmed like frosted glass, and barely discernible within it a single human eye gazing back. Muted, archival, much negative space; the banknote hatching tightens into Kairma trace-DNA. One low matrix-green glow behind the glass is the sole light, just enough to model the dust. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 7,
+    "prompt": "07 · WEST · cold green · intaglio              A fine-line intaglio: a cut-away cranial vault rendered as a house of nested circuit corridors, receding in one-point perspective; the master&apos;s chair at the centre stands empty, and a single green point of light hovers where the occupant should be. Burin hatching as trace-DNA. One matrix-green glow is the sole light, casting long corridor shadows. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 8,
+    "prompt": "08 · WEST · cold green · intaglio + cat aperture              A fine-line intaglio: one human face and its mirror-reflection set off by half a register, a thin fissure splitting open in the gap, green light bleeding from the seam. Stage it through a cat silhouette rendered as a deliberately misregistered two-colour double-silhouette (offset-print feel), one green eye-glint. Trace-DNA hatching. One matrix-green glow is the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 9,
+    "prompt": "09 · WEST · cold green · intaglio              A fine intaglio in the banknote tradition: a struck ancient-Roman profile coin in raking light, its milled rim resolving into PCB trace; a tiny human observer-silhouette stands at the coin&apos;s edge studying the great profile from below. One matrix-green glow is the sole light; deep plate tone, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 10,
+    "prompt": "10 · WEST · cold green · blueprint              A precise patent-blueprint / technical drawing on void near-black: a compass and straightedge constructing a single sacred geometric figure, the construction arcs terminating in chip-form nodes (Kairma trace-DNA). Flat, exact draughtsman&apos;s line, no rendering. One matrix-green glow marks the focal vertex as the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 11,
+    "prompt": "11 · WEST · cold green · intaglio              A fine-line intaglio: a single mirror bisected by a rational geometric lattice that continues across the glass with flawless symmetry, inside and out indistinguishable (the actual is the rational). Burin hatching resolving into trace-DNA. One matrix-green glow sits on the central axis as the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 12,
+    "prompt": "12 · WEST · cold green · intaglio              A fine-line intaglio: a cut-away mechanical ribcage of engraved plates; caged within the fine filaments, a wisp of green vapour-light — half imprisoned, half dwelling there. Trace-DNA in the filaments. The caged wisp is the sole matrix-green light, modelling the ribs from inside. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 13,
+    "prompt": "13 · EAST · warm vermilion · intaglio              A spare intaglio engraving on rice-paper cream: a single bird dissolving into the height of the sky at the top of the plate, a single fish sinking into the depth of the water at the bottom, an immense calm of negative space between; only at the extreme edges does the fine line quietly become PCB trace. One small vermilion glow at the horizon is the sole light. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 14,
+    "prompt": "14 · WEST · cold green · intaglio              A fine-line anatomical intaglio in the Vesalius tradition: a cut-away human brain in three-quarter section, and suspended at its exact centre a small gland emitting a green glow, from which countless ultrafine filaments — nerves becoming PCB trace — radiate to the four quarters of the plate. The gland is the single motivated light, its green spilling along the nearest filaments. Trace-DNA throughout; deep plate tone. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 15,
+    "prompt": "15 · WEST · cold green · intaglio              A fine-line intaglio: a floating cortical interface-port seen straight on; from one green point of light, concentric ripples of &quot;I think&quot; are engraved outward as PCB trace routing with chip-form nodes, like a cogito spreading across still water. One matrix-green glow is the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 16,
+    "prompt": "16 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream, high overhead vantage: a nocturnal cyber-city whose web of streetlights spreads to the horizon and, toward the lower edge, dissolves into vertical falling streams of Kairma&apos;s own abstract glyphs (never katakana, never legible), rendered as warm vermilion-toned line on cream. One vermilion glow is the sole light; reserve the upper sky as negative space for type. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 17,
+    "prompt": "17 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a semi-transparent skull whose interior is a single long engraved scroll of memory, being written and erased at once along its length; a lone vermilion point of light drifts across it like a reading-lamp. Trace-DNA hatching; the drifting point is the sole light. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 18,
+    "prompt": "18 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a bodiless subject — a human contour self-assembling out of vertical streams of falling Kairma glyphs (not katakana) — rising from a sea of engraved data, half-condensed, half still raining. One vermilion glow is the sole light, catching the leading edge of the forming figure. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 19,
+    "prompt": "19 · WEST · cold green · intaglio              A fine-line intaglio: a single open human eye filling the plate, and held within the iris an entire world woven from ultrafine engraved line; the eyelid&apos;s rim resolves into PCB trace with a few deliberately broken line-ends. One matrix-green glow within the pupil is the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 20,
+    "prompt": "20 · WEST · cold green · intaglio (Vesalius register)              A fine-line anatomical intaglio in the old-master écorché tradition: a standing flayed figure whose musculature, beneath the surface, is laid out as PCB trace routing (Kairma trace-DNA); the &quot;will&quot; sits as one green point of light deep in the chest cavity, the sole light. Flat engraving, true plate tone, public-domain anatomical register only. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 21,
+    "prompt": "21 · WEST · cold green · intaglio              A fine-line intaglio: a single luminous chain threading the dark, each link a small engraved memory-frame; the chain reads as one continuous identity until, at one broken link, a green point of light is about to go out. Trace-DNA in the links; the failing point is the sole matrix-green light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 22,
+    "prompt": "22 · WEST · cold green · blueprint              A precise patent-blueprint on void near-black: a forking teleport-trajectory diagram in which a single human figure splits into two identical figures at the fork, green light igniting both branch-ends at once (continuity without identity). Flat technical line, chip-form nodes as trace-DNA. One matrix-green is the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 23,
+    "prompt": "23 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a dense tangle of overhead cables and power-lines above a city; at the junctions, vermilion points kindle and connect into a single net that seems to brighten and dim like breathing. One vermilion glow is the sole light; trace-DNA in the cable runs. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 24,
+    "prompt": "24 · WEST · cold green · intaglio              A fine-line intaglio: a single round machine-eye in matte, non-luminous metal, being slowly de-cabled — fine engraved memory-filaments drawn out of it one by one. Only a faint cold-green ambient glow remains in the surrounding dark as the sole light, the eye itself unlit. Trace-DNA in the filaments. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 25,
+    "prompt": "25 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a girl-form doll lying still, joints half-opened, a thin vermilion glow guttering in the chest cavity; the face is calm as a Noh mask, and beneath the porcelain the seams resolve into PCB trace. The chest glow is the sole light; quiet, much negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 26,
+    "prompt": "26 · WEST · cold green · intaglio              A fine-line intaglio in the old-master tradition: a classical-posed artificial woman at bust length, her skin opening along seams to reveal finely engraved trace routing and clockwork beneath; one green point of light at the breastbone is the sole light. Public-domain figure register only; deep plate tone, negative space for type. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 27,
+    "prompt": "27 · WEST · cold green · intaglio              A fine-line intaglio: a living woman in pure profile silhouette, and a single thread of soul-light being drawn out of her and poured into the chest of a still, seated android beside her — the made thing visibly standing on a real human soul. The travelling thread carries the only matrix-green light; trace-DNA in the linework. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 28,
+    "prompt": "28 · WEST · cold green · intaglio              A fine-line intaglio: a DNA double-helix that prints outward, as engraved projections, the tools, vessels and a whole city it has made — the causal chain laid out legibly and countably, like a genealogy of consequences. One green point at the helix core is the sole light; trace-DNA throughout. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 29,
+    "prompt": "29 · WEST · cold green · intaglio              A fine-line intaglio: a honeycomb in cross-section, each small cell holding a micro-engraving of a private appetite or vice, all of them draining upward to converge into a single public green glow at the comb&apos;s apex. That apex glow is the sole light; trace-DNA hatching. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 30,
+    "prompt": "30 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a rivers-and-mountains landscape whose outline is visibly being rewritten by wind at its edges, while deep in the mountain&apos;s bone-structure a single PCB trace holds utterly still. One vermilion glow within the rock is the sole light; banknote hatching, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 31,
+    "prompt": "31 · WEST · cold green · intaglio              A fine-line intaglio: a boundless field of sand to the horizon, every single grain engraved as a tiny chip-form node, so that the numberless sand and the numberless circuit are one image; one thin green dawn-light rakes low across the sand-sea as the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 32,
+    "prompt": "32 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a single ripe persimmon hanging from a bare branch, with crows converging from every quarter along fine engraved flight-paths; one vermilion glow at the fruit&apos;s heart is the sole light. Trace-DNA in the branches; negative space around. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 33,
+    "prompt": "33 · WEST · cold green · cast-artifact (museum register)              A real-looking museum photograph, not CGI: a human skeleton specimen sealed beneath fine engraved trace-lines inside a glass vitrine, while outside the case a matte, non-luminous machine hand studies it. One cold-green vitrine light is the sole light; real materials, patina, controlled museum lighting, no plastic sheen. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 34,
+    "prompt": "34 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a vermilion wax seal pressed onto a folded letter that is bound in fine engraved trace; the wax is whole and unbroken — secrecy kept is faith kept. The seal is the sole vermilion light; banknote texture, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 35,
+    "prompt": "35 · WEST · cold green · intaglio (macro)              A fine-line intaglio in extreme close-up: just three or five grains of sand, each engraved as a chip, filling the plate; from within one grain a single green glow transmits outward — the small standing for the numberless. One matrix-green is the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 36,
+    "prompt": "36 · WEST · cold green · intaglio              A fine-line intaglio: a strange solitary apparatus — half relic, half reliquary — standing alone on a desolate plain, built from engraved line and fine gears; emptiness on every side. One green dusk-glow within the apparatus is the sole light; trace-DNA in its workings, vast negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 37,
+    "prompt": "37 · WEST · cold green · cast-artifact              A real-looking minted metal medallion, a controlled cast and not glossy CGI: hammer-struck and scarred, yet denser and harder for the blows, with a single green line of light showing through a hairline crack. Real metal, patina, one museum key-light as the sole light. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 38,
+    "prompt": "38 · WEST · cold green · intaglio + cat aperture              A fine-line intaglio: a deep well or abyss seen from above, a single green eye gazing steadily back from the bottom, the well-walls&apos; fine line scaled like a serpent. Stage it through a cat silhouette (pointed ears, one green eye-glint) hidden at the rim. The returning eye is the sole matrix-green light; trace-DNA walls. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 39,
+    "prompt": "39 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: an open human palm held toward us, a heart carved into the palm&apos;s centre entirely from trace routing; a vermilion glow wells up out of the palm and lights the gaps between the fingers — the heart is the source of both the envy and the light. The palm-glow is the sole light; trace-DNA, banknote texture. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 40,
+    "prompt": "40 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a finely engraved serpent coiled into the exact shape of a heart, a single vermilion point at the flickering tongue; the whole composition still, grave, and held in large negative space at the right for a tall column of type. Trace-DNA in the scales; the tongue-point is the sole vermilion light. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 41,
+    "prompt": "41 · WEST · cold green · intaglio              A fine-line intaglio: a single solitary reed bending in wind, its slender stalk filled with a bundle of ultrafine trace-nerves; earth and sky around it left vast and open. One green light low at the horizon is the sole light; trace-DNA in the stalk, much negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 42,
+    "prompt": "42 · WEST · cold green · intaglio              A fine-line intaglio: an old loom on which a dim human form — a &quot;dream called life&quot; — is being woven out of fine threads that, up close, are PCB trace; the shuttle mid-pass. One green glow at the shuttle is the sole light; trace-DNA threads, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 43,
+    "prompt": "43 · WEST · cold green · intaglio              A fine-line intaglio: a balance scale holding a small engraved seal-stone of &quot;joy&quot; on one pan and &quot;sorrow&quot; on the other, the beam resting almost perfectly level — neither as much as imagined. One green point of light at the central pivot is the sole light; trace-DNA in the scale. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 44,
+    "prompt": "44 · WEST · cold green · intaglio              A fine-line intaglio: a row of identical bowed-head human silhouettes, uniform and patient; one alone lifts its head, a single green point at its brow. The lifted brow is the sole matrix-green light; trace-DNA at the edges, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 45,
+    "prompt": "45 · WEST · cold green · intaglio              A fine-line intaglio: a heart expanding outward in concentric trace-rings, fresh green rings continually generating from its rim — it grows larger the more it gives. The growing rings carry the sole matrix-green light; trace-DNA, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 46,
+    "prompt": "46 · WEST · cold green · intaglio              A fine-line intaglio: a very small human figure standing before an immense darkness, the silent void around it sketched in sparse engraved line; a single cold-green spark hangs in the vast dark as the sole light. Overwhelming negative space, trace-DNA only at the spark. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 47,
+    "prompt": "47 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: two engraved hedgehogs facing each other, their quills just touching; a single vermilion line runs between them that is at once warmth and wound. The line is the sole vermilion light; trace-DNA in the quills, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 48,
+    "prompt": "48 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a plain, spare room; no one lies stiff on the mat — there is only an empty cushion and a single thread of warm light, composure written entirely through absence and not-doing. One vermilion glow is the sole light; trace-DNA at the edges, generous negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 49,
+    "prompt": "49 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a shop-window holding a doll whose face resembles the viewer&apos;s; on the glass, the gazer&apos;s own outline is superimposed as a faint reflection, the two faces overlapping. One vermilion glow caught in the pane is the sole light; trace-DNA in the window frame. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 50,
+    "prompt": "50 · WEST · cold green · intaglio              A fine-line intaglio: an emptied altar or shrine-niche, and where the deity once stood, only a single cold-green ember of light remaining; the surroundings matte and silent. That ember is the sole matrix-green light; trace-DNA in the niche carving. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 51,
+    "prompt": "51 · WEST · cold green · intaglio + rabbit aperture              A fine-line intaglio: a single footpath laid into the void and receding to a vanishing point, the path itself paved from falling Kairma glyphs (not katakana) that read as engraved line; at its near end stands a guiding rabbit silhouette, long ears, half-stepping across a threshold, one green eye-glint. The path&apos;s glow is the sole matrix-green light; clean negative space ahead for type. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 52,
+    "prompt": "52 · EAST · warm vermilion · blueprint              A precise blueprint on rice-paper cream tone: a circuit-and-road map dense with forking crossroads, each crossroad-node lit by one vermilion point, with no single destination resolved — the future as branch, not line. Flat draughtsman&apos;s line, chip-form nodes. The nodes carry the sole vermilion light. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 53,
+    "prompt": "53 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a single threshold or doorway, and beyond it nothing but pure paper negative space; the door-frame&apos;s fine line is deliberately broken at the lintel, so the boundary between life and death is rendered as the unengraved void itself. One vermilion glow at the sill is the sole light; trace-DNA in the frame. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 54,
+    "prompt": "54 · WEST · cold green · intaglio              A fine-line intaglio: at dusk, an owl taking wing from a bare branch, its feather-vanes resolving into PCB trace; only the late green twilight behind it gives form. That twilight is the sole matrix-green light; banknote hatching, negative space, trace-DNA in the wings. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 55,
+    "prompt": "55 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a small cart travelling a narrow causeway strung between two worlds — this shore and the far shore — the causeway itself drawn as a single vermilion thread joining the two banks. That thread is the sole vermilion light; trace-DNA, negative space on both sides. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 56,
+    "prompt": "56 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a war-drum seen straight on, its drumhead patterned in concentric trace routing; a single strike radiates one clean ring of vermilion sound outward across the head. That ring is the sole vermilion light; trace-DNA in the head. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 57,
+    "prompt": "57 · EAST · warm vermilion · intaglio (CRT register)              A fine intaglio on rice-paper cream with a faint scanline texture: within the curved field of a CRT, a vermilion-toned glyph field held perfectly still at &quot;the present&quot; — time pinned to the now, neither falling nor rising. One vermilion glow is the sole light; negative space for type. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 58,
+    "prompt": "58 · WEST · cold green · intaglio              A fine-line intaglio: an hourglass, the fine sand between its two chambers falling as engraved trace-line; a single green point caught at the narrow neck marks the present moment. That neck-point is the sole matrix-green light; trace-DNA in the falling sand, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 59,
+    "prompt": "59 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: deep in a forest, the side-profile of a lone elephant walking, the canopy and undergrowth resolving into PCB trace; one vermilion glow at the elephant&apos;s heart burns like a carried lamp. That heart-glow is the sole vermilion light; trace-DNA, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 60,
+    "prompt": "60 · EAST · warm vermilion · intaglio + rabbit aperture (boot-screen twin)              A fine intaglio on rice-paper cream: a lone path going forward through a soft fall of warm glyph-line (not katakana), with only a single rabbit silhouette walking ahead and no one behind — composed to twin a dark OS boot screen. The path-fall carries the sole vermilion light; long negative space reserved for boot-type. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 61,
+    "prompt": "61 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a wary, ears-raised elephant standing alone in a forest, stillness all around, the fine lines at its feet drawing a protective ring. One vermilion glow is the sole light; trace-DNA, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 62,
+    "prompt": "62 · WEST · cold green · intaglio              A fine-line intaglio against void near-black: a single spoon dissolving, edge-first, into falling Kairma glyphs (not katakana) — the object reverting to symbol before our eyes. The dissolving glyphs carry the sole matrix-green light; strong negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 63,
+    "prompt": "63 · WEST · cold green · intaglio              A minimal fine-line intaglio: dusk, a single winged silhouette crossing the sky, everything else left as negative space; a faint green afterglow at the horizon is the sole light. Trace-DNA only at the wing&apos;s leading edge. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 64,
+    "prompt": "64 · WEST · cold green · intaglio              A fine-line intaglio: a human heart being measured by a precise vernier caliper whose graduations resolve into trace; yet beyond the jaws of the caliper a soft, immeasurable halo of green glow persists, escaping all measurement. The halo is the sole matrix-green light; trace-DNA in the caliper. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 65,
+    "prompt": "65 · WEST · cold green · intaglio              A fine-line intaglio: three fine threads — faith, hope, love — interwoven across the plate, the &quot;love&quot; thread visibly the thickest and brightest, running through and binding the other two. The love-thread carries the sole matrix-green light; trace-DNA, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 66,
+    "prompt": "66 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: an old letter that was never folded shut, its ink somehow forever fresh; the paper grain resolves into fine trace, and one vermilion wax seal sits unopened at its foot. The seal is the sole vermilion light; quiet, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 67,
+    "prompt": "67 · WEST · cold green · intaglio              A fine-line intaglio: a hand cupping and releasing a slow handful of sand, the grains slipping between the fingers, each grain a tiny engraved chip — beyond all counting. One green glow rakes the falling sand as the sole light; trace-DNA, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 68,
+    "prompt": "68 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a hollow eye-socket turned upward to a night sky, the stars resolving into tiny chip-form trace-nodes, and one vermilion point hanging at the very heart of the sky. That point is the sole vermilion light; trace-DNA, vast negative sky for type. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 69,
+    "prompt": "69 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: above, a wounded bird that draws every eye; below, in the water, a wounded fish that no one regards; the single vermilion light falls only on the fish&apos;s unseen wound. Trace-DNA in both, deep negative space between. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 70,
+    "prompt": "70 · WEST · cold green · intaglio              A fine-line intaglio: an open hand held out in night rain, the rain-lines running off the palm, each thread of rain resolving up close into a single fading memory-trace. One cold-green light catches the falling rain as the sole light; trace-DNA, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 71,
+    "prompt": "71 · WEST · cold green · intaglio              A fine-line intaglio: a geometric love-knot built from countless equal-length fine lines joining two fixed points, intricate, symmetrical, almost a banknote rosette — geometry standing in for an immeasurable bond. One green glow at the knot&apos;s centre is the sole light; trace-DNA. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 72,
+    "prompt": "72 · WEST · cold green · intaglio              A fine-line intaglio: two faces about to meet across a dim mirror, the glass clearing at a single point to let one thread of green through — now darkly, then face to face. That clearing thread is the sole matrix-green light; trace-DNA in the mirror frame, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 73,
+    "prompt": "73 · WEST · cold green · intaglio              A fine-line intaglio: a single falling leaf returning to the earth, its veins resolving into trace; in the soil beneath it, a small green warmth that will not go out. That buried warmth is the sole matrix-green light; trace-DNA, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 74,
+    "prompt": "74 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a marionette hanging still, a single vermilion thread still connecting it to the bar above; the thread, up close, is a PCB trace. That thread is the sole vermilion light; trace-DNA, quiet, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 75,
+    "prompt": "75 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a mirror reflecting two leaning, interdependent silhouettes; at the base of the frame the fine lines become a pair of clasped, interlaced traces — love read as Creation, not as demon. One vermilion glow is the sole light; trace-DNA, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 76,
+    "prompt": "76 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a row of marionettes hanging from the top of a stage-cart; the rightmost one&apos;s single string has snapped, and it is coming apart in mid-air, the others poised to fall. One vermilion glow is the sole light; trace-DNA in the strings, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 77,
+    "prompt": "77 · WEST · cold green · intaglio              A fine-line intaglio: a neon reflection lying in a rain-puddle, shattered by a single falling drop; a cold-green glow spreads outward with the ripple and is already vanishing. The ripple carries the sole matrix-green light; trace-DNA in the rings. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 78,
+    "prompt": "78 · WEST · cold green · intaglio              A fine-line intaglio: a sky of falling autumn leaves, each leaf&apos;s veins a circuit trace, all descending toward a dark mass of chaos at the foot of the plate; one slanting green light cuts across them as the sole light. Trace-DNA, banknote texture, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 79,
+    "prompt": "79 · WEST · cold green · intaglio              A fine-line intaglio: a single incense stick almost burnt out, its rising smoke resolving into trace and drifting away into negative space; one green point at the ember-tip is the sole light. Quiet, archival, much negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 80,
+    "prompt": "80 · WEST · cold green · intaglio              A fine-line intaglio: a bank of memory modules being pulled out one by one, a machine-eye&apos;s cold-green light dimming cell by cell until only one faint point remains lit. That last point is the sole matrix-green light; trace-DNA in the modules. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 81,
+    "prompt": "81 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: the very instant a persimmon drops from a bare branch, the crows scattering in every direction, leaving an empty branch and one vermilion afterglow on the horizon. That afterglow is the sole light; trace-DNA in the branch, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 82,
+    "prompt": "82 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a mountain&apos;s outline overprinted as three successively weathered ghost-silhouettes, each fainter than the last; deep in its bones a single trace fading toward nothing. One vermilion glow is the sole light; trace-DNA, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 83,
+    "prompt": "83 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a face-reflection on a mirror that is at once just appearing and already fading, half real and half void; only a wisp of vermilion remains of it. That wisp is the sole light; trace-DNA in the frame, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 84,
+    "prompt": "84 · WEST · cold green · intaglio              A fine-line intaglio: a single reed bent to its absolute limit in a gale, about to break but not yet broken, its feathery plume scattering away into drifting trace-fragments. One green light low at the horizon is the sole light; trace-DNA, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 85,
+    "prompt": "85 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a ring of empty, applauding hand-shadows clapping toward someone unseen, encircling a central void; one lonely vermilion light at the centre. The centre-light is the sole light; trace-DNA in the hands, strong emptiness. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 86,
+    "prompt": "86 · WEST · cold green · intaglio              A fine-line intaglio: an orderly circuit-mandala beginning to disintegrate from its outer edge into formless, scattered points (entropy made visible), while at its very centre one green point of light still holds, still resisting. That centre is the sole matrix-green light; trace-DNA dissolving outward. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 87,
+    "prompt": "87 · WEST · cold green · intaglio              A fine-line intaglio: an incoming tide smoothing flat countless tiny chip-engravings pressed into wet sand; one green dusk-light rakes the wet sand as the sole light. Trace-DNA in the sand, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 88,
+    "prompt": "88 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a double-exposure of a cyber-city caught between ruin and rebuilding, round upon round; at the foundation, one vermilion point that is at once birth and destruction. That point is the sole light; trace-DNA in the structure. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 89,
+    "prompt": "89 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a great elephant walking alone deep in a forest, its back to us, calm and grave; the forest shadow resolving into trace, and one vermilion glow at the elephant&apos;s heart. That heart-glow is the sole light; an optional tiny rabbit silhouette far off in the branches; trace-DNA, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 90,
+    "prompt": "90 · EAST · warm vermilion · intaglio + rabbit aperture (boot-screen twin)              A fine intaglio on rice-paper cream: a lone path through a soft fall of warm glyph-line (not katakana), with only a single rabbit silhouette (long ears, one vermilion eye-glint) walking ahead and no one behind — twinning the dark OS boot screen. The path carries the sole vermilion light; large negative space reserved for boot-type. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 91,
+    "prompt": "91 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a bird at the zenith of the sky and a fish at the depth of the water, each unseen by the other, each keeping to its own way; an immense calm of cream negative space between them. One small vermilion glow is the sole light; trace-DNA at the edges. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 92,
+    "prompt": "92 · WEST · cold green · intaglio + cat aperture              A fine-line intaglio: a single solitary relic-apparatus standing on an empty wasteland, no one anywhere around, one green dusk-glow within it. Stage it through a cat silhouette (pointed ears, one green eye-glint) standing in the relic&apos;s long shadow. That dusk-glow is the sole matrix-green light; trace-DNA, vast negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 93,
+    "prompt": "93 · WEST · cold green · intaglio              A fine-line intaglio: the silhouette of a single seated figure facing a whole slowly-flowing wall of data, alone in a dark room; only one green point of light shows in his eye. That eye-point is the sole matrix-green light; trace-DNA in the data wall, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 94,
+    "prompt": "94 · WEST · cold green · intaglio + cat aperture              A fine-line intaglio: a person standing alone at the very edge of an abyss, back to us, perfectly calm; a single green eye gazes back from the depth below. Overlay a cat silhouette (pointed ears, one green eye-glint) upon the figure. The returning eye is the sole matrix-green light; trace-DNA. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 95,
+    "prompt": "95 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: the back of a lone walker vanishing into a boundless warm sea of data made of falling glyph-line (not katakana), no signposts ahead, only the fall. One vermilion glow is the sole light; strong negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 96,
+    "prompt": "96 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: a single seating-mat in the corner of an empty room, the light and shadow upright and composed — measure kept even when wholly alone. One vermilion glow is the sole light; trace-DNA at the edges, large negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 97,
+    "prompt": "97 · WEST · cold green · intaglio + rabbit aperture              A fine-line intaglio: among a row of identical bowed-head silhouettes, one alone lifts its head, turns, and walks out of the frame; that lone walker is rendered as a rabbit silhouette (long ears, one green eye-glint), a single green point at the brow. The brow-point is the sole matrix-green light; trace-DNA, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 98,
+    "prompt": "98 · WEST · cold green · intaglio + cat aperture              A fine-line intaglio: a black-cat aperture rendered as a deliberately misregistered, two-colour offset double-silhouette, sitting alone in the void, one green eye-glint — present and not-present at once, a superposition. The eye-glint is the sole matrix-green light; trace-DNA filling the silhouette, negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 99,
+    "prompt": "99 · WEST · cold green · intaglio + rabbit aperture              A fine-line intaglio: a white-rabbit aperture (long ears, one green eye-glint) caught half-stepping across a glowing threshold, a fall of glyph-line (not katakana) behind it and an unknown field of pure negative space ahead. The threshold carries the sole matrix-green light; strong negative space. [WEST — Matrix Mode] + GLOBAL NEGATIVES"
+  },
+  {
+    "num": 100,
+    "prompt": "100 · EAST · warm vermilion · intaglio              A fine intaglio on rice-paper cream: the back of a lone walker heading into dusk, carrying in their arms an old letter that was never folded shut; beneath their feet the fine lines become PCB trace, and one vermilion glow burns like a carried lantern. That lantern-glow is the sole light; trace-DNA, negative space. [EAST — Xuan Mode] + GLOBAL NEGATIVES"
+  }
+]

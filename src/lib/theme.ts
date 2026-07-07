@@ -19,24 +19,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(THEME_KEY) as Theme | null;
-    let initialTheme: Theme = "matrix-mode";
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem(THEME_KEY) as Theme | null;
+      let initialTheme: Theme = "matrix-mode";
 
-    if (saved === "matrix-mode" || saved === "xuan-mode") {
-      initialTheme = saved;
-    } else {
-      const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-      initialTheme = prefersLight ? "xuan-mode" : "matrix-mode";
-    }
+      if (saved === "matrix-mode" || saved === "xuan-mode") {
+        initialTheme = saved;
+      } else {
+        const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+        initialTheme = prefersLight ? "xuan-mode" : "matrix-mode";
+      }
 
-    setThemeState(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
-    if (initialTheme === "xuan-mode") {
-      document.documentElement.classList.add("xuan-mode");
-    } else {
-      document.documentElement.classList.remove("xuan-mode");
-    }
-    setMounted(true);
+      setThemeState(initialTheme);
+      document.documentElement.setAttribute("data-theme", initialTheme);
+      if (initialTheme === "xuan-mode") {
+        document.documentElement.classList.add("xuan-mode");
+      } else {
+        document.documentElement.classList.remove("xuan-mode");
+      }
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const setTheme = useCallback((newTheme: Theme) => {

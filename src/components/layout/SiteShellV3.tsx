@@ -80,10 +80,10 @@ const InteractiveBootBox: React.FC<{
       
       <div className="relative z-20 flex-1 flex flex-col justify-between w-full h-full mx-auto p-6 md:p-8 overflow-y-auto no-scrollbar">
         <div className="flex flex-col justify-between flex-1 gap-4 w-full h-full font-mono select-none animate-in fade-in duration-500">
-          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
+          <div className="text-sm md:text-base font-normal md:font-medium tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
             <EyebrowText 
               text={siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"} 
-              className="font-mono text-sm md:text-base font-bold tracking-widest text-theme-accent/80 uppercase whitespace-pre-line" 
+              className="font-mono text-sm md:text-base font-normal md:font-medium tracking-widest text-theme-accent/80 uppercase whitespace-pre-line" 
               capitalClassName="font-gothic font-normal text-lg md:text-xl tracking-wide text-theme-accent inline" 
             />
           </div>
@@ -576,8 +576,7 @@ export const SiteShellV3: React.FC = () => {
         className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32 overflow-x-hidden"
       >
         
-        {bootPhase === "ready" && (
-          <div className="flex flex-col gap-12 md:gap-24 fade-in">
+        <div className="flex flex-col gap-12 md:gap-24 fade-in">
         <BentoGrid>
           {/* Row 1 */}
           {/* 00: The Anchor (Hero Command Card) */}
@@ -935,7 +934,7 @@ export const SiteShellV3: React.FC = () => {
             </div>
             {siteCopy.moats.routing_strip && (
               <div className="mt-8 pt-4 border-t border-theme-border/20 flex items-center justify-center text-center">
-                <p className="font-mono text-xs md:text-sm text-theme-text font-bold tracking-wide">
+                <p className="font-mono text-xs md:text-sm text-theme-text font-normal md:font-medium tracking-wide">
                   {siteCopy.moats.routing_strip}
                 </p>
               </div>
@@ -1181,8 +1180,7 @@ export const SiteShellV3: React.FC = () => {
             )}
           </OSCard>
         </BentoGrid>
-          </div>
-        )}
+        </div>
       </motion.main>
 
       {/* Close the content curtain. */}

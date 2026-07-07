@@ -138,7 +138,7 @@ export const SonicVocabularyCard: React.FC = () => {
   const [activeIdx, setActiveIdx] = useState<number>(0);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [visualizerBars, setVisualizerBars] = useState<number[]>(
+  const [visualizerBars, setVisualizerBars] = useState<number[]>(() =>
     Array.from({ length: 16 }, () => Math.floor(Math.random() * 40) + 15)
   );
 

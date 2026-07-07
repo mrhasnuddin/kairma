@@ -112,16 +112,13 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
     return { charData: data, charCount: globalCharIndex };
   }, [tokens]);
 
-  const revealOrder = useMemo(() => {
+  useEffect(() => {
     const indices = Array.from({ length: charCount }, (_, i) => i);
     for (let i = indices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [indices[i], indices[j]] = [indices[j], indices[i]];
     }
-    return indices;
-  }, [charCount]);
-
-  useEffect(() => {
+    const revealOrder = indices;
     let startTimestamp: number | null = null;
     let animationFrameId: number;
     let lastRevealedCount = 0;
@@ -140,12 +137,6 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
       const charsToReveal = Math.floor(progress * charCount);
 
       if (charsToReveal > lastRevealedCount) {
-        // play click sound (if we uncomment it later)
-        // const newlyRevealedCount = charsToReveal - lastRevealedCount;
-        // for (let i = 0; i < newlyRevealedCount; i++) {
-        //   playKeystrokeClick();
-        // }
-
         setRevealedIndices(prev => {
           const next = new Set(prev);
           for (let i = 0; i < charsToReveal; i++) {
@@ -164,7 +155,7 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
     animationFrameId = requestAnimationFrame(step);
 
     return () => cancelAnimationFrame(animationFrameId);
-  }, [duration, delay, revealOrder, charCount]);
+  }, [duration, delay, charCount]);
 
   return (
     <span>
@@ -199,7 +190,7 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
 
 
 export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
-  const [quote, setQuote] = useState<GuanQuote | null>(null);
+  const [quote] = useState<GuanQuote>(() => guanCodex[Math.floor(Math.random() * 15)]);
   const [isVisible, setIsVisible] = useState(true);
   const [isFading, setIsFading] = useState(false);
   const [step, setStep] = useState(0);
@@ -213,9 +204,6 @@ export function GuanFrontispiece({ onComplete }: { onComplete: () => void }) {
   };
 
   useEffect(() => {
-    // Picking a random quote from the first 15 (indices 0 to 14) since we have 15 thumbnails generated
-    const randomQuote = guanCodex[Math.floor(Math.random() * 15)];
-    setQuote(randomQuote);
 
     // Boot sequence steps
     const t1 = setTimeout(() => setStep(1), 500); // logo flickers in

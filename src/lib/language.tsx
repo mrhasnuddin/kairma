@@ -22,11 +22,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(LANGUAGE_KEY) as Language | null;
-    if (saved === "en" || saved === "zh-TW" || saved === "vi" || saved === "ms" || saved === "ko" || saved === "ja") {
-      setLanguageState(saved);
-    }
-    setMounted(true);
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem(LANGUAGE_KEY) as Language | null;
+      if (saved === "en" || saved === "zh-TW" || saved === "vi" || saved === "ms" || saved === "ko" || saved === "ja") {
+        setLanguageState(saved);
+      }
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const setLanguage = useCallback((newLang: Language) => {
