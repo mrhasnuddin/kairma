@@ -31,7 +31,9 @@ export function FallingPattern({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d", { alpha: false });
+    // Transparent canvas — the page (content curtain / footer) provides the
+    // backdrop; trails fade toward transparency, not toward a bg color.
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animationId: number;
@@ -113,9 +115,6 @@ export function FallingPattern({
     const colors = resolveColors();
     const rgb = parseRGB(colors.accent);
 
-    ctx.fillStyle = `rgb(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]})`;
-    ctx.fillRect(0, 0, width, height);
-
     const draw = (timestamp: number) => {
       animationId = requestAnimationFrame(draw);
 
@@ -124,9 +123,12 @@ export function FallingPattern({
 
       const isDark = theme === "matrix-mode";
 
-      // Fade effect (trail) - lower alpha leaves longer glowing tails
-      ctx.fillStyle = `rgba(${colors.bg[0]}, ${colors.bg[1]}, ${colors.bg[2]}, 0.055)`;
+      // Fade effect (trail) — erase toward transparency so the canvas never
+      // becomes an opaque wall (the fixed reveal-footer sits behind it).
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.055)";
       ctx.fillRect(0, 0, width, height);
+      ctx.globalCompositeOperation = "source-over";
 
       ctx.font = `bold ${fontSize}px var(--font-serif), monospace`; // Use serif for literary canon, fallback to mono
       ctx.textAlign = "center";

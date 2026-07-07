@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { StickyNav } from "./StickyNav";
+import { KairmaFooter, FOOTER_REVEAL_HEIGHT } from "./KairmaFooter";
 import { BurnStream } from "@/components/ui/BurnStream";
 import { BentoGrid } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
@@ -145,6 +146,10 @@ export const SiteShellV3: React.FC = () => {
   const [deploymentWorksOpen, setDeploymentWorksOpen] = useState(false);
   const [ipLocation, setIpLocation] = useState<{city: string, region: string, country: string, timezone: string} | null>(null);
   const [bootPhase, setBootPhase] = useState<"guan" | "terminal" | "ready">("guan");
+  // Rain fades out while the reveal footer is uncovered — it shouldn't
+  // compete with the footer for focus.
+  const runwayRef = useRef<HTMLDivElement | null>(null);
+  const [footerInView, setFooterInView] = useState(false);
   const [isDeployHovered, setIsDeployHovered] = useState(false);
   const handleGuanComplete = useCallback(() => setBootPhase("ready"), []);
   const handleBootComplete = useCallback(() => setBootPhase("ready"), []);
@@ -256,6 +261,18 @@ export const SiteShellV3: React.FC = () => {
       window.removeEventListener("focus", onFocus);
     };
   }, []);
+
+  // Watch the footer scroll runway; fade the rain while it's on screen.
+  useEffect(() => {
+    const el = runwayRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setFooterInView(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [bootPhase]);
 
   const triggerCrt = () => {
     window.dispatchEvent(new CustomEvent('crt-flash'));
@@ -527,9 +544,16 @@ export const SiteShellV3: React.FC = () => {
 
   return (
     <div className={`relative w-full min-h-[100dvh] transition-colors duration-1000 ${theme === "matrix-mode" ? "bg-theme-void" : "bg-theme-void"}`}>
-      
-      {/* Background Matrix Rain */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
+
+      {/* Reveal footer — fixed layer UNDER the content curtain (Hermes-style).
+          The scroll runway after the curtain uncovers it. */}
+      <KairmaFooter />
+
+      {/* Content curtain — opaque layer that scrolls up over the footer. */}
+      <div className="relative z-10 bg-theme-void transition-colors duration-1000">
+
+      {/* Background Matrix Rain — fades away while the footer is revealed. */}
+      <div className={`fixed inset-0 z-0 pointer-events-none transition-opacity duration-700 ${footerInView ? "opacity-0" : "opacity-100"}`}>
         <FallingPattern opacity={0.4} speed={1.15} />
       </div>
 
@@ -1160,6 +1184,12 @@ export const SiteShellV3: React.FC = () => {
           </div>
         )}
       </motion.main>
+
+      {/* Close the content curtain. */}
+      </div>
+
+      {/* Scroll runway — empty space whose scroll uncovers the fixed footer. */}
+      {bootPhase === "ready" && <div ref={runwayRef} aria-hidden style={{ height: FOOTER_REVEAL_HEIGHT }} />}
 
       {/* Model Detail Popup Modal */}
       <AnimatePresence>
