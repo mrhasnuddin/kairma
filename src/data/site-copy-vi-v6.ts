@@ -10,13 +10,13 @@ export const siteCopyViV6: SiteCopyTypeV6 = {
   wordmark: "Kairma",
   hero_left: {
     h1: "Chúng tôi không giao AI cho bạn. Chúng tôi triển khai nó vào vận hành của bạn.",
-    sub: "Nhân viên số AI, triển khai tiền tuyến (FDE) vào mọi thị trường bạn bước vào. Kết quả, không phải đầu người. Chủ quyền dữ liệu, ở phía bạn.",
+    sub: "Nhân viên AI, triển khai tiền tuyến (FDE) vào mọi thị trường bạn bước vào. Kết quả, không phải đầu người. Chủ quyền dữ liệu, ở phía bạn.",
     cta_1: "Yêu cầu chạy thử →",
     cta_2: "Cách triển khai vận hành"
   },
   hero_center: {
-    h1: "Nhân viên số AI triển khai tiền tuyến cho thị trường bạn mở rộng.",
-    body: "Chúng tôi không trao công cụ rồi rời đi. Một đội triển khai tiền tuyến đưa lực lượng này vào vận hành của bạn — và ở lại cho đến khi nó tạo ra kết quả."
+    h1: "Làm chủ lực lượng lao động AI. Nắm giữ chìa khóa.",
+    body: "Nhân viên AI được triển khai tiền phương vào các hoạt động xuyên biên giới. Chạy hướng tới kết quả. Kairma giữ sổ nhân quả."
   },
   fde_annotation: {
     body: "↳ FDE — Forward-Deployed Engineering (kỹ thuật triển khai tiền tuyến). Thay vì giao phần mềm rồi rời đi, chúng tôi cử một đội ở phía bạn chịu trách nhiệm về kết quả, biến sản phẩm thành kết quả, rồi đưa những gì học được trở lại nền tảng. Ngắn hạn là chi phí; dài hạn là R&D khiến mỗi lần triển khai sau rẻ hơn. (Khởi xướng bởi Palantir; nay phổ biến trong AI doanh nghiệp.)"
@@ -45,7 +45,7 @@ export const siteCopyViV6: SiteCopyTypeV6 = {
   },
   dev_smithy: {
     label: "DÀNH CHO NHÀ PHÁT TRIỂN",
-    h: "Rèn nhân viên số AI tiếp theo trong the Smithy (lò rèn của nhà phát triển).",
+    h: "Rèn nhân viên AI tiếp theo trong the Smithy (lò rèn của nhà phát triển).",
     body: "Logic của bạn chạy niêm phong trong the Keep — vẫn là của bạn. Chúng tôi triển khai nó vào vận hành thực.",
     cta: "Xem tài liệu →"
   },
@@ -56,7 +56,7 @@ export const siteCopyViV6: SiteCopyTypeV6 = {
     cta: "Yêu cầu chạy thử →"
   },
   workforce_rail: {
-    h: "Những nhân viên số AI đầu tiên của bạn — được triển khai, không phải tải về.",
+    h: "Những nhân viên AI đầu tiên của bạn — được triển khai, không phải tải về.",
     items: "KOL BD (phát triển kinh doanh KOL) — Sẵn sàng chạy thử ● · Vận hành nội dung — Đã cấu hình FDE ● · Chăm sóc khách hàng — Đang phát triển ● · Tuân thủ — Runtime riêng tư ●"
   },
   footer: {

@@ -2,12 +2,14 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { StickyNav } from "./StickyNav";
+import { KairmaFooter, FOOTER_REVEAL_HEIGHT } from "./KairmaFooter";
 import { BurnStream } from "@/components/ui/BurnStream";
 import { BentoGrid } from "./Bento";
 import { OSCard } from "@/components/ui/OSCard";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { BulletinCarousel } from "@/components/ui/BulletinCarousel";
+import { MoatsAccordion } from "@/components/ui/MoatsAccordion";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import CpuIcon from "@/components/ui/cpu-icon";
@@ -26,6 +28,9 @@ import { useLanguage, useSiteCopyV6 } from "@/lib/language";
 import { Language } from "@/data/site-translations";
 import { GuanFrontispiece } from "@/components/visual/GuanFrontispiece";
 import { BoxHeadline } from "@/components/ui/BoxHeadline";
+import { EyebrowText } from "@/components/ui/EyebrowText";
+import { PilotModal } from "@/components/modal/PilotModal";
+import { HowDeploymentWorksModal } from "@/components/modal/HowDeploymentWorksModal";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -41,7 +46,9 @@ const InteractiveBootBox: React.FC<{
   triggerCrt: () => void;
   getLangLabel: (lang: Language) => string;
   className?: string;
-}> = ({ language, setLanguage, triggerCrt, getLangLabel, className }) => {
+  reveal?: "left" | "right" | "bottom";
+  revealDelay?: number;
+}> = ({ language, setLanguage, triggerCrt, getLangLabel, className, reveal, revealDelay }) => {
   const { theme } = useTheme();
   const siteCopy = useSiteCopyV6();
 
@@ -51,7 +58,7 @@ const InteractiveBootBox: React.FC<{
   };
 
   return (
-    <OSCard className={`relative flex flex-col min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
+    <OSCard reveal={reveal} revealDelay={revealDelay} className={`relative flex flex-col min-h-[300px] md:min-h-[350px] bg-theme-void text-theme-accent font-mono border-theme-border shadow-[inset_0_0_100px_rgba(31,170,104,0.05)] overflow-hidden ${className || ""}`}>
       {/* CRT Scanlines Overlay */}
       <div className={`absolute inset-0 bg-[length:100%_4px] pointer-events-none z-10 ${
         theme === "xuan-mode" 
@@ -73,8 +80,12 @@ const InteractiveBootBox: React.FC<{
       
       <div className="relative z-20 flex-1 flex flex-col justify-between w-full h-full mx-auto p-6 md:p-8 overflow-y-auto no-scrollbar">
         <div className="flex flex-col justify-between flex-1 gap-4 w-full h-full font-mono select-none animate-in fade-in duration-500">
-          <div className="text-sm md:text-base font-bold tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
-            {siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"}
+          <div className="text-sm md:text-base font-normal md:font-medium tracking-widest text-theme-accent/80 leading-relaxed uppercase whitespace-pre-line pb-2 border-b border-theme-border/30">
+            <EyebrowText 
+              text={siteCopy.bios_locale?.label || "KAIRMA OS BIOS v1.0\nLOCALE SETTINGS:"} 
+              className="font-mono text-sm md:text-base font-normal md:font-medium tracking-widest text-theme-accent/80 uppercase whitespace-pre-line" 
+              capitalClassName="font-gothic font-normal text-lg md:text-xl tracking-wide text-theme-accent inline" 
+            />
           </div>
           <div className="grid grid-cols-2 gap-3 md:gap-4 flex-1 my-2 content-stretch">
             {(["en", "zh-TW", "vi", "ms", "ko", "ja"] as Language[]).map(l => {
@@ -85,8 +96,8 @@ const InteractiveBootBox: React.FC<{
                   onClick={() => handleNormalLanguage(l)}
                   className={`group/btn relative flex items-center justify-between px-4 py-3.5 md:py-4 rounded-xl transition-all duration-300 font-mono text-xs md:text-sm font-bold focus:outline-none backdrop-blur-sm ${
                     isActive 
-                      ? 'border border-theme-border/40 bg-theme-void text-theme-accent shadow-sm' 
-                      : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/40'
+                      ? 'border border-theme-border/70 bg-theme-void text-theme-accent shadow-sm' 
+                      : 'border border-transparent text-theme-text-muted hover:text-theme-accent hover:bg-theme-accent/10 hover:border-theme-border/70'
                   }`}
                 >
                   
@@ -132,8 +143,13 @@ export const SiteShellV3: React.FC = () => {
   const [time, setTime] = useState<Date | null>(null);
   const [crtFlash, setCrtFlash] = useState(false);
   const [pilotOpen, setPilotOpen] = useState(false);
+  const [deploymentWorksOpen, setDeploymentWorksOpen] = useState(false);
   const [ipLocation, setIpLocation] = useState<{city: string, region: string, country: string, timezone: string} | null>(null);
   const [bootPhase, setBootPhase] = useState<"guan" | "terminal" | "ready">("guan");
+  // Rain fades out while the reveal footer is uncovered — it shouldn't
+  // compete with the footer for focus.
+  const runwayRef = useRef<HTMLDivElement | null>(null);
+  const [footerInView, setFooterInView] = useState(false);
   const [isDeployHovered, setIsDeployHovered] = useState(false);
   const handleGuanComplete = useCallback(() => setBootPhase("ready"), []);
   const handleBootComplete = useCallback(() => setBootPhase("ready"), []);
@@ -246,6 +262,18 @@ export const SiteShellV3: React.FC = () => {
     };
   }, []);
 
+  // Watch the footer scroll runway; fade the rain while it's on screen.
+  useEffect(() => {
+    const el = runwayRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setFooterInView(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [bootPhase]);
+
   const triggerCrt = () => {
     window.dispatchEvent(new CustomEvent('crt-flash'));
   };
@@ -260,7 +288,7 @@ export const SiteShellV3: React.FC = () => {
     "system_online":        { en: "System: Online",        "zh-TW": "系統狀態: 上線",     vi: "Hệ thống: Trực tuyến",           ms: "Sistem: Dalam Talian", ja: "システム: オンライン", ko: "시스템: 온라인" },
     "the_shift":            { en: "The Shift",             "zh-TW": "轉移",               vi: "Sự chuyển đổi",                  ms: "Anjakan", ja: "転換", ko: "전환" },
     // Digital Employees box
-    "digital_emp_heading":  { en: "Your first AI digital employees, deployed – not downloaded.", "zh-TW": "您的第一批 AI 數位員工，已部署，無需下載。", vi: "Nhân viên kỹ thuật số AI đầu tiên — được triển khai, không phải tải xuống.", ms: "Pekerja digital AI pertama anda — ditempatkan, bukan dimuat turun.", ja: "あなたの最初のAIデジタル従業員——ダウンロードではなく、配備。", ko: "당신의 첫 AI 디지털 직원 — 다운로드가 아니라 배치." },
+    "digital_emp_heading":  { en: "Your first AI employees, deployed – not downloaded.", "zh-TW": "您的第一批 AI 員工，已部署，無需下載。", vi: "Nhân viên AI đầu tiên — được triển khai, không phải tải xuống.", ms: "Pekerja AI pertama anda — ditempatkan, bukan dimuat turun.", ja: "あなたの最初のAI従業員——ダウンロードではなく、配備。", ko: "당신의 첫 AI 직원 — 다운로드가 아니라 배치." },
     "pilot_ready":          { en: "Pilot-ready",           "zh-TW": "試點就緒",           vi: "Sẵn sàng thử nghiệm",            ms: "Sedia perintis", ja: "パイロット可", ko: "파일럿 준비" },
     "fde_configured":       { en: "FDE configured",        "zh-TW": "已配置 FDE",         vi: "Đã cấu hình FDE",                ms: "FDE dikonfigurasi", ja: "FDE構成済み", ko: "FDE 구성됨" },
     "customer_care":        { en: "Customer Care",         "zh-TW": "客戶服務",           vi: "Chăm sóc khách hàng",            ms: "Khidmat Pelanggan", ja: "カスタマーケア", ko: "고객 지원" },
@@ -516,9 +544,16 @@ export const SiteShellV3: React.FC = () => {
 
   return (
     <div className={`relative w-full min-h-[100dvh] transition-colors duration-1000 ${theme === "matrix-mode" ? "bg-theme-void" : "bg-theme-void"}`}>
-      
-      {/* Background Matrix Rain */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
+
+      {/* Reveal footer — fixed layer UNDER the content curtain (Hermes-style).
+          The scroll runway after the curtain uncovers it. */}
+      <KairmaFooter />
+
+      {/* Content curtain — opaque layer that scrolls up over the footer. */}
+      <div className="relative z-10 bg-theme-void transition-colors duration-1000">
+
+      {/* Background Matrix Rain — fades away while the footer is revealed. */}
+      <div className={`fixed inset-0 z-0 pointer-events-none transition-opacity duration-700 ${footerInView ? "opacity-0" : "opacity-100"}`}>
         <FallingPattern opacity={0.4} speed={1.15} />
       </div>
 
@@ -534,23 +569,22 @@ export const SiteShellV3: React.FC = () => {
       )}
 
       {/* --- Main Bento Grid --- */}
-      <motion.main 
-        initial={{ opacity: 0, y: 20 }}
-        animate={bootPhase === "ready" ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={bootPhase === "ready" ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
         className="relative z-10 mx-auto max-w-[1600px] w-full pt-8 md:pt-16 pb-32 overflow-x-hidden"
       >
         
-        {bootPhase === "ready" && (
-          <div className="flex flex-col gap-12 md:gap-24 fade-in">
+        <div className="flex flex-col gap-12 md:gap-24 fade-in">
         <BentoGrid>
           {/* Row 1 */}
           {/* 00: The Anchor (Hero Command Card) */}
-          <OSCard className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
+          <OSCard reveal="left" revealDelay={0.05} className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-50 pointer-events-none" />
-            <div className="relative z-10">
+            <div className="relative z-10 my-2 md:my-4">
               <div 
-                className="w-48 md:w-56 h-12 mb-6 bg-theme-text"
+                className="w-full h-16 md:h-20 lg:h-24 bg-theme-text transition-all duration-500"
                 style={{
                   WebkitMaskImage: 'url(/kairma-logo.svg)',
                   WebkitMaskSize: 'contain',
@@ -562,27 +596,15 @@ export const SiteShellV3: React.FC = () => {
                   maskPosition: 'left center',
                 }}
               />
-              <p className="font-mono text-sm tracking-tight text-theme-text font-bold mb-4">
-                {siteCopy.hero_left.h1}
-              </p>
-              <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
-                {siteCopy.hero_left.sub}
-              </p>
             </div>
             
             <div className="mt-6 relative z-10 flex flex-col justify-between flex-1">
-              <div className="group/cta">
+              <div className="group/cta mb-4">
                 <button 
                   onClick={() => setPilotOpen(true)}
-                  className="relative w-full py-3 mb-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(31,170,104,0.1)] hover:shadow-[0_0_20px_var(--color-theme-accent)]"
+                  className="relative w-full py-3 border border-theme-border/70 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(31,170,104,0.1)] hover:shadow-[0_0_20px_var(--color-theme-accent)] cursor-pointer"
                 >
                   {siteCopy.hero_left.cta_1}
-                </button>
-                <button
-                  onClick={() => setPilotOpen(true)}
-                  className="w-full text-center font-mono text-[10px] uppercase tracking-widest text-theme-text-muted hover:text-theme-accent transition-colors mb-4 block"
-                >
-                  {siteCopy.hero_left.cta_2}
                 </button>
               </div>
               <div className="flex flex-col gap-2 w-full mt-auto">
@@ -593,7 +615,7 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* 01: Main Hero Canvas */}
-          <OSCard overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
+          <OSCard reveal="right" revealDelay={0.2} overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
             <div className="w-full h-full flex flex-col md:flex-row relative">
               
               {/* Top-Right Mini Status */}
@@ -606,7 +628,7 @@ export const SiteShellV3: React.FC = () => {
               <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <h1 className="text-2xl md:text-[34px] font-mono font-bold tracking-tight mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
+                  <h1 className="text-2xl md:text-[34px] font-serif font-medium tracking-normal mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
                     <BoxHeadline text={siteCopy.hero_center.h1} />
                   </h1>
                   
@@ -645,16 +667,18 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 2 */}
           {/* 02: The Boot (Interactive Box) - 1x1 */}
-          <InteractiveBootBox 
+          <InteractiveBootBox
             language={language}
             setLanguage={setLanguage}
             triggerCrt={triggerCrt}
             getLangLabel={getLangLabel}
+            reveal="left"
+            revealDelay={0.35}
             className="col-span-1 md:col-span-1 row-span-1"
           />
 
           {/* Section 1: The Shift - 2x1 */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
+          <OSCard navId="shift" reveal="bottom" revealDelay={0.5} className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
             
             {/* Absolute background torus image hugging the right side with fade-out masks */}
             <div className="absolute top-0 right-0 bottom-0 w-[50%] md:w-[46%] pointer-events-none z-0 select-none">
@@ -672,106 +696,165 @@ export const SiteShellV3: React.FC = () => {
               />
             </div>
 
-            {/* Left Column Content: 65% width to overlay on top of bg with padding */}
-            <div className="w-full md:w-[65%] p-6 md:p-8 flex flex-col justify-between min-h-[300px] relative z-10">
-              <div>
+            {/* Full Width Content overlay on top of bg with padding */}
+            <div className="w-full p-6 md:p-8 flex flex-col justify-between min-h-[320px] relative z-10">
+              <div className="max-w-2xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
                   <span className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest">
-                    {t("the_shift")}
+                    <EyebrowText 
+                      text={t("the_shift")} 
+                      className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest" 
+                      capitalClassName="font-gothic font-normal text-sm md:text-base text-theme-accent tracking-wide inline" 
+                    />
                   </span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight text-theme-text mb-4">
+                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight text-theme-text mb-4">
                   <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
-                {siteCopy.shift.stat_strip && (
+                {siteCopy.shift.stat_strip ? (
                   <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 border border-theme-accent/30 bg-theme-accent/10 rounded-xl text-xs font-mono font-bold text-theme-accent">
                     <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
                     <span>{siteCopy.shift.stat_strip}</span>
                   </div>
-                )}
+                ) : null}
               </div>
 
               {/* Pipeline Node Flow Layout */}
-              <div className="relative w-full flex items-center justify-between my-6 py-2 px-1">
+              <div className="relative w-full flex items-center justify-between my-6 py-4 px-2 sm:px-6 bg-theme-void/80 border border-theme-border/70 rounded-2xl backdrop-blur-md shadow-[0_0_30px_rgba(31,170,104,0.05)]">
                 
-                {/* Node 0: Model Capability */}
+                {/* Node 0: Model */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 0 || pipelineState === 1
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
+                    }`}
                   >
                     <CpuIcon 
+                      ref={(el: any) => { iconRefs.current[0] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 0 || pipelineState === 1 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    {siteCopy.shift.stepper.split(/→|->/)[0]?.trim() || "Model"}
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 0 || pipelineState === 1 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
+                    {siteCopy.shift.stepper.split(/→|->/)[0]?.trim() || "Write"}
                   </span>
                 </div>
 
                 {/* Connector Line 0 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
+                <div className="flex-1 h-[3px] bg-theme-border/30 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <motion.div
+                    className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
+                    initial={{ width: "0%" }}
+                    animate={{ width: pipelineState >= 1 ? "100%" : "0%" }}
+                    transition={{ duration: pipelineState === 0 ? 0 : 1.5, ease: "easeInOut" }}
+                  >
+                    {pipelineState === 1 && (
+                      <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
+                    )}
+                  </motion.div>
                 </div>
 
-                {/* Node 1: Workflow */}
+                {/* Node 1: Ship */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 2 || pipelineState === 3
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
+                    }`}
                   >
                     <GearIcon 
+                      ref={(el: any) => { iconRefs.current[1] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 2 || pipelineState === 3 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    {siteCopy.shift.stepper.split(/→|->/)[1]?.trim() || "Workflow"}
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 2 || pipelineState === 3 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
+                    {siteCopy.shift.stepper.split(/→|->/)[1]?.trim() || "Ship"}
                   </span>
                 </div>
 
                 {/* Connector Line 1 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
+                <div className="flex-1 h-[3px] bg-theme-border/30 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <motion.div
+                    className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
+                    initial={{ width: "0%" }}
+                    animate={{ width: pipelineState >= 3 ? "100%" : "0%" }}
+                    transition={{ duration: pipelineState === 0 ? 0 : 1.5, ease: "easeInOut" }}
+                  >
+                    {pipelineState === 3 && (
+                      <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
+                    )}
+                  </motion.div>
                 </div>
 
-                {/* Node 2: Deployment */}
+                {/* Node 2: Deploy */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 4 || pipelineState === 5
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
+                    }`}
                   >
                     <PlugConnectedIcon 
+                      ref={(el: any) => { iconRefs.current[2] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 4 || pipelineState === 5 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
-                    {siteCopy.shift.stepper.split(/→|->/)[2]?.trim() || "Deployment"}
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 4 || pipelineState === 5 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
+                    {siteCopy.shift.stepper.split(/→|->/)[2]?.trim() || "Deploy"}
                   </span>
                 </div>
 
                 {/* Connector Line 2 */}
-                <div className="flex-1 h-[2px] bg-theme-border/20 relative mx-2">
-                  <div className="absolute inset-0 bg-theme-accent/50 opacity-100" />
+                <div className="flex-1 h-[3px] bg-theme-border/30 relative mx-2 sm:mx-4 overflow-hidden rounded-full">
+                  <motion.div
+                    className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-theme-accent/50 via-theme-accent to-theme-accent shadow-[0_0_12px_var(--color-theme-accent)] rounded-full flex justify-end items-center"
+                    initial={{ width: "0%" }}
+                    animate={{ width: pipelineState >= 5 ? "100%" : "0%" }}
+                    transition={{ duration: pipelineState === 0 ? 0 : 1.5, ease: "easeInOut" }}
+                  >
+                    {pipelineState === 5 && (
+                      <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_15px_var(--color-theme-accent)] shrink-0 translate-x-1" />
+                    )}
+                  </motion.div>
                 </div>
 
                 {/* Node 3: Outcome */}
                 <div className="flex flex-col items-center gap-2 z-10 relative">
                   <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full border bg-theme-void flex items-center justify-center relative transition-all duration-500 border-theme-accent shadow-[0_0_15px_var(--color-theme-accent)]"
+                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center relative transition-all duration-500 ${
+                      pipelineState === 6 || pipelineState === 7
+                        ? "border-theme-accent bg-theme-accent/10 shadow-[0_0_20px_var(--color-theme-accent)] scale-110"
+                        : "border-theme-border/70 bg-theme-void opacity-70"
+                    }`}
                   >
                     <DoubleCheckIcon 
+                      ref={(el: any) => { iconRefs.current[3] = el; }}
                       size={20} 
-                      color="var(--theme-accent)"
+                      color={pipelineState === 6 || pipelineState === 7 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className="font-mono text-[8px] md:text-xs uppercase tracking-widest text-center text-theme-text font-bold mt-1">
+                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                    pipelineState === 6 || pipelineState === 7 ? "text-theme-accent scale-105" : "text-theme-text-muted"
+                  }`}>
                     {siteCopy.shift.stepper.split(/→|->/)[3]?.trim() || "Outcome"}
                   </span>
                 </div>
               </div>
 
-              <div className="mt-4 font-mono text-sm text-theme-text-muted leading-relaxed whitespace-pre-line">
+              <div className="mt-2 font-mono text-sm text-theme-text-muted leading-relaxed whitespace-pre-line max-w-3xl">
                 {siteCopy.shift.body}
               </div>
             </div>
@@ -779,86 +862,79 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 3: Bulletin Carousel */}
-          <OSCard className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
+          <OSCard reveal="right" revealDelay={0.65} className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
             <BulletinCarousel />
           </OSCard>
 
           {/* Row 3: Four Moats */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
+          <OSCard navId="moats" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{siteCopy.moats.label}</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">
+                  <EyebrowText 
+                    text={siteCopy.moats.label} 
+                    className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm" 
+                    capitalClassName="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg inline" 
+                  />
+                </h3>
               </div>
             </div>
             
-            <div className="relative w-full flex flex-col md:flex-row items-stretch justify-between gap-4 mt-8">
-              {[
-                { text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon },
-                { text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon },
-                { text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon },
-                { text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck }
-              ].map((moat, idx) => {
-                const firstDashIdx = moat.text.search(/—|-/);
-                const title = firstDashIdx !== -1 ? moat.text.slice(0, firstDashIdx).trim() : moat.text;
-                const description = firstDashIdx !== -1 ? moat.text.slice(firstDashIdx + 1).trim() : "";
-                const isActive = pipelineState === idx * 2;
-                const isLineActive = pipelineState === idx * 2 + 1 || pipelineState === idx * 2 + 2; 
-
-                return (
-                  <React.Fragment key={idx}>
-                    <div 
-                      className={`flex-1 p-5 border rounded-2xl transition-all duration-500 relative bg-theme-void/80 backdrop-blur-sm flex flex-col gap-4 group/card ${
-                        isActive ? 'border-theme-accent shadow-[0_0_20px_rgba(31,170,104,0.15)] -translate-y-1' : 'border-theme-border/30 hover:border-theme-accent/50'
-                      }`}
-                      onMouseEnter={() => iconRefs.current[idx]?.startAnimation?.()}
-                      onMouseLeave={() => iconRefs.current[idx]?.stopAnimation?.()}
-                    >
-                      <div className="flex flex-col gap-4 h-full">
-                        <div className="flex items-center justify-between">
-                          <div className={`text-theme-accent font-mono text-xl font-bold transition-opacity ${isActive ? 'opacity-100' : 'opacity-50 group-hover/card:opacity-100'}`}>
-                            {String(idx + 1).padStart(2, '0')}
-                          </div>
-                          <div className={`text-theme-accent w-6 h-6 flex-shrink-0 flex items-center justify-center transition-transform ${isActive ? 'scale-110' : ''}`}>
-                            <moat.Icon ref={(el: any) => { iconRefs.current[idx] = el; }} size={24} color={isActive ? "var(--theme-accent)" : "currentColor"} />
-                          </div>
-                        </div>
-                        <div className="flex-1">
-                          <h4 className={`font-mono font-bold text-sm mb-2 transition-colors ${isActive ? 'text-theme-text' : 'text-theme-text'}`}>{title}</h4>
-                          <p className="font-mono text-xs text-theme-text-muted leading-relaxed">{description}</p>
-                        </div>
-                        <div className={`font-mono text-[10px] tracking-widest uppercase text-left mt-auto transition-colors ${isActive ? 'text-theme-accent' : 'text-theme-accent/40 group-hover/card:text-theme-accent'}`}>
-                          [ {moat.tag} ]
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Connector arrow/line (except for last item) */}
-                    {idx < 3 && (
-                      <div className="hidden md:flex items-center justify-center w-8 relative shrink-0">
-                         <div className="w-full h-[2px] bg-theme-border/20 relative overflow-hidden rounded-full">
-                           <div className={`absolute inset-0 bg-theme-accent/30 transition-opacity duration-500 ${isLineActive ? 'opacity-100' : 'opacity-0'}`} />
-                           {(pipelineState === idx * 2 + 1) && (
-                             <motion.div
-                               className="absolute top-0 bottom-0 w-4 bg-gradient-to-r from-transparent via-theme-accent to-transparent shadow-[0_0_8px_var(--color-theme-accent)]"
-                               initial={{ left: "-20px" }}
-                               animate={{ left: "100%" }}
-                               transition={{ duration: 1.2, ease: "easeInOut" }}
-                             />
-                           )}
-                         </div>
-                         <div className={`absolute right-[-4px] text-[10px] transition-colors duration-500 ${isLineActive ? 'text-theme-accent' : 'text-theme-border/20'}`}>
-                            ▶
-                         </div>
-                      </div>
-                    )}
-                  </React.Fragment>
-                );
-              })}
+            <div className="mt-8">
+              <MoatsAccordion
+                items={[
+                  {
+                    text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon,
+                    readout: [
+                      "$ keep run --moat 01_LOGIC",
+                      "> sop_engine ...... ONLINE",
+                      "> data_lake ....... DEEPENS / RUN",
+                      "> status .......... HELD",
+                    ],
+                  },
+                  {
+                    text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon,
+                    readout: [
+                      "$ keep deploy --fde",
+                      "> standardized .... ~80%",
+                      "> last_mile ....... FDE_CLOSED",
+                      "> status .......... HELD",
+                    ],
+                  },
+                  {
+                    text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon,
+                    readout: [
+                      "$ keep sync --flywheel",
+                      "> deployments ..... COMPOUNDING",
+                      "> context_gain .... +1 / RUN",
+                      "> status .......... HELD",
+                    ],
+                  },
+                  {
+                    text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck,
+                    readout: [
+                      "$ keep audit --egress",
+                      "> data_egress ..... 0 BYTES",
+                      "> runtime ......... SEALED",
+                      "> status .......... HELD",
+                    ],
+                  },
+                ].map(({ text, tag, Icon, readout }) => {
+                  const firstDashIdx = text.search(/—|-/);
+                  return {
+                    title: firstDashIdx !== -1 ? text.slice(0, firstDashIdx).trim() : text,
+                    description: firstDashIdx !== -1 ? text.slice(firstDashIdx + 1).trim() : "",
+                    tag,
+                    Icon,
+                    readout,
+                  };
+                })}
+              />
             </div>
             {siteCopy.moats.routing_strip && (
               <div className="mt-8 pt-4 border-t border-theme-border/20 flex items-center justify-center text-center">
-                <p className="font-mono text-xs md:text-sm text-theme-text font-bold tracking-wide">
+                <p className="font-mono text-xs md:text-sm text-theme-text font-normal md:font-medium tracking-wide">
                   {siteCopy.moats.routing_strip}
                 </p>
               </div>
@@ -867,11 +943,17 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5 */}
           {/* 04: The Foundry (Leaderboard) */}
-          <OSCard className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
+          <OSCard navId="models" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">{t("model_leaderboard")}</h3>
+                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">
+                  <EyebrowText 
+                    text={t("model_leaderboard")} 
+                    className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm" 
+                    capitalClassName="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg inline" 
+                  />
+                </h3>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
@@ -911,7 +993,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}
           {/* Developers Box */}
-          <OSCard className="col-span-1 md:col-span-2 row-span-1 p-0 min-h-[280px] cursor-pointer relative overflow-hidden group"
+          <OSCard navId="build" reveal="left" revealInView className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
             onMouseEnter={() => codeIconRef.current?.startAnimation()}
             onMouseLeave={() => codeIconRef.current?.stopAnimation()}
           >
@@ -936,9 +1018,15 @@ export const SiteShellV3: React.FC = () => {
                   <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                     <CodeXmlIcon ref={codeIconRef} size={18} className="text-theme-accent" />
                   </span>
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{siteCopy.dev_smithy.label}</span>
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">
+                    <EyebrowText 
+                      text={siteCopy.dev_smithy.label} 
+                      className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent" 
+                      capitalClassName="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent inline" 
+                    />
+                  </span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text">
+                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text">
                   <BoxHeadline text={siteCopy.dev_smithy.h} />
                 </h2>
                 {siteCopy.dev_smithy.chart && (
@@ -948,15 +1036,19 @@ export const SiteShellV3: React.FC = () => {
                 )}
                 <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.dev_smithy.body}</p>
               </div>
-              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+              <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/70 bg-theme-void/80 text-theme-text font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-accent hover:bg-theme-accent/10 transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
                 {t("view_docs")} <span className="transition-transform duration-300 group-hover/btn:translate-x-1">→</span>
               </button>
             </div>
           </OSCard>
 
           {/* Operators Box */}
-          <OSCard 
-            className="col-span-1 md:col-span-2 row-span-1 p-0 min-h-[280px] cursor-pointer relative overflow-hidden group"
+          <OSCard
+            navId="deploy"
+            reveal="right"
+            revealInView
+            revealDelay={0.12}
+            className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
             onMouseEnter={() => shieldCtaIconRef.current?.startAnimation()}
             onMouseLeave={() => shieldCtaIconRef.current?.stopAnimation()}
           >
@@ -982,70 +1074,120 @@ export const SiteShellV3: React.FC = () => {
                     <span className="w-9 h-9 rounded-lg border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center">
                       <ShieldCheck ref={shieldCtaIconRef} size={18} className="text-theme-accent" />
                     </span>
-                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">{siteCopy.operators.label}</span>
+                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent">
+                      <EyebrowText 
+                        text={siteCopy.operators.label} 
+                        className="font-mono text-xs font-bold uppercase tracking-widest text-theme-accent" 
+                        capitalClassName="font-gothic font-normal text-base md:text-lg tracking-wide text-theme-accent inline" 
+                      />
+                    </span>
                   </div>
-                  <h2 className="text-2xl md:text-[34px] font-mono font-bold leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
+                  <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
                     <BoxHeadline text={siteCopy.operators.h} />
                   </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
                   {siteCopy.operators.anchor && (
-                    <div className="mt-4 p-3 border border-theme-border/40 bg-theme-void/60 rounded-xl font-mono text-xs text-theme-text-muted/90 leading-relaxed italic max-w-sm">
+                    <div className="mt-4 p-3 border border-theme-border/70 bg-theme-void/60 rounded-xl font-mono text-xs text-theme-text-muted/90 leading-relaxed italic max-w-sm">
                       "{siteCopy.operators.anchor}"
                     </div>
                   )}
                 </div>
-                <div className="mt-6">
-                  <button className="group/btn relative self-start px-6 py-3 border border-theme-border/40 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm mb-4">
-                    {siteCopy.operators.cta}
-                  </button>
-                  <div className="text-[10px] md:text-xs font-mono text-theme-text-muted/70 leading-relaxed max-w-sm border-t border-theme-border/20 pt-3">
-                    {siteCopy.fde_annotation.body}
-                  </div>
-                </div>
+                <button className="group/btn relative self-start mt-6 px-6 py-3 border border-theme-border/70 bg-theme-void/80 text-theme-accent font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:border-theme-accent hover:text-theme-void hover:bg-theme-accent transition-all duration-300 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                  {siteCopy.operators.cta}
+                </button>
               </div>
             </div>
           </OSCard>
+
+          {/* Section 4: The Roster (Command & Telemetry Ticker / Interactive Badges) inside Bento Grid */}
+          <OSCard navId="roster" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
+            {/* Ambient background glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-theme-border/20">
+              <div className="flex items-center gap-3">
+                <span className="w-9 h-9 rounded-xl border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center shrink-0 shadow-sm">
+                  <UserIcon size={18} className="text-theme-accent" />
+                </span>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent">
+                      <EyebrowText 
+                        text={siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE // ACTIVE ROSTER" : "SYS_ROSTER // LIVE"} 
+                        className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent" 
+                        capitalClassName="font-gothic font-normal text-sm md:text-base tracking-wide text-theme-accent inline" 
+                      />
+                    </span>
+                  </div>
+                  <h3 className="font-serif font-medium text-theme-text text-base md:text-xl leading-snug">
+                    {siteCopy.workforce_rail.h}
+                  </h3>
+                </div>
+              </div>
+              
+              <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border border-theme-border/40 bg-theme-void/60 font-mono text-[10px] text-theme-text-muted uppercase tracking-wider self-start md:self-auto shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                <span>SYSTEM TELEMETRY // ONLINE</span>
+              </div>
+            </div>
+
+            {/* Responsive 4-Column Interactive Micro-Cards Grid */}
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {(() => {
+                const items = siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
+                  const cleanItem = rawItem.replace(/[●•]/g, '').trim();
+                  const parts = cleanItem.split(/—|–| - /);
+                  const role = parts[0]?.trim() || cleanItem;
+                  const status = parts[1]?.trim() || "LIVE";
+                  return { id: idx, role, status };
+                });
+                return items.map((item, idx) => (
+                  <div 
+                    key={`${item.id}-${idx}`}
+                    className="flex flex-col justify-between p-5 rounded-2xl border border-theme-border/60 bg-theme-void/90 hover:border-theme-accent hover:bg-theme-accent/5 transition-all duration-300 shadow-sm backdrop-blur-md relative overflow-hidden group/card cursor-default"
+                  >
+                    {/* Subtle corner glow on hover */}
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-theme-accent/10 rounded-full blur-xl -mr-10 -mt-10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    
+                    <div className="flex items-center justify-between gap-2 mb-6">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-text-muted/80 group-hover/card:text-theme-text-muted transition-colors">
+                        AGENT // 0{idx + 1}
+                      </span>
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-theme-accent opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-theme-accent" />
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 className="font-mono text-base font-bold text-theme-text group-hover/card:text-theme-accent transition-colors mb-3">
+                        {item.role}
+                      </h4>
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-theme-accent/30 bg-theme-accent/10 font-mono text-[11px] font-semibold uppercase tracking-wider text-theme-accent">
+                        {item.status}
+                      </div>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+
+            {siteCopy.workforce_rail.discipline_line && (
+              <p className="mt-6 pt-4 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted/70 italic text-center md:text-left">
+                {siteCopy.workforce_rail.discipline_line}
+              </p>
+            )}
+          </OSCard>
         </BentoGrid>
-
-        {/* Section 4: The Roster (Workforce Rail) */}
-        <div className="mt-12 p-6 md:p-8 border border-theme-border/30 bg-theme-void/80 rounded-3xl backdrop-blur-sm relative overflow-hidden">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-            <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm md:text-base">
-              {siteCopy.workforce_rail.h}
-            </h3>
-          </div>
-          <div className="flex flex-wrap items-center gap-y-2 gap-x-4 font-mono text-xs md:text-sm text-theme-text-muted">
-            {siteCopy.workforce_rail.items.split('·').map((item, idx, arr) => (
-              <React.Fragment key={idx}>
-                <span className="text-theme-text font-bold">{item.trim()}</span>
-                {idx < arr.length - 1 && <span className="text-theme-accent/50">·</span>}
-              </React.Fragment>
-            ))}
-          </div>
-          {siteCopy.workforce_rail.discipline_line && (
-            <p className="mt-4 pt-4 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted/70 italic">
-              {siteCopy.workforce_rail.discipline_line}
-            </p>
-          )}
         </div>
-
-        {/* Footer */}
-        <footer className="mt-12 pt-8 border-t border-theme-border/20 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-theme-text-muted">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
-            <span className="font-bold text-theme-text">{siteCopy.wordmark}</span>
-          </div>
-          <p>{siteCopy.footer.closing}</p>
-          <div className="flex items-center gap-4 text-theme-text-muted/60">
-            <span>{siteCopy.guan.label}</span>
-            <span>·</span>
-            <span>{siteCopy.bios_locale.options}</span>
-          </div>
-        </footer>
-          </div>
-        )}
       </motion.main>
+
+      {/* Close the content curtain. */}
+      </div>
+
+      {/* Scroll runway — empty space whose scroll uncovers the fixed footer. */}
+      {bootPhase === "ready" && <div ref={runwayRef} aria-hidden style={{ height: FOOTER_REVEAL_HEIGHT }} />}
 
       {/* Model Detail Popup Modal */}
       <AnimatePresence>
@@ -1207,7 +1349,10 @@ export const SiteShellV3: React.FC = () => {
         })()}
       </AnimatePresence>
 
-      <StickyNav />
+      <PilotModal isOpen={pilotOpen} onClose={() => setPilotOpen(false)} />
+      <HowDeploymentWorksModal isOpen={deploymentWorksOpen} onClose={() => setDeploymentWorksOpen(false)} />
+
+      {bootPhase === "ready" && <StickyNav />}
     </div>
   );
 };

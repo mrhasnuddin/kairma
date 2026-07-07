@@ -13,11 +13,48 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Gloock";
+  src: url("/fonts/Gloock-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CourierPrime";
+  src: url("/fonts/CourierPrime-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CourierPrime";
+  src: url("/fonts/CourierPrime-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CourierPrime";
+  src: url("/fonts/CourierPrime-Italic.ttf") format("truetype");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CourierPrime";
+  src: url("/fonts/CourierPrime-BoldItalic.ttf") format("truetype");
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   /* Font Variables */
   --font-gothic: "Canterbury", "UnifrakturMaguntia", cursive, serif;
-  --font-serif: "EB Garamond", Georgia, serif;
-  --font-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
+  --font-serif: "Gloock", "EB Garamond", Georgia, serif;
+  --font-mono: "CourierPrime", "IBM Plex Mono", "JetBrains Mono", monospace;
   --font-sans: "Inter", "Helvetica", "Source Han Sans SC", "PingFang SC", sans-serif;
 
   /* Theme Palette A: Dark Theme */
@@ -36,8 +73,8 @@
   --theme-accent: var(--kairma-matrix-green);
   --theme-chrome: var(--kairma-chrome-silver);
   --theme-text: var(--kairma-pixel-white);
-  --theme-border: rgba(201, 64, 43, 0.2);
-  --theme-border-glow: rgba(201, 64, 43, 0.45);
+  --theme-border: rgba(201, 64, 43, 0.35);
+  --theme-border-glow: rgba(201, 64, 43, 0.6);
   --theme-text-muted: rgba(255, 255, 255, 0.6);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -100,6 +137,7 @@
   --color-theme-text: var(--theme-text);
   --color-theme-border: var(--theme-border);
   --color-theme-border-glow: var(--theme-border-glow);
+  --color-theme-accent-glow: var(--theme-border-glow);
   --color-theme-text-muted: var(--theme-text-muted);
 
   --font-gothic: var(--font-gothic);
@@ -219,6 +257,16 @@ body::after {
   mix-blend-mode: lighten; /* light theme: darks take the accent */
 }
 
+/* Nav-jump box flash: two blinks of the hover-effect overlays, used when a
+   sticky-nav link scrolls a bento box into view. */
+@keyframes box-flash {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+.box-flash-anim {
+  animation: box-flash 0.8s ease-in-out 2;
+}
+
 /* Utilities */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -302,7 +350,6 @@ body::after {
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {

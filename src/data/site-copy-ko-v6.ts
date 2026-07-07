@@ -10,13 +10,13 @@ export const siteCopyKoV6: SiteCopyTypeV6 = {
   wordmark: "Kairma",
   hero_left: {
     h1: "AI를 건네드리지 않습니다. 당신의 업무 현장에 배치합니다.",
-    sub: "AI 디지털 직원을, 당신이 진출하는 모든 시장에 전진 배치(FDE)합니다. 인원이 아니라 성과. 데이터 주권은 당신 쪽에.",
+    sub: "AI 직원을, 당신이 진출하는 모든 시장에 전진 배치(FDE)합니다. 인원이 아니라 성과. 데이터 주권은 당신 쪽에.",
     cta_1: "파일럿 신청 →",
     cta_2: "배치 방식 보기"
   },
   hero_center: {
-    h1: "당신이 확장하는 시장을 위한, 전진 배치형 AI 디지털 직원.",
-    body: "도구만 넘기고 떠나지 않습니다. 전진 배치팀이 이 인력을 당신의 운영에 안착시키고 — 성과가 날 때까지 함께 남습니다."
+    h1: "AI 노동력을 소유하십시오. 열쇠를 쥐십시오.",
+    body: "크로스보더 운영에 전진 배치된 AI 직원. 성과를 향해 달립니다. Kairma는 인과의 장부를 적습니다."
   },
   fde_annotation: {
     body: "↳ FDE — Forward-Deployed Engineering(전진 배치 엔지니어링). 소프트웨어만 넘기고 떠나는 대신, 당신 쪽에 팀을 상주시켜 성과를 책임지고, 제품을 결과로 바꾸며, 거기서 배운 것을 플랫폼에 되먹입니다. 단기적으로는 비용, 장기적으로는 다음 배치를 매번 더 저렴하게 만드는 R&D입니다. (Palantir가 개척, 지금은 엔터프라이즈 AI 전반에.)"
@@ -45,7 +45,7 @@ export const siteCopyKoV6: SiteCopyTypeV6 = {
   },
   dev_smithy: {
     label: "개발자를 위해",
-    h: "다음 AI 디지털 직원을 the Smithy(개발자의 대장간)에서 벼려내세요.",
+    h: "다음 AI 직원을 the Smithy(개발자의 대장간)에서 벼려내세요.",
     body: "당신의 로직은 the Keep 안에서 봉인된 채 실행됩니다 — 계속 당신 것입니다. 우리는 그것을 실제 운영에 배치합니다.",
     cta: "문서 보기 →"
   },
@@ -56,7 +56,7 @@ export const siteCopyKoV6: SiteCopyTypeV6 = {
     cta: "파일럿 신청 →"
   },
   workforce_rail: {
-    h: "당신의 첫 AI 디지털 직원 — 다운로드가 아니라 배치.",
+    h: "당신의 첫 AI 직원 — 다운로드가 아니라 배치.",
     items: "KOL BD(KOL 비즈니스 개발) — 파일럿 준비 ● · 콘텐츠 운영 — FDE 구성됨 ● · 고객 지원 — 개발 중 ● · 컴플라이언스 — 프라이빗 런타임 ●"
   },
   footer: {

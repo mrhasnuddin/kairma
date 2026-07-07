@@ -11,10 +11,10 @@ export const BoxHeadline: React.FC<BoxHeadlineProps> = ({ text, className = "" }
 
   if (!text) return null;
 
-  // Apply Canterbury (font-gothic) to ALL characters for English ('en') and Malay ('ms') languages
+  // Apply secondary font (font-serif / Gloock / EB Garamond) for high readability and manuscript elegance
   if (language === "en" || language === "ms") {
     return (
-      <span className={`font-gothic font-normal tracking-wide ${className}`}>
+      <span className={`font-serif font-medium tracking-normal text-balance ${className}`}>
         {text}
       </span>
     );

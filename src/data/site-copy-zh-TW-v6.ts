@@ -10,13 +10,13 @@ export const siteCopyZhTwV6: SiteCopyTypeV6 = {
   wordmark: "Kairma",
   hero_left: {
     h1: "我們不把 AI 交給你，我們把它部署進你的業務。",
-    sub: "AI 數字員工，前置部署（FDE）到你進入的每一個市場。要的是成果，不是人頭。數據主權，在你這側。",
+    sub: "AI 員工，前置部署（FDE）到你進入的每一個市場。要的是成果，不是人頭。數據主權，在你這側。",
     cta_1: "申請試點 →",
     cta_2: "部署如何運作"
   },
   hero_center: {
-    h1: "為你要拓展的市場，前置部署 AI 數字員工。",
-    body: "我們不會把工具丟給你就走。一支前置部署團隊把這支勞動力落地進你的運營——並留下來，直到它跑出結果。"
+    h1: "擁有你的 AI 勞動力，掌握鑰匙。",
+    body: "前置部署至跨境營運中的 AI 員工。以結果為導向。恪守因果，賬目分明。"
   },
   fde_annotation: {
     body: "↳ FDE — 前置部署工程（Forward-Deployed Engineering）。 我們不是交付軟件就離開，而是在你這一側派駐團隊，對結果負責，把產品變成成果，再把所學餵回平台。短期是成本，長期是讓每一次部署都更便宜的研發。（由 Palantir 開創，如今通行於企業級 AI。）"
@@ -45,7 +45,7 @@ export const siteCopyZhTwV6: SiteCopyTypeV6 = {
   },
   dev_smithy: {
     label: "給開發者",
-    h: "在 the Smithy（開發者鍛造台）鍛造下一個 AI 數字員工。",
+    h: "在 the Smithy（開發者鍛造台）鍛造下一個 AI 員工。",
     body: "你的邏輯封存在 the Keep 裡運行——始終屬於你。我們把它部署進真實運營。",
     cta: "查看文檔 →"
   },
@@ -56,7 +56,7 @@ export const siteCopyZhTwV6: SiteCopyTypeV6 = {
     cta: "申請試點 →"
   },
   workforce_rail: {
-    h: "你的第一批 AI 數字員工——是部署，不是下載。",
+    h: "你的第一批 AI 員工——是部署，不是下載。",
     items: "KOL BD（KOL 商務拓展）— 可試點 ● · 內容運營 — FDE 已配置 ● · 客戶服務 — 開發中 ● · 合規 — 私有運行時 ●"
   },
   footer: {
