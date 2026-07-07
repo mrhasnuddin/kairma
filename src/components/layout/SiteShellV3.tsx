@@ -1169,20 +1169,6 @@ export const SiteShellV3: React.FC = () => {
             )}
           </OSCard>
         </BentoGrid>
-
-        {/* Footer */}
-        <footer className="mt-12 pt-8 border-t border-theme-border/20 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-theme-text-muted">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
-            <span className="font-bold text-theme-text">{siteCopy.wordmark}</span>
-          </div>
-          <p>{siteCopy.footer.closing}</p>
-          <div className="flex items-center gap-4 text-theme-text-muted/60">
-            <span>{siteCopy.guan.label}</span>
-            <span>·</span>
-            <span>{siteCopy.bios_locale.options}</span>
-          </div>
-        </footer>
           </div>
         )}
       </motion.main>
