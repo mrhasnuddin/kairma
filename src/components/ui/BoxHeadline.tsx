@@ -11,7 +11,7 @@ export const BoxHeadline: React.FC<BoxHeadlineProps> = ({ text, className = "" }
 
   if (!text) return null;
 
-  // Apply secondary font (font-serif / EB Garamond) for high readability and manuscript elegance
+  // Apply secondary font (font-serif / Gloock / EB Garamond) for high readability and manuscript elegance
   if (language === "en" || language === "ms") {
     return (
       <span className={`font-serif font-medium tracking-normal text-balance ${className}`}>
