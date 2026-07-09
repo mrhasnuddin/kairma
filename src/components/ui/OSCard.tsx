@@ -121,23 +121,25 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseEnter={handleMouseEnter}
       className={`relative rounded-3xl bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
     >
-      {/* Apple-style Theme-Accent Diagonal 2-Corner Edge Stroke (Zero Residue on Inactive Corners) */}
+      {/* Apple-style Glass Widget Specular Border (Bright Diagonal Specular Rim + Subtle Continuous Glass Boundary) */}
       <div 
         className="absolute inset-0 rounded-3xl pointer-events-none border-[2.5px] border-transparent"
         style={{
           background: (cornerAccent === "tl-br"
             ? `
-                radial-gradient(ellipse 65% 65% at 0% 0%, var(--color-theme-accent) 0%, transparent 80%),
-                radial-gradient(ellipse 65% 65% at 100% 100%, var(--color-theme-accent) 0%, transparent 80%)
+                radial-gradient(ellipse 85% 75% at 0% 0%, var(--color-theme-accent) 0%, transparent 75%),
+                radial-gradient(ellipse 85% 75% at 100% 100%, var(--color-theme-accent) 0%, transparent 75%),
+                linear-gradient(135deg, var(--color-theme-accent) 0%, color-mix(in srgb, var(--color-theme-text) 15%, transparent) 50%, var(--color-theme-accent) 100%)
               `
             : `
-                radial-gradient(ellipse 65% 65% at 100% 0%, var(--color-theme-accent) 0%, transparent 80%),
-                radial-gradient(ellipse 65% 65% at 0% 100%, var(--color-theme-accent) 0%, transparent 80%)
+                radial-gradient(ellipse 85% 75% at 100% 0%, var(--color-theme-accent) 0%, transparent 75%),
+                radial-gradient(ellipse 85% 75% at 0% 100%, var(--color-theme-accent) 0%, transparent 75%),
+                linear-gradient(45deg, var(--color-theme-accent) 0%, color-mix(in srgb, var(--color-theme-text) 15%, transparent) 50%, var(--color-theme-accent) 100%)
               `
           )
             .replace(/\s+/g, " ")
             .trim() + " border-box",
-          opacity: 0.75,
+          opacity: 0.88,
           WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
