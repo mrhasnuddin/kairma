@@ -19,11 +19,13 @@ interface OSCardProps {
   /** Anchor id for sticky-nav jumps. The card flashes (2 blinks of the
    *  hover effect) when a "kairma-nav-flash" event carries this id. */
   navId?: string;
+  /** Diagonal corners that highlight with increased opacity: "tr-bl" (Top-Right & Bottom-Left) or "tl-br" (Top-Left & Bottom-Right) */
+  cornerAccent?: "tr-bl" | "tl-br";
 }
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
-export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disableEffects = false, overflowVisible = false, onMouseEnter, onMouseLeave, reveal, revealDelay = 0, revealInView = false, navId }) => {
+export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disableEffects = false, overflowVisible = false, onMouseEnter, onMouseLeave, reveal, revealDelay = 0, revealInView = false, navId, cornerAccent = "tr-bl" }) => {
   const reducedMotion = useReducedMotion();
   const [flashing, setFlashing] = useState(false);
   const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -119,17 +121,22 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseEnter={handleMouseEnter}
       className={`relative rounded-3xl border border-theme-border/30 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
     >
-      {/* Apple-style Theme-Accent Gradient Edge Stroke (increased corner opacity) */}
+      {/* Apple-style Theme-Accent Diagonal 2-Corner Edge Stroke */}
       <div 
         className="absolute inset-0 rounded-3xl pointer-events-none border-[2.5px] border-transparent"
         style={{
-          background: `
-            radial-gradient(80px circle at 0% 0%, var(--color-theme-accent) 0%, transparent 85%),
-            radial-gradient(80px circle at 100% 0%, var(--color-theme-accent) 0%, transparent 85%),
-            radial-gradient(80px circle at 0% 100%, var(--color-theme-accent) 0%, transparent 85%),
-            radial-gradient(80px circle at 100% 100%, var(--color-theme-accent) 0%, transparent 85%),
-            linear-gradient(135deg, var(--color-theme-accent) 0%, transparent 20%, transparent 80%, var(--color-theme-accent) 100%)
-          `
+          background: (cornerAccent === "tl-br"
+            ? `
+                radial-gradient(85px circle at 0% 0%, var(--color-theme-accent) 0%, transparent 85%),
+                radial-gradient(85px circle at 100% 100%, var(--color-theme-accent) 0%, transparent 85%),
+                linear-gradient(135deg, var(--color-theme-accent) 0%, transparent 30%, transparent 70%, var(--color-theme-accent) 100%)
+              `
+            : `
+                radial-gradient(85px circle at 100% 0%, var(--color-theme-accent) 0%, transparent 85%),
+                radial-gradient(85px circle at 0% 100%, var(--color-theme-accent) 0%, transparent 85%),
+                linear-gradient(45deg, var(--color-theme-accent) 0%, transparent 30%, transparent 70%, var(--color-theme-accent) 100%)
+              `
+          )
             .replace(/\s+/g, " ")
             .trim() + " border-box",
           opacity: 0.65,

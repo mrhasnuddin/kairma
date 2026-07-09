@@ -580,7 +580,7 @@ export const SiteShellV3: React.FC = () => {
         <BentoGrid>
           {/* Row 1 */}
           {/* 00: The Anchor (Hero Command Card) */}
-          <OSCard reveal="left" revealDelay={0.05} className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
+          <OSCard cornerAccent="tr-bl" reveal="left" revealDelay={0.05} className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-50 pointer-events-none" />
             <div className="relative z-10 my-2 md:my-4">
               <div 
@@ -615,7 +615,7 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* 01: Main Hero Canvas */}
-          <OSCard reveal="right" revealDelay={0.2} overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
+          <OSCard cornerAccent="tl-br" reveal="right" revealDelay={0.2} overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
             <div className="w-full h-full flex flex-col md:flex-row relative">
               
               {/* Top-Right Mini Status */}
@@ -678,7 +678,7 @@ export const SiteShellV3: React.FC = () => {
           />
 
           {/* Section 1: The Shift - 2x1 */}
-          <OSCard navId="shift" reveal="bottom" revealDelay={0.5} className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
+          <OSCard cornerAccent="tl-br" navId="shift" reveal="bottom" revealDelay={0.5} className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
             
             {/* Absolute background torus image hugging the right side with fade-out masks */}
             <div className="absolute top-0 right-0 bottom-0 w-[50%] md:w-[46%] pointer-events-none z-0 select-none">
@@ -862,12 +862,12 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 3: Bulletin Carousel */}
-          <OSCard reveal="right" revealDelay={0.65} className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
+          <OSCard cornerAccent="tr-bl" reveal="right" revealDelay={0.65} className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
             <BulletinCarousel />
           </OSCard>
 
           {/* Row 3: Four Moats */}
-          <OSCard navId="moats" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
+          <OSCard cornerAccent="tr-bl" navId="moats" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
@@ -943,7 +943,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5 */}
           {/* 04: The Foundry (Leaderboard) */}
-          <OSCard navId="models" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
+          <OSCard cornerAccent="tl-br" navId="models" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-2 p-6 flex flex-col overflow-hidden min-h-[620px] crt-canvas crt-vignette crt-flicker relative bg-theme-void/95">
             <div className="flex justify-between items-center mb-6 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
@@ -993,7 +993,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Row 4+5: Dual CTA – Developers & Operators (2 separate boxes) */}
           {/* Developers Box */}
-          <OSCard navId="build" reveal="left" revealInView className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
+          <OSCard cornerAccent="tr-bl" navId="build" reveal="left" revealInView className="col-span-1 md:col-span-2 row-span-1 p-0 cursor-pointer relative overflow-hidden group"
             onMouseEnter={() => codeIconRef.current?.startAnimation()}
             onMouseLeave={() => codeIconRef.current?.stopAnimation()}
           >
@@ -1044,6 +1044,7 @@ export const SiteShellV3: React.FC = () => {
 
           {/* Operators Box */}
           <OSCard
+            cornerAccent="tl-br"
             navId="deploy"
             reveal="right"
             revealInView
@@ -1100,7 +1101,7 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 4: The Roster (Command & Telemetry Ticker / Interactive Badges) inside Bento Grid */}
-          <OSCard navId="roster" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
+          <OSCard cornerAccent="tr-bl" navId="roster" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
             {/* Ambient background glow */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
             
