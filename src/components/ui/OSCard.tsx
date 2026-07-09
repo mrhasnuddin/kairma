@@ -119,27 +119,25 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      className={`relative rounded-3xl border border-theme-border/30 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
+      className={`relative rounded-3xl bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
     >
-      {/* Apple-style Theme-Accent Diagonal 2-Corner Edge Stroke */}
+      {/* Apple-style Theme-Accent Diagonal 2-Corner Edge Stroke (Zero Residue on Inactive Corners) */}
       <div 
         className="absolute inset-0 rounded-3xl pointer-events-none border-[2.5px] border-transparent"
         style={{
           background: (cornerAccent === "tl-br"
             ? `
-                radial-gradient(85px circle at 0% 0%, var(--color-theme-accent) 0%, transparent 85%),
-                radial-gradient(85px circle at 100% 100%, var(--color-theme-accent) 0%, transparent 85%),
-                linear-gradient(135deg, var(--color-theme-accent) 0%, transparent 30%, transparent 70%, var(--color-theme-accent) 100%)
+                radial-gradient(ellipse 65% 65% at 0% 0%, var(--color-theme-accent) 0%, transparent 80%),
+                radial-gradient(ellipse 65% 65% at 100% 100%, var(--color-theme-accent) 0%, transparent 80%)
               `
             : `
-                radial-gradient(85px circle at 100% 0%, var(--color-theme-accent) 0%, transparent 85%),
-                radial-gradient(85px circle at 0% 100%, var(--color-theme-accent) 0%, transparent 85%),
-                linear-gradient(45deg, var(--color-theme-accent) 0%, transparent 30%, transparent 70%, var(--color-theme-accent) 100%)
+                radial-gradient(ellipse 65% 65% at 100% 0%, var(--color-theme-accent) 0%, transparent 80%),
+                radial-gradient(ellipse 65% 65% at 0% 100%, var(--color-theme-accent) 0%, transparent 80%)
               `
           )
             .replace(/\s+/g, " ")
             .trim() + " border-box",
-          opacity: 0.65,
+          opacity: 0.75,
           WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
