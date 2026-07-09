@@ -628,7 +628,7 @@ export const SiteShellV3: React.FC = () => {
               <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <h1 className="text-2xl md:text-[34px] font-serif font-medium tracking-normal mb-4 leading-tight text-theme-text drop-shadow-xl text-balance">
+                  <h1 className="text-2xl md:text-[34px] font-serif font-medium tracking-normal mb-4 leading-tight text-theme-text drop-shadow-xl text-balance uppercase">
                     <BoxHeadline text={siteCopy.hero_center.h1} />
                   </h1>
                   
@@ -709,7 +709,7 @@ export const SiteShellV3: React.FC = () => {
                     />
                   </span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight text-theme-text mb-4">
+                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight text-theme-text mb-4 uppercase">
                   <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
                 {siteCopy.shift.stat_strip ? (

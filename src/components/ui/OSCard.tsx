@@ -96,7 +96,7 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
     ? {
         initial: reducedMotion ? { opacity: 0 } : { opacity: 0, ...revealOffset },
         transition: {
-          duration: reducedMotion ? 0.3 : 0.7,
+          duration: reducedMotion ? 0.3 : 2.8,
           delay: revealDelay,
           ease: REVEAL_EASE,
         },
@@ -117,8 +117,29 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      className={`relative rounded-3xl border border-theme-border/70 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
+      className={`relative rounded-3xl border border-theme-border/30 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
     >
+      {/* Apple-style Theme-Accent Gradient Edge Stroke (increased corner opacity) */}
+      <div 
+        className="absolute inset-0 rounded-3xl pointer-events-none border-[2.5px] border-transparent"
+        style={{
+          background: `
+            radial-gradient(80px circle at 0% 0%, var(--color-theme-accent) 0%, transparent 85%),
+            radial-gradient(80px circle at 100% 0%, var(--color-theme-accent) 0%, transparent 85%),
+            radial-gradient(80px circle at 0% 100%, var(--color-theme-accent) 0%, transparent 85%),
+            radial-gradient(80px circle at 100% 100%, var(--color-theme-accent) 0%, transparent 85%),
+            linear-gradient(135deg, var(--color-theme-accent) 0%, transparent 20%, transparent 80%, var(--color-theme-accent) 100%)
+          `
+            .replace(/\s+/g, " ")
+            .trim() + " border-box",
+          opacity: 0.65,
+          WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+          WebkitMaskComposite: 'xor',
+          maskComposite: 'exclude',
+          zIndex: 1,
+        }}
+      />
+
       {/* Dynamic Border Trace */}
       {isDesktop && !disableEffects && (
         <div 

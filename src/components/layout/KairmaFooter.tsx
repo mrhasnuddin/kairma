@@ -84,7 +84,7 @@ export const KairmaFooter: React.FC = () => {
         />
 
         {/* Headline — Gloock (serif). */}
-        <h2 className="mt-4 md:mt-5 max-w-3xl text-center font-serif text-2xl md:text-[34px] leading-tight text-white">
+        <h2 className="mt-4 md:mt-5 max-w-3xl text-center font-serif text-2xl md:text-[34px] leading-tight text-white uppercase">
           {siteCopy.hero_left.h1}
         </h2>
 

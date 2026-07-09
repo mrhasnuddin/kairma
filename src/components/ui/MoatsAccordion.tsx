@@ -165,7 +165,7 @@ export const MoatsAccordion: React.FC<{ items: MoatItem[] }> = ({ items }) => {
                 )}
                 {/* Fixed text width so copy doesn't reflow while the panel grows. */}
                 <div className="min-w-[280px] max-w-[460px]">
-                  <h4 className="font-mono font-bold text-base lg:text-lg text-theme-text mb-2">
+                  <h4 className="font-serif font-medium text-lg lg:text-xl text-theme-text mb-2 tracking-normal">
                     {moat.title}
                   </h4>
                   <p className="font-mono text-xs lg:text-sm text-theme-text-muted leading-relaxed">
