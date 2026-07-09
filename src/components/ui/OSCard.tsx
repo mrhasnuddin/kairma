@@ -121,25 +121,15 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseEnter={handleMouseEnter}
       className={`relative rounded-3xl bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
     >
-      {/* Apple-style Glass Widget Specular Border (Bright Diagonal Specular Rim + Subtle Continuous Glass Boundary) */}
+      {/* Figma Exact Gradient Edge Stroke (0% Accent -> 26% Transparent -> 85% Transparent -> 100% Accent) */}
       <div 
         className="absolute inset-0 rounded-3xl pointer-events-none border-[2.5px] border-transparent"
         style={{
           background: (cornerAccent === "tl-br"
-            ? `
-                radial-gradient(ellipse 85% 75% at 0% 0%, var(--color-theme-accent) 0%, transparent 75%),
-                radial-gradient(ellipse 85% 75% at 100% 100%, var(--color-theme-accent) 0%, transparent 75%),
-                linear-gradient(135deg, var(--color-theme-accent) 0%, color-mix(in srgb, var(--color-theme-text) 15%, transparent) 50%, var(--color-theme-accent) 100%)
-              `
-            : `
-                radial-gradient(ellipse 85% 75% at 100% 0%, var(--color-theme-accent) 0%, transparent 75%),
-                radial-gradient(ellipse 85% 75% at 0% 100%, var(--color-theme-accent) 0%, transparent 75%),
-                linear-gradient(45deg, var(--color-theme-accent) 0%, color-mix(in srgb, var(--color-theme-text) 15%, transparent) 50%, var(--color-theme-accent) 100%)
-              `
-          )
-            .replace(/\s+/g, " ")
-            .trim() + " border-box",
-          opacity: 0.88,
+            ? `linear-gradient(to bottom right, var(--color-theme-accent) 0%, transparent 26%, transparent 85%, var(--color-theme-accent) 100%) border-box`
+            : `linear-gradient(to top right, var(--color-theme-accent) 0%, transparent 26%, transparent 85%, var(--color-theme-accent) 100%) border-box`
+          ),
+          opacity: 1,
           WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
