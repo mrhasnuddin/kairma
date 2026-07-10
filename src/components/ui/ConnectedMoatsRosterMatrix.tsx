@@ -134,7 +134,7 @@ export const RosterBentoContent: React.FC<RosterBentoContentProps> = ({
               </div>
 
               <span
-                className={`inline-flex items-center px-2.5 py-1 rounded-full border font-mono text-[10px] font-semibold uppercase tracking-wider transition-colors shrink-0 ${
+                className={`inline-flex items-center px-2.5 py-1 rounded-full border font-mono text-xs font-semibold uppercase tracking-wider transition-colors shrink-0 ${
                   isHovered
                     ? "border-theme-accent bg-theme-accent text-theme-void"
                     : "border-theme-accent/30 bg-theme-accent/10 text-theme-accent"

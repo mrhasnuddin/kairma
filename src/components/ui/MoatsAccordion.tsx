@@ -114,7 +114,7 @@ export const MoatsAccordion: React.FC<{ items: MoatItem[] }> = ({ items }) => {
   return (
     <>
       {/* Desktop: horizontal accordion — active panel grows, others become spines. */}
-      <div className="hidden md:flex items-stretch gap-3 h-[340px]">
+      <div className="hidden md:flex items-stretch gap-3 h-full min-h-[340px] flex-1">
         {items.map((moat, idx) => {
           const isActive = idx === active;
           return (
@@ -176,112 +176,43 @@ export const MoatsAccordion: React.FC<{ items: MoatItem[] }> = ({ items }) => {
                 </span>
               </div>
 
-              {/* Expanded content: 2-column layout (Left: copy/terminal, Right: Quantitative Bento Metrics Dashboard) */}
+              {/* Expanded content: Clean single-column layout (Number, Readout, Title + Copy, Tag) */}
               <div
-                className={`absolute inset-0 flex flex-col lg:flex-row justify-between p-7 transition-opacity duration-300 motion-reduce:transition-none ${
+                className={`absolute inset-0 flex flex-col justify-between p-7 transition-opacity duration-300 motion-reduce:transition-none ${
                   isActive ? "opacity-100 delay-200" : "opacity-0 pointer-events-none"
                 }`}
               >
-                {/* Left Column: Number, Readout, Title + Copy, Tag */}
-                <div className="flex flex-col justify-between h-full w-full lg:w-[45%] shrink-0 pr-0 lg:pr-4">
-                  <div className="flex items-start justify-between w-full">
-                    <span className="font-mono text-2xl font-bold text-theme-accent">
-                      {String(idx + 1).padStart(2, "0")}
-                    </span>
-                    <span className="w-10 h-10 rounded-xl border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center text-theme-accent shrink-0">
-                      <moat.Icon
-                        ref={(el: AnimatedIconHandle | null) => {
-                          iconRefs.current[idx] = el;
-                        }}
-                        size={20}
-                        color="var(--theme-accent)"
-                      />
-                    </span>
-                  </div>
-                  {/* Terminal readout */}
-                  {moat.readout && isActive && (
-                    <div className="min-w-[260px] max-w-[420px]">
-                      <Readout lines={moat.readout} />
-                    </div>
-                  )}
-                  <div className="min-w-[260px] max-w-[420px]">
-                    <h4 className="font-serif font-medium text-lg lg:text-xl text-theme-text mb-1.5 tracking-normal">
-                      {moat.title}
-                    </h4>
-                    <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
-                      {moat.description}
-                    </p>
-                  </div>
-                  <div className="font-mono text-xs tracking-widest uppercase font-bold text-theme-accent">
-                    [ {moat.tag} ]
-                  </div>
+                <div className="flex items-start justify-between w-full">
+                  <span className="font-mono text-2xl font-bold text-theme-accent">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                  <span className="w-10 h-10 rounded-xl border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center text-theme-accent shrink-0">
+                    <moat.Icon
+                      ref={(el: AnimatedIconHandle | null) => {
+                        iconRefs.current[idx] = el;
+                      }}
+                      size={20}
+                      color="var(--theme-accent)"
+                    />
+                  </span>
                 </div>
-
-                {/* Right Column: Quantitative Moat Performance Dashboard (Mini-Bento Metrics HUD) */}
-                {(() => {
-                  const activeMetrics = moat.metrics || DEFAULT_MOAT_METRICS[idx % DEFAULT_MOAT_METRICS.length];
-                  return (
-                    <div className="hidden lg:flex flex-col justify-between flex-1 h-full pl-6 border-l border-theme-border/30">
-                      {/* Telemetry Header */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                          <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-text-muted">
-                            // LIVE QUANTITATIVE TELEMETRY
-                          </span>
-                        </div>
-                        <span className="font-mono text-xs text-theme-accent border border-theme-accent/30 bg-theme-accent/10 px-2 py-0.5 rounded-full">
-                          VERIFIED BENCHMARK
-                        </span>
-                      </div>
-
-                      {/* 2x2 Mini-Bento Metrics Grid */}
-                      <div className="grid grid-cols-2 gap-2.5 my-auto">
-                        {activeMetrics.map((metric, mIdx) => (
-                          <div
-                            key={mIdx}
-                            className="rounded-xl border border-theme-border/40 bg-theme-void/80 p-3 flex flex-col justify-between hover:border-theme-accent/50 transition-colors group/metric"
-                          >
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-mono text-xs uppercase tracking-wider text-theme-text-muted font-bold">
-                                {metric.label}
-                              </span>
-                              {metric.change && (
-                                <span className="font-mono text-xs font-bold text-theme-accent bg-theme-accent/10 px-1.5 py-0.5 rounded">
-                                  {metric.change}
-                                </span>
-                              )}
-                            </div>
-                            <div className="font-mono text-xl xl:text-2xl font-bold text-theme-text tracking-tight group-hover/metric:text-theme-accent transition-colors">
-                              {metric.value}
-                            </div>
-                            {metric.subtext && (
-                              <div className="font-mono text-xs text-theme-text-muted/80 mt-1 truncate">
-                                {metric.subtext}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Footer Telemetry Strip */}
-                      <div className="flex items-center justify-between pt-2 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted">
-                        <span>COMPOUNDING DEPTH INDEX</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 h-1.5 rounded-full bg-theme-accent/20 overflow-hidden">
-                            <div
-                              className="h-full bg-theme-accent rounded-full transition-all duration-700"
-                              style={{ width: `${(idx + 1) * 22 + 12}%` }}
-                            />
-                          </div>
-                          <span className="text-theme-accent font-bold">
-                            {(idx + 1) * 22 + 12}.4 / 100
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
+                {/* Terminal readout */}
+                {moat.readout && isActive && (
+                  <div className="w-full">
+                    <Readout lines={moat.readout} />
+                  </div>
+                )}
+                <div className="w-full">
+                  <h4 className="font-serif font-medium text-lg lg:text-xl text-theme-text mb-1.5 tracking-normal">
+                    {moat.title}
+                  </h4>
+                  <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
+                    {moat.description}
+                  </p>
+                </div>
+                <div className="font-mono text-xs tracking-widest uppercase font-bold text-theme-accent">
+                  [ {moat.tag} ]
+                </div>
               </div>
             </div>
           );

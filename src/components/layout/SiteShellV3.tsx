@@ -622,7 +622,7 @@ export const SiteShellV3: React.FC = () => {
               {/* Top-Right Mini Status */}
               <div className="absolute top-4 right-6 z-30 pointer-events-none hidden md:flex items-center gap-2 px-3 py-1 bg-theme-void/80 backdrop-blur-sm border border-theme-accent/30 rounded-full">
                 <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                <span className="font-mono text-[9px] md:text-xs uppercase tracking-widest text-theme-accent">OPENROUTER SYNC: LIVE</span>
+                <span className="font-mono text-xs uppercase tracking-widest text-theme-accent">OPENROUTER SYNC: LIVE</span>
               </div>
 
               {/* Left 55%: Copy and System Status */}
@@ -639,7 +639,7 @@ export const SiteShellV3: React.FC = () => {
                 </div>
 
                 {/* Status List */}
-                <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] md:text-xs uppercase tracking-widest pt-4">
+                <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs uppercase tracking-widest pt-4">
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 bg-theme-accent rounded-full animate-pulse shadow-[0_0_5px_var(--color-theme-accent)]" />
                     <span className="text-theme-text-muted">Agent OS online</span>
@@ -702,10 +702,10 @@ export const SiteShellV3: React.FC = () => {
               <div className="max-w-2xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                  <span className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest">
+                  <span className="font-mono text-xs text-theme-accent uppercase tracking-widest">
                     <EyebrowText 
                       text={t("the_shift")} 
-                      className="font-mono text-[10px] md:text-xs text-theme-accent uppercase tracking-widest" 
+                      className="font-mono text-xs text-theme-accent uppercase tracking-widest" 
                       capitalClassName="font-gothic font-normal text-sm md:text-base text-theme-accent tracking-wide inline" 
                     />
                   </span>
@@ -739,7 +739,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 0 || pipelineState === 1 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                  <span className={`font-mono text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
                     pipelineState === 0 || pipelineState === 1 ? "text-theme-accent scale-105" : "text-theme-text-muted"
                   }`}>
                     {siteCopy.shift.stepper.split(/→|->/)[0]?.trim() || "Write"}
@@ -775,7 +775,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 2 || pipelineState === 3 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                  <span className={`font-mono text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
                     pipelineState === 2 || pipelineState === 3 ? "text-theme-accent scale-105" : "text-theme-text-muted"
                   }`}>
                     {siteCopy.shift.stepper.split(/→|->/)[1]?.trim() || "Ship"}
@@ -811,7 +811,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 4 || pipelineState === 5 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                  <span className={`font-mono text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
                     pipelineState === 4 || pipelineState === 5 ? "text-theme-accent scale-105" : "text-theme-text-muted"
                   }`}>
                     {siteCopy.shift.stepper.split(/→|->/)[2]?.trim() || "Deploy"}
@@ -847,7 +847,7 @@ export const SiteShellV3: React.FC = () => {
                       color={pipelineState === 6 || pipelineState === 7 ? "var(--theme-accent)" : "currentColor"}
                     />
                   </div>
-                  <span className={`font-mono text-[9px] md:text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
+                  <span className={`font-mono text-xs uppercase tracking-widest text-center font-bold mt-1 transition-colors duration-500 ${
                     pipelineState === 6 || pipelineState === 7 ? "text-theme-accent scale-105" : "text-theme-text-muted"
                   }`}>
                     {siteCopy.shift.stepper.split(/→|->/)[3]?.trim() || "Outcome"}
@@ -867,59 +867,142 @@ export const SiteShellV3: React.FC = () => {
             <BulletinCarousel />
           </OSCard>
 
-          {/* Row 3A: Left 50% Bento Box (Four Moats) */}
-          <OSCard cornerAccent="tr-bl" navId="moats" reveal="left" revealInView revealDelay={0.1} className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 relative overflow-hidden group min-h-[380px]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
-            <div className="relative z-10 h-full">
-              <MoatsBentoContent
-                moatsLabel={siteCopy.moats.label}
-                moatsItems={[
-                  { number: "01", text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon },
-                  { number: "02", text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon },
-                  { number: "03", text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon },
-                  { number: "04", text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck },
-                ].map(({ number, text, tag, Icon }) => {
-                  const firstDashIdx = text.search(/—|-/);
-                  return {
-                    number,
-                    title: firstDashIdx !== -1 ? text.slice(0, firstDashIdx).trim() : text,
-                    description: firstDashIdx !== -1 ? text.slice(firstDashIdx + 1).trim() : "",
-                    tag,
-                    Icon,
-                  };
-                })}
-              />
-            </div>
-          </OSCard>
+          {/* Row 3: 60:40 Split Row (60% Interactive Moats Accordion | 40% Vertically Stacked AI Employees) */}
+          <div className="col-span-1 md:col-span-2 lg:col-span-4 grid grid-cols-1 lg:grid-cols-5 gap-3.5 md:gap-4">
+            
+            {/* Left 60% Bento Box (3 of 5 columns on desktop): Four Moats Expandable Accordion */}
+            <OSCard
+              cornerAccent="tr-bl"
+              navId="moats"
+              reveal="left"
+              revealInView
+              revealDelay={0.1}
+              className="col-span-1 lg:col-span-3 p-6 md:p-8 relative overflow-hidden group min-h-[420px] flex flex-col justify-between"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
+              <div className="relative z-10 w-full flex flex-col justify-between h-full">
+                {/* Header & Contextual Strip filling upper section */}
+                <div className="flex flex-col gap-3.5 mb-5">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-serif font-medium text-theme-text text-lg md:text-xl uppercase tracking-wider leading-snug">
+                      FOUR MOATS · ORDERED BY DEPTH
+                    </h3>
+                    <span className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-theme-accent/30 bg-theme-accent/10 font-mono text-xs uppercase tracking-widest text-theme-accent font-bold">
+                      SYSTEM DEFENSE LAYER
+                    </span>
+                  </div>
 
-          {/* Row 3A: Right 50% Bento Box (Deployed AI Employees) */}
-          <OSCard cornerAccent="tl-br" navId="roster" reveal="right" revealInView revealDelay={0.35} className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 relative overflow-hidden group min-h-[380px]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
-            <div className="relative z-10 h-full">
-              <RosterBentoContent
-                rosterHeading={siteCopy.workforce_rail.h}
-                rosterItems={(() => {
-                  const descriptions = [
-                    "Autonomous Creator & Strategic Partner Business Development Engine",
-                    "End-to-End Multi-Channel Content Generation & Editorial Orchestration",
-                    "24/7 Intelligent Ticket Resolution & Multi-Tier Escalation Engine",
-                    "Automated Regulatory Monitoring, Audit Trail & Policy Adherence",
-                  ];
-                  return siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
-                    const cleanItem = rawItem.replace(/[●•]/g, '').trim();
-                    const parts = cleanItem.split(/—|–| - /);
-                    const role = parts[0]?.trim() || cleanItem;
-                    const status = parts[1]?.trim() || "LIVE";
-                    return {
-                      role,
-                      status,
-                      description: descriptions[idx] || "Autonomous enterprise agent",
-                    };
-                  });
-                })()}
-              />
-            </div>
-          </OSCard>
+                  {/* Architectural Context Bar */}
+                  <div className="rounded-xl border border-theme-border/40 bg-theme-void/60 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+                    <div className="flex items-center gap-2.5 text-theme-text-muted">
+                      <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse shrink-0" />
+                      <span>
+                        Compound intelligence infrastructure designed for long-term operational defensibility.
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-theme-text font-bold uppercase tracking-wider bg-theme-border/20 px-2 py-0.5 rounded">
+                        4 COMPOUNDING LAYERS
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Interactive Expandable 4 Moats Accordion */}
+                <div className="flex-1 flex flex-col justify-end mt-4">
+                  <MoatsAccordion
+                    items={[
+                      {
+                        title: siteCopy.moats.card_1.split(/—|-/)[0]?.trim() || "SOP engine + data lake",
+                        description: siteCopy.moats.card_1.split(/—|-/)[1]?.trim() || "encoded logic, deepens per run.",
+                        tag: "LOGIC",
+                        Icon: GearIcon,
+                        readout: [
+                          "$ keep run --moat 01_LOGIC",
+                          "> sop_engine ...... ONLINE",
+                          "> data_lake ....... DEEPENS / RUN",
+                          "> status .......... HELD",
+                        ],
+                      },
+                      {
+                        title: siteCopy.moats.card_2.split(/—|-/)[0]?.trim() || "Automated deployment pipeline",
+                        description: siteCopy.moats.card_2.split(/—|-/)[1]?.trim() || "built directly into operational flow.",
+                        tag: "PEOPLE",
+                        Icon: UserIcon,
+                        readout: [
+                          "$ keep run --moat 02_PEOPLE",
+                          "> agent_roster .... CALIBRATED",
+                          "> deployment ...... FORWARD ENGIFIED",
+                          "> status .......... LIVE",
+                        ],
+                      },
+                      {
+                        title: siteCopy.moats.card_3.split(/—|-/)[0]?.trim() || "Continuous model & task routing",
+                        description: siteCopy.moats.card_3.split(/—|-/)[1]?.trim() || "optimizes cost and speed continuously.",
+                        tag: "MEMORY",
+                        Icon: PlugConnectedIcon,
+                        readout: [
+                          "$ keep run --moat 03_MEMORY",
+                          "> model_router .... MULTI-NODE",
+                          "> latency ......... < 12ms SYNC",
+                          "> status .......... OPTIMIZED",
+                        ],
+                      },
+                      {
+                        title: siteCopy.moats.card_4.split(/—|-/)[0]?.trim() || "Sovereign execution infrastructure",
+                        description: siteCopy.moats.card_4.split(/—|-/)[1]?.trim() || "runs inside secure private cloud environments.",
+                        tag: "SOVEREIGN",
+                        Icon: ShieldCheck,
+                        readout: [
+                          "$ keep run --moat 04_SOVEREIGN",
+                          "> air_gap ......... VERIFIED",
+                          "> local_infer ..... 100% SECURE",
+                          "> status .......... SEALED",
+                        ],
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            </OSCard>
+
+            {/* Right 40% Bento Box (2 of 5 columns on desktop): Deployed AI Employees Stack */}
+            <OSCard
+              cornerAccent="tl-br"
+              navId="roster"
+              reveal="right"
+              revealInView
+              revealDelay={0.35}
+              className="col-span-1 lg:col-span-2 p-6 md:p-8 relative overflow-hidden group min-h-[420px] flex flex-col justify-between"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
+              <div className="relative z-10 w-full h-full">
+                <RosterBentoContent
+                  rosterHeading={siteCopy.workforce_rail.h}
+                  rosterItems={(() => {
+                    const descriptions = [
+                      "Autonomous Creator & Strategic Partner Business Development Engine",
+                      "End-to-End Multi-Channel Content Generation & Editorial Orchestration",
+                      "24/7 Intelligent Ticket Resolution & Multi-Tier Escalation Engine",
+                      "Automated Regulatory Monitoring, Audit Trail & Policy Adherence",
+                    ];
+                    return siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
+                      const cleanItem = rawItem.replace(/[●•]/g, '').trim();
+                      const parts = cleanItem.split(/—|–| - /);
+                      const role = parts[0]?.trim() || cleanItem;
+                      const status = parts[1]?.trim() || "LIVE";
+                      return {
+                        role,
+                        status,
+                        description: descriptions[idx] || "Autonomous enterprise agent",
+                      };
+                    });
+                  })()}
+                />
+              </div>
+            </OSCard>
+
+          </div>
 
 
 
@@ -937,7 +1020,7 @@ export const SiteShellV3: React.FC = () => {
                   />
                 </h3>
               </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-[9px] md:text-xs font-mono tracking-wider">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 border border-theme-border/30 bg-theme-void/60 rounded text-xs font-mono tracking-wider">
                 <span className={`w-1.5 h-1.5 rounded-full ${modelsLoading ? "bg-amber-500 animate-pulse" : "bg-theme-accent"}`} />
                 <span className="text-theme-text-muted">
                   {modelsLoading ? t("syncing") : t("openrouter_live")}
@@ -1216,15 +1299,15 @@ export const SiteShellV3: React.FC = () => {
                 {/* Operational Speeds */}
                 <div className="grid grid-cols-3 gap-2.5 p-4 md:p-5 bg-theme-void/50 border border-theme-border/20 rounded-2xl mb-8">
                   <div className="text-center">
-                    <span className="block text-[10px] md:text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("latency_ttft")}</span>
+                    <span className="block text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("latency_ttft")}</span>
                     <span className="text-sm md:text-xl font-bold text-theme-text">{specs.ttft}ms</span>
                   </div>
                   <div className="text-center border-x border-theme-border/20">
-                    <span className="block text-[10px] md:text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("throughput")}</span>
+                    <span className="block text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("throughput")}</span>
                     <span className="text-sm md:text-xl font-bold text-theme-text">{specs.throughput} tkn/s</span>
                   </div>
                   <div className="text-center">
-                    <span className="block text-[10px] md:text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("reliability")}</span>
+                    <span className="block text-xs uppercase tracking-wider text-theme-text-muted mb-1">{t("reliability")}</span>
                     <span className="text-sm md:text-xl font-bold text-theme-accent">{specs.reliability}</span>
                   </div>
                 </div>
