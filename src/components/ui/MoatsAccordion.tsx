@@ -3,6 +3,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatedIconHandle } from "@/components/ui/types";
 
+export interface MoatMetric {
+  label: string;
+  value: string;
+  subtext?: string;
+  change?: string;
+}
+
 export interface MoatItem {
   title: string;
   description: string;
@@ -12,7 +19,40 @@ export interface MoatItem {
   image?: string;
   /** Terminal readout lines typed once when the panel activates. */
   readout?: string[];
+  /** Quantitative performance metrics displayed in the Mini-Bento HUD on the right side. */
+  metrics?: MoatMetric[];
 }
+
+const DEFAULT_MOAT_METRICS: MoatMetric[][] = [
+  // 01 LOGIC
+  [
+    { label: "LOGIC RETENTION", value: "+340%", change: "+42%/RUN", subtext: "Compound intelligence gain" },
+    { label: "ROUTING LATENCY", value: "< 12ms", change: "LIVE", subtext: "Deterministic execution check" },
+    { label: "SELF-HEALING EDGE", value: "99.8%", change: "AUTO", subtext: "Automatic workflow correction" },
+    { label: "CONTEXT CAPACITY", value: "2.4M", change: "EXPANDED", subtext: "Persistent task memory pool" },
+  ],
+  // 02 PEOPLE
+  [
+    { label: "AUTOMATED PIPELINE", value: "80.4%", change: "FDE SPEC", subtext: "Pre-built autonomous infra" },
+    { label: "TIME-TO-DEPLOY", value: "4.2x Faster", change: "-76% TIME", subtext: "Vs traditional enterprise dev" },
+    { label: "SQUAD CALIBRATION", value: "24/7 Live", change: "ACTIVE", subtext: "Continuous swarm alignment" },
+    { label: "INTEGRATION DEPTH", value: "100% Core", change: "ZERO GAP", subtext: "Direct operational ownership" },
+  ],
+  // 03 DEPLOYMENT / MEMORY
+  [
+    { label: "SLA TARGET UPTIME", value: "99.99%", change: "TIER-1", subtext: "Multi-region active failover" },
+    { label: "MODEL ARBITRAGE", value: "-42% Cost", change: "LIVE OPT", subtext: "Real-time model routing gains" },
+    { label: "FLYWHEEL SPEED", value: "< 8ms Sync", change: "INSTANT", subtext: "Cross-run memory propagation" },
+    { label: "COLD-START DELAY", value: "0 ms", change: "WARMED", subtext: "Persistent model context layer" },
+  ],
+  // 04 SOVEREIGNTY
+  [
+    { label: "DATA EXFILTRATION", value: "0 Bytes", change: "VERIFIED", subtext: "Complete air-gapped isolation" },
+    { label: "AUDIT COMPLIANCE", value: "SOC2 / ISO", change: "SEALED", subtext: "Verifiable cryptographic trail" },
+    { label: "LOCAL INFERENCE", value: "100% On-Prem", change: "SECURED", subtext: "Zero cloud telemetry leakage" },
+    { label: "CRYPTO INTEGRITY", value: "SHA-256", change: "IMMUTABLE", subtext: "End-to-end sovereign vault" },
+  ],
+];
 
 /* Backdrop mask: art lives top-right, fades to nothing toward the
    bottom-left where the copy sits. */
@@ -136,45 +176,112 @@ export const MoatsAccordion: React.FC<{ items: MoatItem[] }> = ({ items }) => {
                 </span>
               </div>
 
-              {/* Expanded content: number + icon, title + copy, tag. */}
+              {/* Expanded content: 2-column layout (Left: copy/terminal, Right: Quantitative Bento Metrics Dashboard) */}
               <div
-                className={`absolute inset-0 flex flex-col justify-between p-7 transition-opacity duration-300 motion-reduce:transition-none ${
+                className={`absolute inset-0 flex flex-col lg:flex-row justify-between p-7 transition-opacity duration-300 motion-reduce:transition-none ${
                   isActive ? "opacity-100 delay-200" : "opacity-0 pointer-events-none"
                 }`}
               >
-                <div className="flex items-start justify-between w-full">
-                  <span className="font-mono text-2xl font-bold text-theme-accent">
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <span className="w-10 h-10 rounded-xl border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center text-theme-accent shrink-0">
-                    <moat.Icon
-                      ref={(el: AnimatedIconHandle | null) => {
-                        iconRefs.current[idx] = el;
-                      }}
-                      size={20}
-                      color="var(--theme-accent)"
-                    />
-                  </span>
-                </div>
-                {/* Terminal readout — types once on activation, then rests.
-                    Mounted only while active so each activation retypes. */}
-                {moat.readout && isActive && (
-                  <div className="min-w-[280px] max-w-[460px]">
-                    <Readout lines={moat.readout} />
+                {/* Left Column: Number, Readout, Title + Copy, Tag */}
+                <div className="flex flex-col justify-between h-full w-full lg:w-[45%] shrink-0 pr-0 lg:pr-4">
+                  <div className="flex items-start justify-between w-full">
+                    <span className="font-mono text-2xl font-bold text-theme-accent">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className="w-10 h-10 rounded-xl border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center text-theme-accent shrink-0">
+                      <moat.Icon
+                        ref={(el: AnimatedIconHandle | null) => {
+                          iconRefs.current[idx] = el;
+                        }}
+                        size={20}
+                        color="var(--theme-accent)"
+                      />
+                    </span>
                   </div>
-                )}
-                {/* Fixed text width so copy doesn't reflow while the panel grows. */}
-                <div className="min-w-[280px] max-w-[460px]">
-                  <h4 className="font-serif font-medium text-lg lg:text-xl text-theme-text mb-2 tracking-normal">
-                    {moat.title}
-                  </h4>
-                  <p className="font-mono text-xs lg:text-sm text-theme-text-muted leading-relaxed">
-                    {moat.description}
-                  </p>
+                  {/* Terminal readout */}
+                  {moat.readout && isActive && (
+                    <div className="min-w-[260px] max-w-[420px]">
+                      <Readout lines={moat.readout} />
+                    </div>
+                  )}
+                  <div className="min-w-[260px] max-w-[420px]">
+                    <h4 className="font-serif font-medium text-lg lg:text-xl text-theme-text mb-1.5 tracking-normal">
+                      {moat.title}
+                    </h4>
+                    <p className="font-mono text-xs text-theme-text-muted leading-relaxed">
+                      {moat.description}
+                    </p>
+                  </div>
+                  <div className="font-mono text-xs tracking-widest uppercase font-bold text-theme-accent">
+                    [ {moat.tag} ]
+                  </div>
                 </div>
-                <div className="font-mono text-xs tracking-widest uppercase font-bold text-theme-accent">
-                  [ {moat.tag} ]
-                </div>
+
+                {/* Right Column: Quantitative Moat Performance Dashboard (Mini-Bento Metrics HUD) */}
+                {(() => {
+                  const activeMetrics = moat.metrics || DEFAULT_MOAT_METRICS[idx % DEFAULT_MOAT_METRICS.length];
+                  return (
+                    <div className="hidden lg:flex flex-col justify-between flex-1 h-full pl-6 border-l border-theme-border/30">
+                      {/* Telemetry Header */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                          <span className="font-mono text-xs font-bold uppercase tracking-widest text-theme-text-muted">
+                            // LIVE QUANTITATIVE TELEMETRY
+                          </span>
+                        </div>
+                        <span className="font-mono text-xs text-theme-accent border border-theme-accent/30 bg-theme-accent/10 px-2 py-0.5 rounded-full">
+                          VERIFIED BENCHMARK
+                        </span>
+                      </div>
+
+                      {/* 2x2 Mini-Bento Metrics Grid */}
+                      <div className="grid grid-cols-2 gap-2.5 my-auto">
+                        {activeMetrics.map((metric, mIdx) => (
+                          <div
+                            key={mIdx}
+                            className="rounded-xl border border-theme-border/40 bg-theme-void/80 p-3 flex flex-col justify-between hover:border-theme-accent/50 transition-colors group/metric"
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-mono text-xs uppercase tracking-wider text-theme-text-muted font-bold">
+                                {metric.label}
+                              </span>
+                              {metric.change && (
+                                <span className="font-mono text-xs font-bold text-theme-accent bg-theme-accent/10 px-1.5 py-0.5 rounded">
+                                  {metric.change}
+                                </span>
+                              )}
+                            </div>
+                            <div className="font-mono text-xl xl:text-2xl font-bold text-theme-text tracking-tight group-hover/metric:text-theme-accent transition-colors">
+                              {metric.value}
+                            </div>
+                            {metric.subtext && (
+                              <div className="font-mono text-xs text-theme-text-muted/80 mt-1 truncate">
+                                {metric.subtext}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Footer Telemetry Strip */}
+                      <div className="flex items-center justify-between pt-2 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted">
+                        <span>COMPOUNDING DEPTH INDEX</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-1.5 rounded-full bg-theme-accent/20 overflow-hidden">
+                            <div
+                              className="h-full bg-theme-accent rounded-full transition-all duration-700"
+                              style={{ width: `${(idx + 1) * 22 + 12}%` }}
+                            />
+                          </div>
+                          <span className="text-theme-accent font-bold">
+                            {(idx + 1) * 22 + 12}.4 / 100
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           );

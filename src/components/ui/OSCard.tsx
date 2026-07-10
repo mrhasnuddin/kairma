@@ -93,12 +93,12 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
   // Entrance reveal: slide in from the card's nearest edge + fade. Reduced
   // motion collapses it to a plain fade.
   const revealOffset =
-    reveal === "left" ? { x: -56 } : reveal === "right" ? { x: 56 } : { y: 56 };
+    reveal === "left" ? { x: -80 } : reveal === "right" ? { x: 80 } : { y: 80 };
   const revealProps = reveal
     ? {
         initial: reducedMotion ? { opacity: 0 } : { opacity: 0, ...revealOffset },
         transition: {
-          duration: reducedMotion ? 0.3 : 2.8,
+          duration: reducedMotion ? 0.3 : 0.85,
           delay: revealDelay,
           ease: REVEAL_EASE,
         },
@@ -119,15 +119,15 @@ export const OSCard: React.FC<OSCardProps> = ({ children, className = "", disabl
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      className={`relative rounded-3xl bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
+      className={`relative rounded-3xl border border-theme-border/30 bg-theme-void/50 backdrop-blur-sm transition-colors duration-500 ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'} ${className}`}
     >
-      {/* Figma Exact Gradient Edge Stroke (0% Accent -> 26% Transparent -> 85% Transparent -> 100% Accent) */}
+      {/* Figma Exact Linear Gradient Stroke (0%: 100%, 26%: 30%, 85%: 30%, 100%: 100%) */}
       <div 
-        className="absolute inset-0 rounded-3xl pointer-events-none border-[2.5px] border-transparent"
+        className="absolute inset-0 rounded-3xl pointer-events-none border-[2px] border-transparent"
         style={{
           background: (cornerAccent === "tl-br"
-            ? `linear-gradient(to bottom right, var(--color-theme-accent) 0%, transparent 26%, transparent 85%, var(--color-theme-accent) 100%) border-box`
-            : `linear-gradient(to top right, var(--color-theme-accent) 0%, transparent 26%, transparent 85%, var(--color-theme-accent) 100%) border-box`
+            ? `linear-gradient(to bottom right, var(--color-theme-accent) 0%, color-mix(in srgb, var(--color-theme-accent) 30%, transparent) 26%, color-mix(in srgb, var(--color-theme-accent) 30%, transparent) 85%, var(--color-theme-accent) 100%) border-box`
+            : `linear-gradient(to top right, var(--color-theme-accent) 0%, color-mix(in srgb, var(--color-theme-accent) 30%, transparent) 26%, color-mix(in srgb, var(--color-theme-accent) 30%, transparent) 85%, var(--color-theme-accent) 100%) border-box`
           ),
           opacity: 1,
           WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',

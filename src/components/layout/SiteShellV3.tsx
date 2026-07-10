@@ -10,6 +10,7 @@ import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { BulletinCarousel } from "@/components/ui/BulletinCarousel";
 import { MoatsAccordion } from "@/components/ui/MoatsAccordion";
+import { MoatsBentoContent, RosterBentoContent } from "@/components/ui/ConnectedMoatsRosterMatrix";
 import { DeploymentCanvas } from "@/components/ui/DeploymentCanvas";
 import { DeploymentGlobe } from "@/components/ui/DeploymentGlobe";
 import CpuIcon from "@/components/ui/cpu-icon";
@@ -580,7 +581,7 @@ export const SiteShellV3: React.FC = () => {
         <BentoGrid>
           {/* Row 1 */}
           {/* 00: The Anchor (Hero Command Card) */}
-          <OSCard cornerAccent="tr-bl" reveal="left" revealDelay={0.05} className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
+          <OSCard cornerAccent="tr-bl" reveal="left" revealDelay={0.15} className="col-span-1 row-span-1 flex flex-col justify-between p-6 bg-theme-accent/5 relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-50 pointer-events-none" />
             <div className="relative z-10 my-2 md:my-4">
               <div 
@@ -615,7 +616,7 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* 01: Main Hero Canvas */}
-          <OSCard cornerAccent="tl-br" reveal="right" revealDelay={0.2} overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
+          <OSCard cornerAccent="tl-br" reveal="right" revealDelay={0.75} overflowVisible={true} className="col-span-1 md:col-span-3 row-span-1 p-0 relative min-h-[400px] z-40">
             <div className="w-full h-full flex flex-col md:flex-row relative">
               
               {/* Top-Right Mini Status */}
@@ -678,7 +679,7 @@ export const SiteShellV3: React.FC = () => {
           />
 
           {/* Section 1: The Shift - 2x1 */}
-          <OSCard cornerAccent="tl-br" navId="shift" reveal="bottom" revealDelay={0.5} className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
+          <OSCard cornerAccent="tl-br" navId="shift" reveal="left" revealDelay={1.4} className="col-span-1 md:col-span-2 row-span-1 relative overflow-hidden group">
             
             {/* Absolute background torus image hugging the right side with fade-out masks */}
             <div className="absolute top-0 right-0 bottom-0 w-[50%] md:w-[46%] pointer-events-none z-0 select-none">
@@ -862,84 +863,65 @@ export const SiteShellV3: React.FC = () => {
           </OSCard>
 
           {/* Section 3: Bulletin Carousel */}
-          <OSCard cornerAccent="tr-bl" reveal="right" revealDelay={0.65} className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
+          <OSCard cornerAccent="tr-bl" reveal="right" revealDelay={2.0} className="col-span-1 md:col-span-1 row-span-1 p-0 min-h-[300px] md:min-h-[340px] relative overflow-hidden group">
             <BulletinCarousel />
           </OSCard>
 
-          {/* Row 3: Four Moats */}
-          <OSCard cornerAccent="tr-bl" navId="moats" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-10 relative overflow-hidden group min-h-[300px]">
-            <div className="flex justify-between items-center mb-6 shrink-0">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-theme-accent animate-pulse" />
-                <h3 className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm">
-                  <EyebrowText 
-                    text={siteCopy.moats.label} 
-                    className="font-mono font-bold uppercase tracking-widest text-theme-text text-sm" 
-                    capitalClassName="font-gothic font-normal tracking-wide text-theme-text text-base md:text-lg inline" 
-                  />
-                </h3>
-              </div>
-            </div>
-            
-            <div className="mt-8">
-              <MoatsAccordion
-                items={[
-                  {
-                    text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon,
-                    readout: [
-                      "$ keep run --moat 01_LOGIC",
-                      "> sop_engine ...... ONLINE",
-                      "> data_lake ....... DEEPENS / RUN",
-                      "> status .......... HELD",
-                    ],
-                  },
-                  {
-                    text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon,
-                    readout: [
-                      "$ keep deploy --fde",
-                      "> standardized .... ~80%",
-                      "> last_mile ....... FDE_CLOSED",
-                      "> status .......... HELD",
-                    ],
-                  },
-                  {
-                    text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon,
-                    readout: [
-                      "$ keep sync --flywheel",
-                      "> deployments ..... COMPOUNDING",
-                      "> context_gain .... +1 / RUN",
-                      "> status .......... HELD",
-                    ],
-                  },
-                  {
-                    text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck,
-                    readout: [
-                      "$ keep audit --egress",
-                      "> data_egress ..... 0 BYTES",
-                      "> runtime ......... SEALED",
-                      "> status .......... HELD",
-                    ],
-                  },
-                ].map(({ text, tag, Icon, readout }) => {
+          {/* Row 3A: Left 50% Bento Box (Four Moats) */}
+          <OSCard cornerAccent="tr-bl" navId="moats" reveal="left" revealInView revealDelay={0.1} className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 relative overflow-hidden group min-h-[380px]">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
+            <div className="relative z-10 h-full">
+              <MoatsBentoContent
+                moatsLabel={siteCopy.moats.label}
+                moatsItems={[
+                  { number: "01", text: siteCopy.moats.card_1, tag: "LOGIC", Icon: GearIcon },
+                  { number: "02", text: siteCopy.moats.card_2, tag: "PEOPLE", Icon: UserIcon },
+                  { number: "03", text: siteCopy.moats.card_3, tag: "MEMORY", Icon: PlugConnectedIcon },
+                  { number: "04", text: siteCopy.moats.card_4, tag: "SOVEREIGN", Icon: ShieldCheck },
+                ].map(({ number, text, tag, Icon }) => {
                   const firstDashIdx = text.search(/—|-/);
                   return {
+                    number,
                     title: firstDashIdx !== -1 ? text.slice(0, firstDashIdx).trim() : text,
                     description: firstDashIdx !== -1 ? text.slice(firstDashIdx + 1).trim() : "",
                     tag,
                     Icon,
-                    readout,
                   };
                 })}
               />
             </div>
-            {siteCopy.moats.routing_strip && (
-              <div className="mt-8 pt-4 border-t border-theme-border/20 flex items-center justify-center text-center">
-                <p className="font-mono text-xs md:text-sm text-theme-text font-normal md:font-medium tracking-wide">
-                  {siteCopy.moats.routing_strip}
-                </p>
-              </div>
-            )}
           </OSCard>
+
+          {/* Row 3A: Right 50% Bento Box (Deployed AI Employees) */}
+          <OSCard cornerAccent="tl-br" navId="roster" reveal="right" revealInView revealDelay={0.35} className="col-span-1 md:col-span-2 row-span-1 p-6 md:p-8 relative overflow-hidden group min-h-[380px]">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
+            <div className="relative z-10 h-full">
+              <RosterBentoContent
+                rosterHeading={siteCopy.workforce_rail.h}
+                rosterItems={(() => {
+                  const descriptions = [
+                    "Autonomous Creator & Strategic Partner Business Development Engine",
+                    "End-to-End Multi-Channel Content Generation & Editorial Orchestration",
+                    "24/7 Intelligent Ticket Resolution & Multi-Tier Escalation Engine",
+                    "Automated Regulatory Monitoring, Audit Trail & Policy Adherence",
+                  ];
+                  return siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
+                    const cleanItem = rawItem.replace(/[●•]/g, '').trim();
+                    const parts = cleanItem.split(/—|–| - /);
+                    const role = parts[0]?.trim() || cleanItem;
+                    const status = parts[1]?.trim() || "LIVE";
+                    return {
+                      role,
+                      status,
+                      description: descriptions[idx] || "Autonomous enterprise agent",
+                    };
+                  });
+                })()}
+              />
+            </div>
+          </OSCard>
+
+
 
           {/* Row 4+5 */}
           {/* 04: The Foundry (Leaderboard) */}
@@ -1100,86 +1082,6 @@ export const SiteShellV3: React.FC = () => {
             </div>
           </OSCard>
 
-          {/* Section 4: The Roster (Command & Telemetry Ticker / Interactive Badges) inside Bento Grid */}
-          <OSCard cornerAccent="tr-bl" navId="roster" reveal="bottom" revealInView className="col-span-1 md:col-span-4 row-span-1 p-6 md:p-8 relative overflow-hidden group">
-            {/* Ambient background glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-theme-accent/10 via-transparent to-transparent opacity-40 pointer-events-none" />
-            
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-theme-border/20">
-              <div className="flex items-center gap-3">
-                <span className="w-9 h-9 rounded-xl border border-theme-accent/30 bg-theme-accent/10 flex items-center justify-center shrink-0 shadow-sm">
-                  <UserIcon size={18} className="text-theme-accent" />
-                </span>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent">
-                      <EyebrowText 
-                        text={siteCopy.workforce_rail.discipline_line ? "DEPLOYED WORKFORCE // ACTIVE ROSTER" : "SYS_ROSTER // LIVE"} 
-                        className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-accent" 
-                        capitalClassName="font-gothic font-normal text-sm md:text-base tracking-wide text-theme-accent inline" 
-                      />
-                    </span>
-                  </div>
-                  <h3 className="font-serif font-medium text-theme-text text-base md:text-xl leading-snug">
-                    {siteCopy.workforce_rail.h}
-                  </h3>
-                </div>
-              </div>
-              
-              <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border border-theme-border/40 bg-theme-void/60 font-mono text-[10px] text-theme-text-muted uppercase tracking-wider self-start md:self-auto shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
-                <span>SYSTEM TELEMETRY // ONLINE</span>
-              </div>
-            </div>
-
-            {/* Responsive 4-Column Interactive Micro-Cards Grid */}
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {(() => {
-                const items = siteCopy.workforce_rail.items.split('·').map((rawItem, idx) => {
-                  const cleanItem = rawItem.replace(/[●•]/g, '').trim();
-                  const parts = cleanItem.split(/—|–| - /);
-                  const role = parts[0]?.trim() || cleanItem;
-                  const status = parts[1]?.trim() || "LIVE";
-                  return { id: idx, role, status };
-                });
-                return items.map((item, idx) => (
-                  <div 
-                    key={`${item.id}-${idx}`}
-                    className="flex flex-col justify-between p-5 rounded-2xl border border-theme-border/60 bg-theme-void/90 hover:border-theme-accent hover:bg-theme-accent/5 transition-all duration-300 shadow-sm backdrop-blur-md relative overflow-hidden group/card cursor-default"
-                  >
-                    {/* Subtle corner glow on hover */}
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-theme-accent/10 rounded-full blur-xl -mr-10 -mt-10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                    
-                    <div className="flex items-center justify-between gap-2 mb-6">
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-theme-text-muted/80 group-hover/card:text-theme-text-muted transition-colors">
-                        AGENT // 0{idx + 1}
-                      </span>
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-theme-accent opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-theme-accent" />
-                      </span>
-                    </div>
-
-                    <div>
-                      <h4 className="font-mono text-base font-bold text-theme-text group-hover/card:text-theme-accent transition-colors mb-3">
-                        {item.role}
-                      </h4>
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-theme-accent/30 bg-theme-accent/10 font-mono text-[11px] font-semibold uppercase tracking-wider text-theme-accent">
-                        {item.status}
-                      </div>
-                    </div>
-                  </div>
-                ));
-              })()}
-            </div>
-
-            {siteCopy.workforce_rail.discipline_line && (
-              <p className="mt-6 pt-4 border-t border-theme-border/20 font-mono text-xs text-theme-text-muted/70 italic text-center md:text-left">
-                {siteCopy.workforce_rail.discipline_line}
-              </p>
-            )}
-          </OSCard>
         </BentoGrid>
         </div>
       </motion.main>
