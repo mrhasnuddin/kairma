@@ -7,6 +7,14 @@ import { useSiteCopyV6 } from "@/lib/language";
  *  it — the two must match for the curtain reveal to land exactly. */
 export const FOOTER_REVEAL_HEIGHT = "100svh";
 
+const FOOTER_THUMBNAILS = [
+  { src: "/quotes/thumbnail/图片58.png", focalPoint: "30% 50%" },
+  { src: "/quotes/thumbnail/图片59.png", focalPoint: "59% 50%" },
+  { src: "/quotes/thumbnail/图片61.png", focalPoint: "50% 78%" },
+  { src: "/quotes/thumbnail/图片62.png", focalPoint: "79% 50%" },
+  { src: "/quotes/thumbnail/图片55.png", focalPoint: "56% 50%" },
+];
+
 /**
  * Hermes-agent style reveal footer: a fixed layer sitting UNDER the content
  * curtain (z-0 vs the content wrapper's z-10). The page's final scroll
@@ -14,6 +22,14 @@ export const FOOTER_REVEAL_HEIGHT = "100svh";
  */
 export const KairmaFooter: React.FC = () => {
   const siteCopy = useSiteCopyV6();
+  const [thumbIndex, setThumbIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setThumbIndex((prev) => (prev + 1) % FOOTER_THUMBNAILS.length);
+    }, 5500);
+    return () => clearInterval(timer);
+  }, []);
 
   // Same jump-and-flash behavior as the sticky nav's Apply.
   const requestPilot = () => {
@@ -101,12 +117,29 @@ export const KairmaFooter: React.FC = () => {
           {siteCopy.hero_left.cta_1 || "Request a pilot →"}
         </button>
 
-        {/* Placeholder illustration (duotone follows the theme accent). */}
+        {/* Footer illustration using newly uploaded Chinese-named thumbnails with optimal 1:1 focal cropping */}
         <div
-          className="thumb-duotone relative mt-6 md:mt-8 rounded-2xl overflow-hidden shrink min-h-0"
+          onClick={() => setThumbIndex((prev) => (prev + 1) % FOOTER_THUMBNAILS.length)}
+          title="Click to cycle footer visual"
+          className="thumb-duotone relative mt-6 md:mt-8 rounded-2xl overflow-hidden shrink min-h-0 cursor-pointer group select-none transition-all hover:scale-[1.02]"
           style={{ height: "min(40svh, 380px)", aspectRatio: "1 / 1" }}
         >
-          <img src="/quotes/thumbnail/02.jpg" alt="" className="w-full h-full object-cover" />
+          <img
+            src={encodeURI(FOOTER_THUMBNAILS[thumbIndex].src)}
+            alt="Kairma Visual"
+            style={{ objectPosition: FOOTER_THUMBNAILS[thumbIndex].focalPoint }}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute bottom-3 right-3 flex gap-1.5 z-10 pointer-events-none">
+            {FOOTER_THUMBNAILS.map((_, i) => (
+              <span
+                key={i}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  i === thumbIndex ? "bg-white scale-125" : "bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
 

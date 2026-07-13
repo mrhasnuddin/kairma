@@ -31,35 +31,40 @@ export const BulletinCarousel: React.FC = () => {
       tag: "BULLETIN 01",
       title: siteCopy.panel_keep.h || "Data local. Models cloud. Only tasks route.",
       body: siteCopy.panel_keep.body || "The Keep — your sealed runtime. Brand data never leaves. SOP engine · model router · RPA / API.",
-      image: "/quotes/thumbnail/01.jpg",
+      image: "/quotes/thumbnail/图片58.png",
+      focalPoint: "30% 50%",
     },
     {
       id: 2,
       tag: "BULLETIN 02",
       title: "Sovereign AI Runtime",
       body: "Zero-data leakage architecture. Your custom models run within your enterprise VPC and private infrastructure.",
-      image: "/quotes/thumbnail/03.jpg",
+      image: "/quotes/thumbnail/图片59.png",
+      focalPoint: "59% 50%",
     },
     {
       id: 3,
       tag: "BULLETIN 03",
       title: "Multi-Model Routing",
       body: "Dynamically dispatch reasoning tasks across Claude, OpenAI, DeepSeek, and locally fine-tuned Llama models.",
-      image: "/quotes/thumbnail/16.jpg",
+      image: "/quotes/thumbnail/图片61.png",
+      focalPoint: "50% 78%",
     },
     {
       id: 4,
       tag: "BULLETIN 04",
       title: "Automated SOP Engine",
       body: "Codify complex operational procedures into autonomous AI employees that execute seamlessly 24/7/365.",
-      image: "/quotes/thumbnail/17.jpg",
+      image: "/quotes/thumbnail/图片62.png",
+      focalPoint: "79% 50%",
     },
     {
       id: 5,
       tag: "BULLETIN 05",
       title: "Enterprise RPA & API",
       body: "Seamlessly bridge legacy software interfaces with modern agentic AI workflows and event-driven triggers.",
-      image: "/quotes/thumbnail/18.jpg",
+      image: "/quotes/thumbnail/图片55.png",
+      focalPoint: "56% 50%",
     },
   ];
 
@@ -90,8 +95,9 @@ export const BulletinCarousel: React.FC = () => {
         >
           {/* Poster Image */}
           <img
-            src={slides[currentSlide].image}
+            src={encodeURI(slides[currentSlide].image)}
             alt={slides[currentSlide].title}
+            style={{ objectPosition: slides[currentSlide].focalPoint }}
             className="w-full h-full object-cover"
           />
         </motion.div>
