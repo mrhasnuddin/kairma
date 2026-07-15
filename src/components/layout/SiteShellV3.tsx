@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { StickyNav } from "./StickyNav";
 import { KairmaFooter, FOOTER_REVEAL_HEIGHT } from "./KairmaFooter";
 import { BurnStream } from "@/components/ui/BurnStream";
@@ -1032,12 +1033,6 @@ export const SiteShellV3: React.FC = () => {
                 )}
               </div>
             </div>
-
-            {language === "en" && (
-              <p className="font-mono text-xs text-theme-text-muted mb-6 max-w-3xl leading-relaxed">
-                We don't build foundation models. We route your tasks across whichever model wins on speed, cost, and task fit today — Claude, GPT, Gemini, DeepSeek, Qwen, Kimi. Model-neutral, vendor-neutral.
-              </p>
-            )}
 
             {modelsLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center text-theme-text-muted font-mono text-xs uppercase tracking-widest gap-2">

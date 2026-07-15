@@ -248,12 +248,18 @@ body::after {
   overflow: hidden;
   transition: background-color 0.3s ease;
 }
-.thumb-duotone img {
+.thumb-duotone img,
+.thumb-duotone video,
+.thumb-duotone canvas {
   filter: grayscale(1) contrast(1.08);
   mix-blend-mode: darken; /* dark theme: brights take the accent */
 }
 .xuan-mode .thumb-duotone img,
-[data-theme="xuan-mode"] .thumb-duotone img {
+[data-theme="xuan-mode"] .thumb-duotone img,
+.xuan-mode .thumb-duotone video,
+[data-theme="xuan-mode"] .thumb-duotone video,
+.xuan-mode .thumb-duotone canvas,
+[data-theme="xuan-mode"] .thumb-duotone canvas {
   mix-blend-mode: lighten; /* light theme: darks take the accent */
 }
 
