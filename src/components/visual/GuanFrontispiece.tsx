@@ -17,7 +17,9 @@ function playKeystrokeClick() {
   lastClickTime = nowMs;
 
   try {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AudioContextClass) return;
 
     if (!audioCtx) {
@@ -110,10 +112,9 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
   useEffect(() => {
     if (charCount === 0) return;
 
-    let timeoutId: NodeJS.Timeout;
     let intervalId: NodeJS.Timeout;
 
-    timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       const allIndices = Array.from({ length: charCount }, (_, i) => i);
       const shuffled = [...allIndices].sort(() => Math.random() - 0.5);
       let currentStep = 0;
@@ -122,19 +123,23 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
       const stepTime = Math.max(12, Math.floor(duration / Math.ceil(charCount / charsPerStep)));
 
       intervalId = setInterval(() => {
-        if (currentStep < shuffled.length) {
-          setRevealedIndices((prev) => {
-            const next = new Set(prev);
-            for (let k = 0; k < charsPerStep && currentStep < shuffled.length; k++) {
-              next.add(shuffled[currentStep]);
-              currentStep++;
-            }
-            return next;
-          });
-          playKeystrokeClick();
-        } else {
+        if (currentStep >= shuffled.length) {
           clearInterval(intervalId);
+          // Safety net: guarantee every character ends revealed.
+          setRevealedIndices(new Set(allIndices));
+          return;
         }
+        // Advance OUTSIDE the state updater — updaters must stay pure
+        // (StrictMode double-invokes them, which used to skip half the
+        // characters and leave the text permanently scrambled).
+        const batch = shuffled.slice(currentStep, currentStep + charsPerStep);
+        currentStep += batch.length;
+        setRevealedIndices((prev) => {
+          const next = new Set(prev);
+          for (const i of batch) next.add(i);
+          return next;
+        });
+        playKeystrokeClick();
       }, stepTime);
     }, delay);
 
@@ -144,10 +149,12 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
     };
   }, [charCount, duration, delay]);
 
-  const getRandomChar = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789§±!@#$%^&*()_+-=[]{}|;:,.<>?";
-    return chars[Math.floor(Math.random() * chars.length)];
-  };
+  // Deterministic per render (render must stay pure): the glyph shifts as
+  // the reveal progresses, giving the same flicker without Math.random().
+  const SCRAMBLE_CHARS =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789§±!@#$%^&*()_+-=[]{}|;:,.<>?";
+  const scrambleChar = (idx: number) =>
+    SCRAMBLE_CHARS[(idx * 31 + revealedIndices.size * 17 + (showCursor ? 7 : 0)) % SCRAMBLE_CHARS.length];
 
   return (
     <span className="inline-block tracking-wide">
@@ -166,7 +173,7 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({ text, duration = 2500, dela
                     isRevealed ? "text-inherit font-inherit" : "text-theme-accent font-light opacity-80 font-mono"
                   }`}
                 >
-                  {isRevealed ? char : getRandomChar()}
+                  {isRevealed ? char : scrambleChar(idx)}
                 </span>
               );
             })}

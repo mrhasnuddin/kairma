@@ -202,6 +202,15 @@ body::after {
   display: none;
 }
 
+/* Pyramid structural face fills — must follow the theme. We use a CSS class
+   rather than inline SVG styles so this rule re-evaluates on every
+   .xuan-mode / data-theme toggle, even before React re-renders.
+   Dark theme: --theme-void = #0B0A0C (near-black)
+   Light theme: --theme-void = #ffffff (white) */
+.pyramid-void-fill {
+  fill: var(--theme-void) !important;
+}
+
 /* Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

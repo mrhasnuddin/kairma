@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soul.io 3D Interactive Orbit Component Showcase</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- GSAP for Smooth Snapping/Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #08080a;
+      --panel-bg: rgba(14, 14, 18, 0.6);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-green: #5af1b0;
+      --accent-purple: #7b3fe4;
+      --accent-yellow: #e1ff69;
+      --text-main: #ffffff;
+      --text-muted: #888890;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-col: column;
+    }
+
+    /* Background grids & glows */
+    .bg-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-grid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    .bg-glow-1 {
+      position: absolute;
+      top: -10%;
+      right: 10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(90, 241, 176, 0.08) 0%, transparent 70%);
+      filter: blur(80px);
+    }
+
+    .bg-glow-2 {
+      position: absolute;
+      bottom: -10%;
+      left: 10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(123, 63, 228, 0.08) 0%, transparent 70%);
+      filter: blur(100px);
+    }
+
+    /* Layout Wrapper */
+    .dashboard {
+      display: flex;
+      flex-direction: row;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Left panel: dynamic table */
+    .left-panel {
+      flex: 1.2;
+      border-right: 1px solid var(--border-color);
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    /* Right panel: 3D selector */
+    .right-panel {
+      flex: 1.4;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+    }
+
+    .canvas-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    /* Header styling */
+    .header {
+      margin-bottom: 2rem;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-green);
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* Filter status bar */
+    .filter-status {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      margin-bottom: 1.8rem;
+    }
+
+    .filter-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .chip.network { border-color: var(--accent-green); color: var(--accent-green); }
+    .chip.protocol { border-color: var(--accent-purple); color: #b78eff; }
+    .chip.asset { border-color: var(--accent-yellow); color: var(--accent-yellow); }
+
+    .reset-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: underline;
+      margin-left: auto;
+      transition: color 0.2s;
+    }
+
+    .reset-btn:hover {
+      color: #fff;
+    }
+
+    /* Table Container & Table */
+    .table-container {
+      flex: 1;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 1rem 1.2rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 1.1rem 1.2rem;
+      border-bottom: 1px solid var(--border-color);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .emissions {
+      font-family: 'Roboto Mono', monospace;
+      color: var(--accent-green);
+      font-weight: 500;
+    }
+
+    .votes {
+      font-family: 'Roboto Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(90, 241, 176, 0.15);
+      color: var(--accent-green);
+    }
+
+    /* 3D Orbit Info overlays */
+    .orbit-overlay {
+      position: absolute;
+      bottom: 2.5rem;
+      right: 2.5rem;
+      background: rgba(10, 10, 12, 0.85);
+      border: 1px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      max-width: 320px;
+      pointer-events: none;
+    }
+
+    .overlay-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+    }
+
+    .overlay-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Tip box */
+    .tip-box {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(90, 241, 176, 0.03);
+      border-left: 3px solid var(--accent-green);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .dashboard {
+        flex-direction: column;
+        height: auto;
+      }
+      .left-panel, .right-panel {
+        flex: none;
+        width: 100%;
+        height: auto;
+      }
+      .right-panel {
+        height: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-elements">
+    <div class="bg-grid"></div>
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+  </div>
+
+  <div class="dashboard">
+    <!-- Left panel with gauges details -->
+    <div class="left-panel">
+      <div class="header">
+        <span class="tag">Interactive Demo</span>
+        <h1>Gauges & Emissions</h1>
+        <p class="subtitle">Filter weekly emissions and voter distribution live by interacting with the 3D Web3 Orbit system on the right.</p>
+      </div>
+
+      <!-- Active Filters Tag Bar -->
+      <div class="filter-status">
+        <span class="filter-label">Active Filters:</span>
+        <div class="filter-chips" id="filter-chips">
+          <span class="chip" style="color: var(--text-muted); border-color: transparent; background: transparent;">All Gauges</span>
+        </div>
+        <button class="reset-btn" id="reset-filters" style="display: none;">Reset All</button>
+      </div>
+
+      <!-- Gauges Table -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Gauge</th>
+              <th>Emissions</th>
+              <th>APY</th>
+              <th>Votes</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="gauges-tbody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip-box">
+        💡 <strong>Pro Tip:</strong> Click and drag the rings horizontally to rotate them. Click on any network, protocol, or token icon in the 3D scene to filter the gauges table instantly.
+      </div>
+    </div>
+
+    <!-- Right panel with Three.js canvas -->
+    <div class="right-panel">
+      <div class="canvas-container" id="orbit-canvas-container"></div>
+      
+      <!-- Interactive Instructions Overlay -->
+      <div class="orbit-overlay">
+        <div class="overlay-title">3D Web3 Orbit Selector</div>
+        <div class="overlay-desc">
+          Top Ring: Networks (Sepolia, Base, Arbitrum...)<br>
+          Middle Ring: Protocols (Aave, Compound...)<br>
+          Bottom Ring: Assets (ETH, BTC, USDC...)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import the modular components -->
+  <script type="module">
+    import { networks, protocols, assets, gauges } from './data.js';
+    import { Web3OrbitSystem } from './orbit.js';
+
+    // Selections state
+    const currentFilters = {
+      network: null,
+      protocol: null,
+      asset: null
+    };
+
+    // DOM Elements
+    const tbody = document.getElementById('gauges-tbody');
+    const chipsContainer = document.getElementById('filter-chips');
+    const resetBtn = document.getElementById('reset-filters');
+
+    // Render Table based on selections
+    function renderTable() {
+      const filtered = gauges.filter(gauge => {
+        if (currentFilters.network && gauge.network !== currentFilters.network) return false;
+        if (currentFilters.protocol && gauge.protocol !== currentFilters.protocol) return false;
+        if (currentFilters.asset && gauge.asset !== currentFilters.asset) return false;
+        return true;
+      });
+
+      tbody.innerHTML = filtered.map(g => `
+        <tr>
+          <td>
+            <div style="font-weight: 600;">${g.name}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">
+              ${g.network} • ${g.protocol} • ${g.asset}
+            </div>
+          </td>
+          <td class="emissions">${g.emissions} $SO</td>
+          <td style="font-weight: 500;">${g.apy}</td>
+          <td class="votes">${g.votes}</td>
+          <td><span class="badge">${g.status}</span></td>
+        </tr>
+      `).join('');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 3rem 0;">
+              No gauges matching the selected criteria.
+            </td>
+          </tr>
+        `;
+      }
+
+      updateFilterChips();
+    }
+
+    // Update Filter Chips in UI
+    function updateFilterChips() {
+      const active = [];
+      
+      if (currentFilters.network) {
+        const netObj = networks.find(n => n.id === currentFilters.network);
+        active.push(`<span class="chip network">${netObj.name}</span>`);
+      }
+      if (currentFilters.protocol) {
+        const protObj = protocols.find(p => p.id === currentFilters.protocol);
+        active.push(`<span class="chip protocol">${protObj.name}</span>`);
+      }
+      if (currentFilters.asset) {
+        const assetObj = assets.find(a => a.id === currentFilters.asset);
+        active.push(`<span class="chip asset">${assetObj.name}</span>`);
+      }
+
+      if (active.length > 0) {
+        chipsContainer.innerHTML = active.join('');
+        resetBtn.style.display = 'inline-block';
+      } else {
+        chipsContainer.innerHTML = `<span class="chip" style="color: var(--text-muted); border-color: transparent; background: transparent;">All Gauges</span>`;
+        resetBtn.style.display = 'none';
+      }
+    }
+
+    // Reset All Filters
+    resetBtn.addEventListener('click', () => {
+      currentFilters.network = null;
+      currentFilters.protocol = null;
+      currentFilters.asset = null;
+      
+      // Reset 3D Orbit selected nodes
+      orbitSystem.deselectCategory('network');
+      orbitSystem.deselectCategory('protocol');
+      orbitSystem.deselectCategory('asset');
+      
+      renderTable();
+    });
+
+    // Initialize 3D Orbit Selector
+    const orbitSystem = new Web3OrbitSystem('orbit-canvas-container', {
+      networks,
+      protocols,
+      assets,
+      onSelect: (category, item) => {
+        currentFilters[category] = item.id;
+        renderTable();
+      },
+      onDeselect: (category) => {
+        currentFilters[category] = null;
+        renderTable();
+      }
+    });
+
+    // Initial render
+    renderTable();
+  </script>
+</body>
+</html>
