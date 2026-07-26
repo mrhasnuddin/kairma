@@ -76,6 +76,11 @@
   --theme-border: rgba(201, 64, 43, 0.35);
   --theme-border-glow: rgba(201, 64, 43, 0.6);
   --theme-text-muted: rgba(255, 255, 255, 0.6);
+  /* Duotone wash — the primary pulled toward the page background so imagery
+     reads as a tint, never as brand colour. The primary itself stays reserved
+     for CTAs, strokes and text sitting ON the imagery (Hermes convention).
+     Dark keeps more of the accent because it has black to sink into. */
+  --theme-accent-wash: color-mix(in srgb, var(--theme-accent) 65%, var(--theme-void));
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -120,6 +125,8 @@
   --theme-border: rgba(0, 73, 46, 0.2);
   --theme-border-glow: rgba(0, 73, 46, 0.45);
   --theme-text-muted: rgba(11, 10, 12, 0.6);
+  /* Paper needs far less pigment than black does to read as tinted. */
+  --theme-accent-wash: color-mix(in srgb, var(--theme-accent) 24%, var(--theme-void));
 }
 
 @theme {
@@ -138,6 +145,7 @@
   --color-theme-border: var(--theme-border);
   --color-theme-border-glow: var(--theme-border-glow);
   --color-theme-accent-glow: var(--theme-border-glow);
+  --color-theme-accent-wash: var(--theme-accent-wash);
   --color-theme-text-muted: var(--theme-text-muted);
 
   --font-gothic: var(--font-gothic);
@@ -166,6 +174,20 @@ body {
 /* Minimum font size anywhere: 12px (text-xs) */
 .text-box-headline-max {
   font-size: 34px;
+}
+
+/* Design System: THE bento box headline size. Every box title in the grid
+   uses this one class so the whole grid stays on a single typographic step —
+   change these two values to re-scale every box headline at once. Page-level
+   display headlines (the quote frontispiece) keep .text-box-headline-max. */
+.text-box-headline {
+  font-size: 18px;
+  line-height: 1.3;
+}
+@media (min-width: 768px) {
+  .text-box-headline {
+    font-size: 20px;
+  }
 }
 
 /* Design System Rule: SMOOTH ROUNDED CORNERS everywhere (iOS/Apple aesthetic). */
@@ -202,14 +224,7 @@ body::after {
   display: none;
 }
 
-/* Pyramid structural face fills — must follow the theme. We use a CSS class
-   rather than inline SVG styles so this rule re-evaluates on every
-   .xuan-mode / data-theme toggle, even before React re-renders.
-   Dark theme: --theme-void = #0B0A0C (near-black)
-   Light theme: --theme-void = #ffffff (white) */
-.pyramid-void-fill {
-  fill: var(--theme-void) !important;
-}
+
 
 /* Scrollbars */
 ::-webkit-scrollbar {
@@ -250,7 +265,10 @@ body::after {
    framer-motion slide), that ancestor becomes its own compositing group
    and the blend cannot see backdrops outside it — so apply this class ON
    the animated element itself (or inside it), never outside it. The class
-   does not set `position`; the wrapper keeps its own positioning. */
+   does not set `position`; the wrapper keeps its own positioning.
+   This is the FULL-STRENGTH treatment: the quote frontispiece and the footer
+   are deliberately loud, poster-scale imagery and keep it. For thumbnails that
+   share a card with CTAs, add `.thumb-soft` (below) instead. */
 .thumb-duotone {
   isolation: isolate;
   background-color: var(--theme-accent);
@@ -261,7 +279,7 @@ body::after {
 .thumb-duotone video,
 .thumb-duotone canvas {
   filter: grayscale(1) contrast(1.08);
-  mix-blend-mode: darken; /* dark theme: brights take the accent */
+  mix-blend-mode: darken; /* dark theme: brights take the red accent */
 }
 .xuan-mode .thumb-duotone img,
 [data-theme="xuan-mode"] .thumb-duotone img,
@@ -269,7 +287,38 @@ body::after {
 [data-theme="xuan-mode"] .thumb-duotone video,
 .xuan-mode .thumb-duotone canvas,
 [data-theme="xuan-mode"] .thumb-duotone canvas {
-  mix-blend-mode: lighten; /* light theme: darks take the accent */
+  mix-blend-mode: lighten; /* light theme: darks take the green accent */
+}
+
+/* Design System Rule: SOFT DUOTONE (`.thumb-duotone.thumb-soft`).
+   Opt-in modifier for imagery that sits inside a bento card alongside CTAs
+   and body copy — currently the bulletin carousel. It blends against
+   --theme-accent-wash instead of the raw primary, so the primary stays
+   reserved for CTAs and the text sitting on top of the card (Hermes
+   convention). Measured against the bulletin poster, this drops peak
+   saturation ~35% and tonal contrast ~40% in dark, and turns light into a
+   pale tint (mean luminance 129 -> 220) — visible, never loud.
+   Tuning knob: the two --theme-accent-wash color-mix percentages. */
+.thumb-duotone.thumb-soft {
+  background-color: var(--theme-accent-wash);
+}
+/* dark: the wash is the CEILING — highlights sink to muted brick */
+.thumb-duotone.thumb-soft img,
+.thumb-duotone.thumb-soft video,
+.thumb-duotone.thumb-soft canvas {
+  filter: grayscale(1) contrast(1.1) brightness(0.95);
+  opacity: 0.95;
+}
+/* light: the wash is the FLOOR — shadows lift to pale sage, and the tone
+   curve is flattened + lifted so midtones land in the pale band */
+.xuan-mode .thumb-duotone.thumb-soft img,
+[data-theme="xuan-mode"] .thumb-duotone.thumb-soft img,
+.xuan-mode .thumb-duotone.thumb-soft video,
+[data-theme="xuan-mode"] .thumb-duotone.thumb-soft video,
+.xuan-mode .thumb-duotone.thumb-soft canvas,
+[data-theme="xuan-mode"] .thumb-duotone.thumb-soft canvas {
+  filter: grayscale(1) contrast(0.85) brightness(1.2);
+  opacity: 1;
 }
 
 /* Nav-jump box flash: two blinks of the hover-effect overlays, used when a

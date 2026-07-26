@@ -18,22 +18,26 @@ export const PYRAMID_SLOTS: { x: number; y: number }[] = [
   {"x": 197.0, "y": 73.62}
 ];
 
-/* The "pyramid-void-fill" CSS class is defined in globals.css:
-     .pyramid-void-fill { fill: var(--theme-void) !important; }
-   Using a globals.css class (rather than inline styles or a JS-computed value)
-   guarantees the fill re-evaluates whenever the .xuan-mode class is toggled on
-   <html>, without waiting for any React re-render cycle. */
+/* Theming contract for this scene — two rules, no exceptions:
+   1. Every solid face is `fill="currentColor"`, and `color` is bound below to
+      var(--theme-void). The theme class lives on <html>, so the variable is
+      re-resolved on toggle and the pyramid body always equals the page
+      background (white in xuan-mode, near-black in matrix-mode).
+   2. Every stroke-only outline MUST declare `fill: "none"`. SVG's initial fill
+      is black, so a closed outline path with no fill paints an opaque black
+      shape over the themed faces — invisible in dark mode, but it blacks out
+      the body in light mode. */
 export const PyramidScene: React.FC<{ plates: React.ReactNode[]; className?: string }> = ({
   plates,
   className,
 }) => {
   return (
-    <svg viewBox="0 0 320 310" className={className}>
+    <svg viewBox="0 0 320 310" className={className} style={{ color: "var(--theme-void)" }}>
       {/* Base platform — 3 solid faces */}
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M58.8495 216.476L1.00024 183.077L1 216.175L160 307.974L160 274.876L58.8495 216.476Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M319 183.077L261.151 216.477L160 274.876L160 307.974L319 216.175L319 183.077Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M1.00024 183.077L58.8495 216.476L160 274.876L261.151 216.477L319 183.077L160 91.2783L1.00024 183.077Z"/>
-      <path d="M1.00024 183.077L58.8495 216.476L160 274.876M319 183.077L319 216.175L160 307.974L1 216.175L1.00024 183.077L160 91.2783L319 183.077ZM160 307.974L160 274.876M160 274.876L261.151 216.477L319 183.077" style={{ stroke: "var(--theme-accent)" }} strokeWidth="2"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M58.8495 216.476L1.00024 183.077L1 216.175L160 307.974L160 274.876L58.8495 216.476Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M319 183.077L261.151 216.477L160 274.876L160 307.974L319 216.175L319 183.077Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M1.00024 183.077L58.8495 216.476L160 274.876L261.151 216.477L319 183.077L160 91.2783L1.00024 183.077Z"/>
+      <path d="M1.00024 183.077L58.8495 216.476L160 274.876M319 183.077L319 216.175L160 307.974L1 216.175L1.00024 183.077L160 91.2783L319 183.077ZM160 307.974L160 274.876M160 274.876L261.151 216.477L319 183.077" style={{ fill: "none", stroke: "var(--theme-accent)" }} strokeWidth="2"/>
       {/* Provider press-plates — bottom terrace (left to right, back to front) */}
       {plates[0]}
       {plates[1]}
@@ -43,57 +47,57 @@ export const PyramidScene: React.FC<{ plates: React.ReactNode[]; className?: str
       {plates[5]}
       {plates[6]}
       {/* Middle tier structural blocks (left wing) */}
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M76 131.826L55 119.701V152.453L76 164.577V140.329V131.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M76 131.826V140.329V164.577L97 152.453V119.701L76 131.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M76 131.826L55 119.701L76 107.577L97 119.701L76 131.826Z"/>
-      <path d="M76 131.826L55 119.701M76 131.826V140.329V164.577M76 131.826L97 119.701M97 119.701V152.453L76 164.577L55 152.453V119.701L76 107.577L97 119.701Z" style={{ stroke: "var(--theme-accent)" }}/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M97 143.826L76 131.701V164.453L97 176.577V152.329V143.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M97 143.826V152.329V176.577L118 164.453V131.701L97 143.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M97 143.826L76 131.701L97 119.577L118 131.701L97 143.826Z"/>
-      <path d="M97 143.826L76 131.701M97 143.826V152.329V176.577M97 143.826L118 131.701M118 131.701V164.453L97 176.577L76 164.453V131.701L97 119.577L118 131.701Z" style={{ stroke: "var(--theme-accent)" }}/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M118 155.826L97 143.701V176.453L118 188.577V164.329V155.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M118 155.826V164.329V188.577L139 176.453V143.701L118 155.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M118 155.826L97 143.701L118 131.577L139 143.701L118 155.826Z"/>
-      <path d="M118 155.826L97 143.701M118 155.826V164.329V188.577M118 155.826L139 143.701M139 143.701V176.453L118 188.577L97 176.453V143.701L118 131.577L139 143.701Z" style={{ stroke: "var(--theme-accent)" }}/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M139 167.826L118 155.701V188.453L139 200.577V176.329V167.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M139 167.826V176.329V200.577L160 188.453V155.701L139 167.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M139 167.826L118 155.701L139 143.577L160 155.701L139 167.826Z"/>
-      <path d="M139 167.826L118 155.701M139 167.826V176.329V200.577M139 167.826L160 155.701M160 155.701V188.453L139 200.577L118 188.453V155.701L139 143.577L160 155.701Z" style={{ stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M76 131.826L55 119.701V152.453L76 164.577V140.329V131.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M76 131.826V140.329V164.577L97 152.453V119.701L76 131.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M76 131.826L55 119.701L76 107.577L97 119.701L76 131.826Z"/>
+      <path d="M76 131.826L55 119.701M76 131.826V140.329V164.577M76 131.826L97 119.701M97 119.701V152.453L76 164.577L55 152.453V119.701L76 107.577L97 119.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M97 143.826L76 131.701V164.453L97 176.577V152.329V143.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M97 143.826V152.329V176.577L118 164.453V131.701L97 143.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M97 143.826L76 131.701L97 119.577L118 131.701L97 143.826Z"/>
+      <path d="M97 143.826L76 131.701M97 143.826V152.329V176.577M97 143.826L118 131.701M118 131.701V164.453L97 176.577L76 164.453V131.701L97 119.577L118 131.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M118 155.826L97 143.701V176.453L118 188.577V164.329V155.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M118 155.826V164.329V188.577L139 176.453V143.701L118 155.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M118 155.826L97 143.701L118 131.577L139 143.701L118 155.826Z"/>
+      <path d="M118 155.826L97 143.701M118 155.826V164.329V188.577M118 155.826L139 143.701M139 143.701V176.453L118 188.577L97 176.453V143.701L118 131.577L139 143.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M139 167.826L118 155.701V188.453L139 200.577V176.329V167.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M139 167.826V176.329V200.577L160 188.453V155.701L139 167.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M139 167.826L118 155.701L139 143.577L160 155.701L139 167.826Z"/>
+      <path d="M139 167.826L118 155.701M139 167.826V176.329V200.577M139 167.826L160 155.701M160 155.701V188.453L139 200.577L118 188.453V155.701L139 143.577L160 155.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
       {/* Middle tier structural blocks (right wing) */}
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M244 131.826L223 119.701V152.453L244 164.577V140.329V131.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M244 131.826V140.329V164.577L265 152.453V119.701L244 131.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M244 131.826L223 119.701L244 107.577L265 119.701L244 131.826Z"/>
-      <path d="M244 131.826L223 119.701M244 131.826V140.329V164.577M244 131.826L265 119.701M265 119.701V152.453L244 164.577L223 152.453V119.701L244 107.577L265 119.701Z" style={{ stroke: "var(--theme-accent)" }}/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M223 143.826L202 131.701V164.453L223 176.577V152.329V143.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M223 143.826V152.329V176.577L244 164.453V131.701L223 143.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M223 143.826L202 131.701L223 119.577L244 131.701L223 143.826Z"/>
-      <path d="M223 143.826L202 131.701M223 143.826V152.329V176.577M223 143.826L244 131.701M244 131.701V164.453L223 176.577L202 164.453V131.701L223 119.577L244 131.701Z" style={{ stroke: "var(--theme-accent)" }}/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M202 155.826L181 143.701V176.453L202 188.577V164.329V155.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M202 155.826V164.329V188.577L223 176.453V143.701L202 155.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M202 155.826L181 143.701L202 131.577L223 143.701L202 155.826Z"/>
-      <path d="M202 155.826L181 143.701M202 155.826V164.329V188.577M202 155.826L223 143.701M223 143.701V176.453L202 188.577L181 176.453V143.701L202 131.577L223 143.701Z" style={{ stroke: "var(--theme-accent)" }}/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M181 167.826L160 155.701V188.453L181 200.577V176.329V167.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M181 167.826V176.329V200.577L202 188.453V155.701L181 167.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M181 167.826L160 155.701L181 143.577L202 155.701L181 167.826Z"/>
-      <path d="M181 167.826L160 155.701M181 167.826V176.329V200.577M181 167.826L202 155.701M202 155.701V188.453L181 200.577L160 188.453V155.701L181 143.577L202 155.701Z" style={{ stroke: "var(--theme-accent)" }}/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M160 179.826L139 167.701V200.453L160 212.577V188.329V179.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M160 179.826V188.329V212.577L181 200.453V167.701L160 179.826Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M160 179.826L139 167.701L160 155.577L181 167.701L160 179.826Z"/>
-      <path d="M160 179.826L139 167.701M160 179.826V188.329V212.577M160 179.826L181 167.701M181 167.701V200.453L160 212.577L139 200.453V167.701L160 155.577L181 167.701Z" style={{ stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M244 131.826L223 119.701V152.453L244 164.577V140.329V131.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M244 131.826V140.329V164.577L265 152.453V119.701L244 131.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M244 131.826L223 119.701L244 107.577L265 119.701L244 131.826Z"/>
+      <path d="M244 131.826L223 119.701M244 131.826V140.329V164.577M244 131.826L265 119.701M265 119.701V152.453L244 164.577L223 152.453V119.701L244 107.577L265 119.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M223 143.826L202 131.701V164.453L223 176.577V152.329V143.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M223 143.826V152.329V176.577L244 164.453V131.701L223 143.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M223 143.826L202 131.701L223 119.577L244 131.701L223 143.826Z"/>
+      <path d="M223 143.826L202 131.701M223 143.826V152.329V176.577M223 143.826L244 131.701M244 131.701V164.453L223 176.577L202 164.453V131.701L223 119.577L244 131.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M202 155.826L181 143.701V176.453L202 188.577V164.329V155.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M202 155.826V164.329V188.577L223 176.453V143.701L202 155.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M202 155.826L181 143.701L202 131.577L223 143.701L202 155.826Z"/>
+      <path d="M202 155.826L181 143.701M202 155.826V164.329V188.577M202 155.826L223 143.701M223 143.701V176.453L202 188.577L181 176.453V143.701L202 131.577L223 143.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M181 167.826L160 155.701V188.453L181 200.577V176.329V167.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M181 167.826V176.329V200.577L202 188.453V155.701L181 167.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M181 167.826L160 155.701L181 143.577L202 155.701L181 167.826Z"/>
+      <path d="M181 167.826L160 155.701M181 167.826V176.329V200.577M181 167.826L202 155.701M202 155.701V188.453L181 200.577L160 188.453V155.701L181 143.577L202 155.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M160 179.826L139 167.701V200.453L160 212.577V188.329V179.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M160 179.826V188.329V212.577L181 200.453V167.701L160 179.826Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M160 179.826L139 167.701L160 155.577L181 167.701L160 179.826Z"/>
+      <path d="M160 179.826L139 167.701M160 179.826V188.329V212.577M160 179.826L181 167.701M181 167.701V200.453L160 212.577L139 200.453V167.701L160 155.577L181 167.701Z" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
       {/* Second tier — solid platform */}
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M109.425 93.2768L80.5001 76.5772L80.5 109.977L160 155.876L160 122.477L109.425 93.2768Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M239.5 76.5772L210.575 93.2769L160 122.477L160 155.876L239.5 109.977L239.5 76.5772Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M80.5001 76.5772L109.425 93.2768L160 122.477L210.575 93.2769L239.5 76.5772L160 30.6777L80.5001 76.5772Z"/>
-      <path d="M80.5001 76.5772L109.425 93.2768L160 122.477M239.5 76.5772L239.5 109.977L160 155.876L80.5 109.977L80.5001 76.5772L160 30.6777L239.5 76.5772ZM160 155.876L160 122.477M160 122.477L210.575 93.2769L239.5 76.5772" style={{ stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M109.425 93.2768L80.5001 76.5772L80.5 109.977L160 155.876L160 122.477L109.425 93.2768Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M239.5 76.5772L210.575 93.2769L160 122.477L160 155.876L239.5 109.977L239.5 76.5772Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M80.5001 76.5772L109.425 93.2768L160 122.477L210.575 93.2769L239.5 76.5772L160 30.6777L80.5001 76.5772Z"/>
+      <path d="M80.5001 76.5772L109.425 93.2768L160 122.477M239.5 76.5772L239.5 109.977L160 155.876L80.5 109.977L80.5001 76.5772L160 30.6777L239.5 76.5772ZM160 155.876L160 122.477M160 122.477L210.575 93.2769L239.5 76.5772" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
       {/* Provider press-plates — crown tier (highest 3) */}
       {plates[7]}
       {plates[8]}
       {plates[9]}
       {/* Top cube — 3 solid faces */}
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M140.807 21.5385L132 16.4541V49.6226L159.5 65.4997V32.3312L140.807 21.5385Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M187 16.4541L178.194 21.5385L159.5 32.3312V65.4997L187 49.6226L187 16.4541Z"/>
-      <path fillRule="evenodd" clipRule="evenodd" className="pyramid-void-fill" d="M132 16.4541L140.807 21.5385L159.5 32.3312L178.194 21.5385L187 16.4541L159.5 0.577148L132 16.4541Z"/>
-      <path d="M132 16.4541L140.807 21.5385L159.5 32.3312M187 16.4541L187 49.6226L159.5 65.4997L132 49.6226V16.4541L159.5 0.577148L187 16.4541ZM159.5 65.4997V32.3312M159.5 32.3312L178.194 21.5385L187 16.4541" style={{ stroke: "var(--theme-accent)" }}/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M140.807 21.5385L132 16.4541V49.6226L159.5 65.4997V32.3312L140.807 21.5385Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M187 16.4541L178.194 21.5385L159.5 32.3312V65.4997L187 49.6226L187 16.4541Z"/>
+      <path fillRule="evenodd" clipRule="evenodd" fill="currentColor" d="M132 16.4541L140.807 21.5385L159.5 32.3312L178.194 21.5385L187 16.4541L159.5 0.577148L132 16.4541Z"/>
+      <path d="M132 16.4541L140.807 21.5385L159.5 32.3312M187 16.4541L187 49.6226L159.5 65.4997L132 49.6226V16.4541L159.5 0.577148L187 16.4541ZM159.5 65.4997V32.3312M159.5 32.3312L178.194 21.5385L187 16.4541" style={{ fill: "none", stroke: "var(--theme-accent)" }}/>
       {/* Kairma logo marks on top cube faces */}
       <g clipPath="url(#clip8_2081_3327)">
         <path d="M154.443 53.2927L152.02 54.6354C151.197 53.4698 150.446 51.8986 149.767 49.9217L147.102 51.796C145.552 50.043 143.993 48.7142 142.427 47.8097C141.054 47.0171 139.544 46.5741 137.896 46.4809L137.533 45.6836C138.389 45.5251 139.205 45.1941 139.98 44.6905C140.755 44.187 141.143 43.5716 141.143 42.8442C141.143 42.4526 141.022 42.0376 140.779 41.5994C140.537 41.1425 140.246 40.8161 139.907 40.6203C139.6 40.4431 139.318 40.4291 139.059 40.5783L138.672 40.1307C139.011 39.2822 139.584 39.0724 140.392 39.5013C140.973 39.8183 141.498 40.3825 141.966 41.1937V41.0818C141.966 41.0445 141.975 41.0212 141.991 41.0119V40.4524C141.942 39.5852 141.724 38.76 141.337 37.9767C140.949 37.1748 140.408 36.5733 139.713 36.1723C139.342 35.9579 138.995 35.9346 138.672 36.1024L138.308 35.7807C138.647 34.8949 139.253 34.6477 140.125 35.0394C140.723 35.3844 141.304 35.9625 141.87 36.7738C141.87 35.0394 142.346 33.8412 143.299 33.1791C143.363 33.1231 143.444 33.0672 143.541 33.0112C143.638 32.9553 143.751 32.89 143.88 32.8154L144.559 32.4797C143.38 32.4891 142.435 32.2886 141.724 31.8783C141.595 31.8037 141.45 31.7104 141.288 31.5985C141.127 31.4866 140.933 31.3468 140.707 31.1789C140.432 30.9831 140.206 30.8246 140.028 30.7034C139.867 30.5915 139.754 30.5169 139.689 30.4796C138.639 29.8735 137.896 30.0973 137.46 31.151L137 30.6894C137.178 29.6916 137.565 29.0016 138.163 28.6193C138.825 28.181 139.616 28.2276 140.537 28.7591C140.876 28.955 141.442 29.3839 142.233 30.046C142.33 30.1392 142.411 30.2045 142.475 30.2418C142.976 30.6987 143.452 30.0577 143.905 31.3188C144.583 31.7104 145.205 31.8177 145.77 31.6405L145.988 31.9622C145.067 33.4262 144.526 35.0254 144.365 36.7598C144.333 37.1701 144.3 37.599 144.268 38.0466C144.252 38.4849 144.244 38.9465 144.244 39.4314V39.9629C144.244 40.0561 144.244 40.1494 144.244 40.2426C144.244 40.3359 144.252 40.4338 144.268 40.5363C144.268 42.4013 144.058 43.5669 143.638 44.0331C143.299 44.4341 142.814 44.7418 142.184 44.9563L139.738 45.8655L142.063 45.9214C142.37 45.9867 142.693 45.996 143.032 45.9494C143.921 45.8841 144.534 45.5857 144.874 45.0542C145.18 44.5786 145.334 43.7161 145.334 42.4666V41.6553C145.318 41.5527 145.31 41.4082 145.31 41.2217V40.8301C145.31 36.5593 145.996 33.8225 147.369 32.6196L147.781 33.2211C146.683 34.5452 146.053 36.3449 145.891 38.6201L150.034 37.1794L152.529 42.1728L148.217 43.096C149.606 44.8864 150.987 47.5952 152.36 51.2225C152.408 51.3624 152.489 51.5769 152.602 51.866C152.715 52.1364 152.917 52.4674 153.208 52.859C153.434 52.9896 153.668 52.9663 153.91 52.7891L154.104 52.6492L154.443 53.2927ZM149.501 49.1804C148.483 46.6161 147.28 44.7092 145.891 43.4597C145.843 44.4388 145.657 45.1614 145.334 45.6277C145.027 46.1032 144.518 46.4249 143.808 46.5928C145.439 47.5346 146.884 48.7328 148.144 50.1875L149.501 49.1804ZM145.891 42.8442L150.325 41.9071L148.604 38.4802L145.891 39.4034V42.8442Z" style={{ fill: "var(--theme-accent)" }}/>

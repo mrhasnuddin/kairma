@@ -243,9 +243,9 @@ const PressPlate: React.FC<{
     >
       <title>{title}</title>
       {/* side walls — background fill, primary-color stroke */}
-      <polygon points={leftSide} className="pyramid-void-fill" />
+      <polygon points={leftSide} fill="currentColor" />
       <polygon points={leftSide} style={{ fill: "var(--theme-accent)", fillOpacity: 0.08 }} />
-      <polygon points={rightSide} className="pyramid-void-fill" />
+      <polygon points={rightSide} fill="currentColor" />
       <polygon points={rightSide} style={{ fill: "var(--theme-accent)", fillOpacity: 0.16 }} />
       <polygon points={leftSide} style={{ fill: "none", stroke: "var(--theme-accent)", strokeOpacity: 0.9 }} />
       <polygon points={rightSide} style={{ fill: "none", stroke: "var(--theme-accent)", strokeOpacity: 0.9 }} />
@@ -253,7 +253,7 @@ const PressPlate: React.FC<{
       <g style={{ transform: `translateY(${dy}px)`, transition: "transform 140ms ease" }}>
         <path
           d="M0.5 16.4541L9.30652 21.5385L28 32.3312L46.6936 21.5385L55.5 16.4541L28.0003 0.577148L0.5 16.4541Z"
-          className={pressed ? undefined : "pyramid-void-fill"}
+          fill={pressed ? "var(--theme-accent)" : "currentColor"}
           style={{
             fill: pressed ? "var(--theme-accent)" : undefined,
             stroke: "var(--theme-accent)",

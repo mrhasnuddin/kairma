@@ -30,7 +30,7 @@ export const MoatsBentoContent: React.FC<MoatsBentoContentProps> = ({
   return (
     <div className="w-full flex flex-col justify-between h-full">
       {/* FULL CAPS Column Title */}
-      <h3 className="font-serif font-medium text-theme-text text-lg md:text-xl uppercase tracking-wider leading-snug mb-5">
+      <h3 className="font-serif font-medium text-theme-text text-box-headline uppercase tracking-wider mb-5">
         {moatsLabel}
       </h3>
 
@@ -100,7 +100,7 @@ export const RosterBentoContent: React.FC<RosterBentoContentProps> = ({
   return (
     <div className="w-full flex flex-col justify-between h-full">
       {/* FULL CAPS Column Title */}
-      <h3 className="font-serif font-medium text-theme-text text-lg md:text-xl uppercase tracking-wider leading-snug mb-5">
+      <h3 className="font-serif font-medium text-theme-text text-box-headline uppercase tracking-wider mb-5">
         {rosterHeading}
       </h3>
 

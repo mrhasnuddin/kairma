@@ -630,7 +630,7 @@ export const SiteShellV3: React.FC = () => {
               <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-between relative z-20 pointer-events-none">
                 
                 <div className="pointer-events-none">
-                  <h1 className="text-2xl md:text-[34px] font-serif font-medium tracking-normal mb-4 leading-tight text-theme-text drop-shadow-xl text-balance uppercase">
+                  <h1 className="font-serif font-medium text-theme-text text-box-headline uppercase tracking-wider mb-4 text-balance drop-shadow-xl">
                     <BoxHeadline text={siteCopy.hero_center.h1} />
                   </h1>
                   
@@ -711,7 +711,7 @@ export const SiteShellV3: React.FC = () => {
                     />
                   </span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight text-theme-text mb-4 uppercase">
+                <h2 className="text-box-headline font-serif font-medium text-theme-text mb-4 uppercase">
                   <BoxHeadline text={siteCopy.shift.h} />
                 </h2>
                 {siteCopy.shift.stat_strip ? (
@@ -885,7 +885,7 @@ export const SiteShellV3: React.FC = () => {
                 {/* Header & Contextual Strip filling upper section */}
                 <div className="flex flex-col gap-3.5 mb-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-serif font-medium text-theme-text text-lg md:text-xl uppercase tracking-wider leading-snug">
+                    <h3 className="font-serif font-medium text-theme-text text-box-headline uppercase tracking-wider">
                       FOUR MOATS · ORDERED BY DEPTH
                     </h3>
                     <span className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-theme-accent/30 bg-theme-accent/10 font-mono text-xs uppercase tracking-widest text-theme-accent font-bold">
@@ -1086,7 +1086,7 @@ export const SiteShellV3: React.FC = () => {
                     />
                   </span>
                 </div>
-                <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text">
+                <h2 className="text-box-headline font-serif font-medium mb-3 text-theme-text">
                   <BoxHeadline text={siteCopy.dev_smithy.h} />
                 </h2>
                 {siteCopy.dev_smithy.chart && (
@@ -1143,7 +1143,7 @@ export const SiteShellV3: React.FC = () => {
                       />
                     </span>
                   </div>
-                  <h2 className="text-2xl md:text-[34px] font-serif font-medium leading-tight mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
+                  <h2 className="text-box-headline font-serif font-medium mb-3 text-theme-text group-hover:text-theme-accent transition-colors">
                     <BoxHeadline text={siteCopy.operators.h} />
                   </h2>
                   <p className="font-mono text-xs md:text-sm text-theme-text-muted leading-relaxed max-w-sm">{siteCopy.operators.body}</p>
