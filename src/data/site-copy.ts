@@ -765,7 +765,7 @@ export const siteCopy: SiteCopyType = {
       title: "Received.",
       subtitle: "We respond within 1 business day.",
       downloadCta: "Download the 2-page architecture brief (PDF)",
-      downloadLink: "/KAIRMA Business Deck 2026.pdf",
+      downloadLink: "", // the deck is confidential; no public brief yet
       closeCta: "Close"
     }
   },

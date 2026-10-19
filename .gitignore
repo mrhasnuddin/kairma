@@ -45,3 +45,7 @@ next-env.d.ts
 
 # throwaway one-off scripts — not part of the build
 /scratch/
+
+# confidential documents (brand bible, business deck) — local only, never
+# served from public/ and never committed
+/private/

@@ -295,13 +295,15 @@ export const PilotModal: React.FC<PilotModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               <div className="flex flex-col gap-3.5 w-full mt-4 max-w-sm">
-                <a
-                  href={c.success.downloadLink}
-                  download
-                  className="w-full text-center px-4 py-2.5 bg-theme-accent text-theme-void hover:bg-theme-accent/90 transition-colors duration-150 text-xs font-mono uppercase tracking-[0.18em] font-bold rounded-xl select-none"
-                >
-                  {c.success.downloadCta}
-                </a>
+                {c.success.downloadLink && (
+                  <a
+                    href={c.success.downloadLink}
+                    download
+                    className="w-full text-center px-4 py-2.5 bg-theme-accent text-theme-void hover:bg-theme-accent/90 transition-colors duration-150 text-xs font-mono uppercase tracking-[0.18em] font-bold rounded-xl select-none"
+                  >
+                    {c.success.downloadCta}
+                  </a>
+                )}
                 
                 <Button
                   onClick={onClose}

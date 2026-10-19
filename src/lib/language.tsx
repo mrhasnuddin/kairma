@@ -7,8 +7,16 @@ import { siteTranslationsV4 } from "@/data/site-translations-v4";
 import { SiteCopyTypeV4 } from "@/data/site-copy-v4";
 import { siteTranslationsV6 } from "@/data/site-translations-v6";
 import { SiteCopyTypeV6 } from "@/data/site-copy-v6";
+import { COPY_V7, type CopyV7 } from "@/data/site-copy-v7";
 
 export const LANGUAGE_KEY = "kairma-language";
+
+// Google Fonts family per CJK locale (Noto Sans = Source Han Sans).
+const CJK_FONTS: Partial<Record<Language, string>> = {
+  "zh-TW": "Noto+Sans+TC",
+  ja: "Noto+Sans+JP",
+  ko: "Noto+Sans+KR",
+};
 
 interface LanguageContextType {
   language: Language;
@@ -31,6 +39,22 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }, 0);
     return () => clearTimeout(timer);
   }, []);
+
+  // Keep <html lang> in sync: screen readers pick pronunciation from it, and
+  // the v4 type tokens use :lang() to choose region-correct CJK glyphs.
+  // CJK locales also pull their Noto Sans face from Google Fonts here, once,
+  // so latin-script visitors never download it.
+  useEffect(() => {
+    document.documentElement.lang = language;
+    const family = CJK_FONTS[language];
+    const id = `cjk-font-${language}`;
+    if (!family || document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = `https://fonts.googleapis.com/css2?family=${family}:wght@400..700&display=swap`;
+    document.head.appendChild(link);
+  }, [language]);
 
   const setLanguage = useCallback((newLang: Language) => {
     setLanguageState(newLang);
@@ -67,4 +91,9 @@ export function useSiteCopyV4(): SiteCopyTypeV4 {
 export function useSiteCopyV6(): SiteCopyTypeV6 {
   const { language } = useLanguage();
   return siteTranslationsV6[language] || siteTranslationsV6["en"];
+}
+
+export function useCopyV7(): CopyV7 {
+  const { language } = useLanguage();
+  return COPY_V7[language] || COPY_V7.en;
 }

@@ -15,19 +15,21 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("matrix-mode");
+  // v4: light (xuan) is the default. Dark only when the visitor chose it, or
+  // their OS explicitly asks for dark.
+  const [theme, setThemeState] = useState<Theme>("xuan-mode");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       const saved = localStorage.getItem(THEME_KEY) as Theme | null;
-      let initialTheme: Theme = "matrix-mode";
+      let initialTheme: Theme = "xuan-mode";
 
       if (saved === "matrix-mode" || saved === "xuan-mode") {
         initialTheme = saved;
       } else {
-        const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-        initialTheme = prefersLight ? "xuan-mode" : "matrix-mode";
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        initialTheme = prefersDark ? "matrix-mode" : "xuan-mode";
       }
 
       setThemeState(initialTheme);
@@ -79,12 +81,12 @@ export const themeScript = `
   (function() {
     try {
       var saved = localStorage.getItem('${THEME_KEY}');
-      var theme = 'matrix-mode';
+      var theme = 'xuan-mode';
       if (saved === 'matrix-mode' || saved === 'xuan-mode') {
         theme = saved;
       } else {
-        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-        theme = prefersLight ? 'xuan-mode' : 'matrix-mode';
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        theme = prefersDark ? 'matrix-mode' : 'xuan-mode';
       }
       document.documentElement.setAttribute('data-theme', theme);
       if (theme === 'xuan-mode') {

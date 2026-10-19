@@ -417,7 +417,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         title: "已收到申請。",
         subtitle: "我們的專家團隊將在 1 個工作日內給您答覆。",
         downloadCta: "下載兩頁版系統架構簡報 (PDF)",
-        downloadLink: "/KAIRMA Business Deck 2026.pdf",
+        downloadLink: "", // the deck is confidential; no public brief yet
         closeCta: "關閉"
       }
     },
@@ -913,7 +913,7 @@ export const siteTranslations: Record<Language, SiteCopyType> = {
         title: "Đã nhận đăng ký.",
         subtitle: "Chúng tôi sẽ phản hồi trong vòng 1 ngày làm việc.",
         downloadCta: "Tải bản tóm tắt kiến trúc 2 trang (PDF)",
-        downloadLink: "/KAIRMA Business Deck 2026.pdf",
+        downloadLink: "", // the deck is confidential; no public brief yet
         closeCta: "Đóng"
       }
     },

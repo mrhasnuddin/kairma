@@ -1,45 +1,98 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, SHARE_DESCRIPTION, KEYWORDS, SITE_COPY } from "@/lib/site";
 import { ThemeProvider, themeScript } from "@/lib/theme";
 import { LanguageProvider } from "@/lib/language";
 import "./globals.css";
-import { Geist } from "next/font/google";
+import { Geist, Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
+// v4 display/body face. `opsz` lets Inter tighten its forms at display sizes.
+// latin-ext + vietnamese cover the vi and ms locales.
+const inter = Inter({
+  subsets: ["latin", "latin-ext", "vietnamese"],
+  axes: ["opsz"],
+  variable: "--font-inter",
+});
+// CJK faces (Noto Sans TC/JP/KR) are NOT self-hosted: each is ~100 unicode
+// slices, and fetching them all at build time made builds flaky. They load
+// from Google Fonts on demand — see LanguageProvider.
+
+// Share images come from the opengraph-image / twitter-image file conventions
+// (landscape 1200×630 + square 1200×1200), so no `images` are set here.
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kairma.vercel.app"),
-  title: "Kairma — Own Your AI Workforce | Forward-Deployed AI Employees for Cross-Border Operations",
-  description:
-    "ONE BOX. YOUR FIRST AI EMPLOYEE. Deploy a sovereign AI workforce on-premise in 48 hours. Brand data stays local, powered by Kairma Edge Appliance.",
-  keywords: [
-    "KAIRMA",
-    "KAIRMA OS",
-    "Sovereign AI",
-    "Cross-border brands",
-    "AI workforce",
-    "Edge Appliance",
-    "Web3Labs",
-    "Kairma Box",
-  ],
-  authors: [{ name: "KAIRMA" }],
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_TITLE, template: `%s · ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: KEYWORDS,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
   openGraph: {
-    title: "Kairma — Own Your AI Workforce | Forward-Deployed AI Employees for Cross-Border Operations",
-    description: "The AI workforce for cross-border brands.",
     type: "website",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "KAIRMA OS",
-      },
-    ],
+    url: "/",
+    siteName: SITE_NAME,
+    locale: "en_US",
+    title: SITE_TITLE,
+    description: SHARE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    images: ["/og-image.png"],
+    title: SITE_TITLE,
+    description: SHARE_DESCRIPTION,
   },
+};
+
+// Browser chrome follows the page: paper in light, void in dark.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F2F2F0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0A0C" },
+  ],
+};
+
+// Entity facts for search and AI engines, all drawn from the site copy.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/kairma-logo.svg` },
+      description: SITE_COPY.hero_center.body,
+      slogan: SITE_COPY.footer.closing,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      inLanguage: ["en", "zh-TW", "vi", "ms", "ja", "ko"],
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/#webpage`,
+      url: SITE_URL,
+      name: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+      about: { "@id": `${SITE_URL}/#organization` },
+      primaryImageOfPage: { "@type": "ImageObject", url: `${SITE_URL}/opengraph-image/landscape` },
+      inLanguage: "en",
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -48,11 +101,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn("font-sans", geist.variable, inter.variable)}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="antialiased">
+        <script
+          type="application/ld+json"
+          // `<` is escaped so no copy string can close the script tag.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        />
         <ThemeProvider>
           <LanguageProvider>{children}</LanguageProvider>
         </ThemeProvider>

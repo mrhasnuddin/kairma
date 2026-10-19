@@ -12,11 +12,12 @@ export const FOOTER_REVEAL_HEIGHT = "100svh";
  * curtain (z-0 vs the content wrapper's z-10). The page's final scroll
  * runway uncovers it — no JS, the parallax is pure layering.
  */
-export const KairmaFooter: React.FC = () => {
+export const KairmaFooter: React.FC<{ onRequestPilot?: () => void }> = ({ onRequestPilot }) => {
   const siteCopy = useSiteCopyV6();
 
-  // Same jump-and-flash behavior as the sticky nav's Apply.
+  // v4 opens the pilot form directly; v3 keeps the jump-and-flash to the box.
   const requestPilot = () => {
+    if (onRequestPilot) return onRequestPilot();
     const el = document.getElementById("deploy");
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });

@@ -118,7 +118,9 @@
 
 /* Light Theme selector override */
 .xuan-mode, [data-theme="xuan-mode"] {
-  --theme-void: var(--kairma-xuan-white);
+  /* v4: light background is the paper token, so every theme-bound surface
+     (pyramid, duotone backdrops, body) moves to paper with it. */
+  --theme-void: var(--k-paper);
   --theme-accent: var(--kairma-xuan-red);
   --theme-chrome: var(--kairma-chrome-silver);
   --theme-text: var(--kairma-void-ink);
@@ -127,6 +129,199 @@
   --theme-text-muted: rgba(11, 10, 12, 0.6);
   /* Paper needs far less pigment than black does to read as tinted. */
   --theme-accent-wash: color-mix(in srgb, var(--theme-accent) 24%, var(--theme-void));
+}
+
+/* ==========================================================================
+   DESIGN SYSTEM v4 — Heron grammar, Kairma brand.  Spec: DESIGN.md
+   Structure (grid, hairlines, fluid unit, type roles, motion) is measured
+   from heronaiapp.com; colour accents, themes and fonts are Kairma's.
+   Every v4 token is prefixed `--k-` so it can coexist with the v3 `--theme-*`
+   tokens while sections migrate one at a time.
+   ========================================================================== */
+
+/* --- colour: dark (matrix-mode) is the cascade default, light overrides --- */
+:root {
+  --k-paper: #0B0A0C;
+  --k-surface: #141316;
+  --k-ink: #EDECE8;
+  --k-ink-2: #C8C7C2;
+  --k-ink-3: #8D8C87;    /* 5.86:1 on paper — smallest informational text */
+  --k-ink-4: #4B4A47;    /* disabled + scrub-reveal start ONLY, never content */
+  --k-line: #34332F;     /* decorative hairlines; field borders use ink-3 */
+  --k-accent: var(--kairma-matrix-green);   /* #C9402B: fills, CTAs, hotspots */
+  --k-accent-text: #CE5340;                 /* 4.64:1 — red as small text; raw accent is 4.00:1 */
+  --k-on-accent: #FFFFFF;                   /* 4.94:1 on accent */
+}
+.xuan-mode, [data-theme="xuan-mode"] {
+  --k-paper: #F2F2F0;
+  --k-surface: #FFFFFF;
+  --k-ink: #282828;
+  --k-ink-2: #414140;
+  --k-ink-3: #696966;    /* 4.91:1 — Heron's #72726F is 4.30:1 and fails AA */
+  --k-ink-4: #B4B4B0;
+  --k-line: #B3B3AF;
+  --k-accent: var(--kairma-xuan-red);       /* #00492E */
+  --k-accent-text: var(--kairma-xuan-red);  /* 9.40:1 on paper */
+  --k-on-accent: #FFFFFF;
+}
+
+/* --- fluid unit: 1u = 10px on Heron's design canvases (393 mobile / 1728
+       desktop), capped at 12px so very wide screens don't balloon --- */
+:root {
+  --k-u: min(calc(100vw / 39.3), 12px);
+
+  --k-cols: 4;
+  --k-gutter: calc(var(--k-u) * 1.6);
+  --k-inset: calc(var(--k-u) * 0.8);
+  --k-line-w: max(1px, calc(var(--k-u) * 0.1));
+  --k-header-h: calc(var(--k-u) * 5);
+
+  /* type sizes — floors keep every role at or above the 12px minimum */
+  --k-fs-display-1: max(32px, calc(var(--k-u) * 3.2));
+  --k-fs-display-2: max(28px, calc(var(--k-u) * 3.2));
+  --k-fs-statement: max(22px, calc(var(--k-u) * 2.4));
+  --k-lh-statement: 1.1;
+  --k-fs-title: max(18px, calc(var(--k-u) * 2));
+  --k-lh-title: 1.2;
+  --k-fs-label: max(12px, calc(var(--k-u) * 1.4));
+  --k-lh-label: 1.1;
+  --k-fs-body: max(14px, calc(var(--k-u) * 1.4));
+
+  /* radius — HYBRID: structure is square, things you touch are rounded */
+  --k-radius-frame: 0px;      /* grid cells, sections, header cells, dividers */
+  --k-radius-media: 1rem;     /* image + video cards */
+  --k-radius-field: 0.75rem;  /* inputs, selects */
+  --k-radius-control: 9999px; /* buttons, pills, chips */
+
+  /* motion — durations/eases from Heron's bundle; GSAP names in DESIGN.md */
+  --k-dur-1: 0.5s;
+  --k-dur-2: 0.8s;
+  --k-dur-3: 1.2s;
+  --k-ease-out: cubic-bezier(0.16, 1, 0.3, 1);          /* ≈ expo.out */
+  --k-ease-out-soft: cubic-bezier(0.215, 0.61, 0.355, 1); /* ≈ power3.out */
+
+  /* fonts — Inter (self-hosted) for display/body; CJK from Google Fonts, chosen
+     by :lang below, with each OS's native face as the fallback while it loads */
+  --k-font-cjk: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei";
+  --k-font-display: var(--font-inter), var(--k-font-cjk), system-ui, sans-serif;
+  --k-font-mono: var(--font-mono);
+  --k-font-editorial: var(--font-serif);  /* Gloock — 观 column only */
+  --k-font-gothic: var(--font-gothic);    /* Canterbury — wordmark capitals only */
+}
+@media (min-width: 768px) {
+  :root {
+    --k-u: min(calc(100vw / 172.8), 12px);
+    --k-cols: 12;
+    --k-gutter: calc(var(--k-u) * 2);
+    --k-header-h: calc(var(--k-u) * 6.4);
+    --k-fs-display-1: max(32px, calc(var(--k-u) * 5.6));
+    --k-fs-display-2: max(28px, calc(var(--k-u) * 4.8));
+    --k-fs-statement: max(22px, calc(var(--k-u) * 4));
+    --k-lh-statement: 1;
+    --k-fs-title: max(18px, calc(var(--k-u) * 2.8));
+    --k-lh-title: 1;
+    --k-lh-label: 1.4;
+    --k-fs-body: max(14px, calc(var(--k-u) * 1.6));
+  }
+}
+/* zh-TW and ja share Han code points with different glyph forms, so the CJK
+   face must follow <html lang>, never a single fallback list. */
+:root:lang(zh-TW) { --k-font-cjk: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei"; }
+:root:lang(ja) { --k-font-cjk: "Noto Sans JP", "Hiragino Sans", "Yu Gothic"; }
+:root:lang(ko) { --k-font-cjk: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic"; }
+
+@theme inline {
+  --color-k-paper: var(--k-paper);
+  --color-k-surface: var(--k-surface);
+  --color-k-ink: var(--k-ink);
+  --color-k-ink-2: var(--k-ink-2);
+  --color-k-ink-3: var(--k-ink-3);
+  --color-k-ink-4: var(--k-ink-4);
+  --color-k-line: var(--k-line);
+  --color-k-accent: var(--k-accent);
+  --color-k-accent-text: var(--k-accent-text);
+  --color-k-on-accent: var(--k-on-accent);
+  --color-k-accent-wash: var(--theme-accent-wash);
+
+  --font-k-display: var(--k-font-display);
+  --font-k-mono: var(--k-font-mono);
+  --font-k-editorial: var(--k-font-editorial);
+
+  --radius-k-frame: var(--k-radius-frame);
+  --radius-k-media: var(--k-radius-media);
+  --radius-k-field: var(--k-radius-field);
+  --radius-k-control: var(--k-radius-control);
+
+  --ease-k-out: var(--k-ease-out);
+  --ease-k-out-soft: var(--k-ease-out-soft);
+}
+
+/* --- motion: Lenis smooth scroll (rules from lenis/dist/lenis.css) and the
+       two looping keyframes v4 uses --- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+@keyframes k-marquee {
+  to { transform: translateX(-50%); }
+}
+/* tasks moving along the Keep's routes */
+@keyframes k-dash {
+  to { stroke-dashoffset: -24; }
+}
+
+/* --- type roles: one utility per role; size/leading come from the tokens --- */
+@utility k-display-1 {
+  font-family: var(--k-font-display);
+  font-size: var(--k-fs-display-1);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+@utility k-display-2 {
+  font-family: var(--k-font-display);
+  font-size: var(--k-fs-display-2);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+@utility k-statement {
+  font-family: var(--k-font-display);
+  font-size: var(--k-fs-statement);
+  font-weight: 600;
+  line-height: var(--k-lh-statement);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+@utility k-title {
+  font-family: var(--k-font-display);
+  font-size: var(--k-fs-title);
+  font-weight: 600;
+  line-height: var(--k-lh-title);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+@utility k-label {
+  font-family: var(--k-font-mono);
+  font-size: var(--k-fs-label);
+  line-height: var(--k-lh-label);
+  text-transform: uppercase;
+}
+@utility k-body {
+  font-family: var(--k-font-display);
+  font-size: var(--k-fs-body);
+  line-height: 1.5;
 }
 
 @theme {
