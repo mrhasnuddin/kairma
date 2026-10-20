@@ -1,0 +1,105 @@
+{
+ "cage": {
+  "ey": [
+   -1.33,
+   0.85
+  ],
+  "travel": 34
+ },
+ "keep": {
+  "key": {
+   "ey": [
+    -1.01,
+    0.56
+   ],
+   "travel": 16
+  },
+  "ticket": {
+   "ex": [
+    1.12,
+    0.5
+   ],
+   "ez": [
+    0,
+    -1.3
+   ],
+   "hidden": -12,
+   "out": 0,
+   "end": 109.6,
+   "tray": 135.6,
+   "drop": -24
+  }
+ },
+ "keep-detail": {},
+ "keep-open": {},
+ "moat-encoded": {
+  "frames": 10,
+  "level": {
+   "top": 154.5,
+   "bottom": 275.6
+  }
+ },
+ "moat-flywheel": {
+  "stands": 5
+ },
+ "moat-jig": {
+  "ez": [
+   0,
+   -2.15
+  ],
+  "lift": 24
+ },
+ "moat-lock": {
+  "ex": [
+   1.56,
+   0.86
+  ],
+  "ey": [
+   -1.73,
+   0.78
+  ],
+  "keyTravel": 18,
+  "throw": 26
+ },
+ "problem-pipeline": {
+  "ez": [
+   0,
+   -2.15
+  ],
+  "fall": 13
+ },
+ "problem-ruler": {
+  "ez": [
+   0,
+   -2.14
+  ],
+  "drop": 26,
+  "counts": [
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "problem-sockets": {
+  "ey": [
+   0,
+   1.91
+  ],
+  "reach": 9
+ },
+ "problem-tools": {
+  "ez": [
+   0,
+   -1.96
+  ],
+  "stroke": 14
+ },
+ "rack": {
+  "ey": [
+   -1.7,
+   0.88
+  ],
+  "travel": 22
+ }
+}

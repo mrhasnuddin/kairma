@@ -6,15 +6,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Design System
 
-## v4 — Heron grammar (branch `v4-heron`, in progress)
+## v5 · Heron structure, Kairma content (branch `v5`)
 
-`DESIGN.md` is the spec; tokens live in the `DESIGN SYSTEM v4` block of `globals.css`, all prefixed `--k-` (utilities: `bg-k-paper`, `text-k-ink`, `k-display-1`, `k-label`, `rounded-k-control`, …). Plan + IA: `docs/revamp/01-framework-ia-flow.md`.
+`DESIGN.md` is the spec; tokens live in the `DESIGN SYSTEM v5` block of `globals.css` (primitives `--kp-*` → roles `--k-*` → utilities like `bg-k-paper`, `k-display-1`, `k-label`). Plan: `docs/revamp/02-v5-structure-plan.md`.
 
-- **Scope**: v4 home lives in `src/components/v4` (composed by `SiteShellV4`); copy comes from `src/data/site-copy-v7.ts` via `useCopyV7()`. Claims must trace to existing copy; no invented facts or metrics. The v3 `KairmaFooter` is kept on purpose.
-- **Migration**: a section is either fully v4 (`--k-*` tokens, `k-*` type roles) or untouched v3 — never mix the two inside one section. The v3 rules below apply only to sections not yet migrated.
-- **Superseded in v4 sections**: the 34px max (display roles run larger — see `DESIGN.md`), `.text-box-headline` (use `k-title` / `k-display-2`), "rounded everywhere" (v4 is hybrid: square structure, rounded media / fields / controls), and rounded cards with gaps (v4 sections are hairline cells).
-- **Still binding everywhere**: the 12px minimum, the theme-accent rule, and the thumbnail duotone rule.
-- **Motion**: GSAP + Lenis only, under `useGSAP`; scroll stories use `position: sticky`, never ScrollTrigger `pin`; honour `prefers-reduced-motion`.
+- **Scope**: the home page lives in `src/components/v5` (composed by `SiteShellV5`); copy comes from `src/data/site-copy-v8.ts` via `useCopyV8()`. Every line traces to the original kairma.ai copy; no invented facts or metrics; no em or en dashes. The footer (`v5/Footer.tsx`) keeps the old reveal footer's words, wordmark and fresco in v5 type.
+- **Colour**: 60-30-10. Paper 60, ink 30, accent 10 (one primary action per view, indices, active and live states, the one lit part of a drawing). Errors use `k-danger`, never the accent.
+- **Type**: IBM Plex Sans + IBM Plex Mono (next/font); CJK faces load per locale.
+- **Drawings**: every diagram is an anatomy figure built in `scripts/figures/*.mjs` → `public/figures/*.svg` (`npm run figures`). Runtime motion lives in `src/components/v5/live/*`; meta in `live/meta.json` is generated. Rebuild figures after editing a builder. Subjects are Greek myth objects (treasury, herm, altars, automatons) built from the stone and bronze helpers in `scripts/figures/common.mjs`; live controllers keep their part names (`key`, `ticket-*`, `cart-*`, `card-*`, `plug-*`, `w-*`, `drop-*`, `ram`, `data-flame`).
+- **Motion**: GSAP + Lenis only, under `useGSAP`. Reveals play once on enter; nothing is tied to scroll position (no scrub, no pin, no sticky scroll story). Honour `prefers-reduced-motion` everywhere.
+- **Dither**: ordered dither is part of the brand (DESIGN.md › Dither). Interactive fills use `.k-fx` with `<Roll>` / `<Arrow>`; the footer and the header over it use `.k-invert`; the footer fresco stays dithered.
+- **Checks**: `npm run check:ds` (raw values, arbitrary values, token parity) must stay at 0 failing; `scripts/check-allowlist.json` only shrinks.
 
 ## v3 — bento layout (unmigrated sections)
 

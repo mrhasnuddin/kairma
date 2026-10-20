@@ -97,6 +97,9 @@ export const KairmaFooter: React.FC<{ onRequestPilot?: () => void }> = ({ onRequ
         {/* CTA. */}
         <button
           onClick={requestPilot}
+          // The footer sits under the page; scroll to the runway so a focused
+          // button is never hidden behind the content (WCAG 2.4.11).
+          onFocus={() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" })}
           className="mt-5 md:mt-6 bg-white text-theme-accent font-mono text-xs md:text-sm font-bold uppercase tracking-widest px-7 py-3 rounded-xl hover:opacity-90 transition-opacity"
         >
           {siteCopy.hero_left.cta_1 || "Request a pilot →"}

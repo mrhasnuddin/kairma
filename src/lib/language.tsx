@@ -8,14 +8,16 @@ import { SiteCopyTypeV4 } from "@/data/site-copy-v4";
 import { siteTranslationsV6 } from "@/data/site-translations-v6";
 import { SiteCopyTypeV6 } from "@/data/site-copy-v6";
 import { COPY_V7, type CopyV7 } from "@/data/site-copy-v7";
+import { COPY_V8, type CopyV8 } from "@/data/site-copy-v8";
 
 export const LANGUAGE_KEY = "kairma-language";
 
-// Google Fonts family per CJK locale (Noto Sans = Source Han Sans).
+// Google Fonts family per CJK locale: Plex where IBM drew the script, Noto
+// Sans TC for Traditional Chinese (Plex has no TC on Google Fonts).
 const CJK_FONTS: Partial<Record<Language, string>> = {
-  "zh-TW": "Noto+Sans+TC",
-  ja: "Noto+Sans+JP",
-  ko: "Noto+Sans+KR",
+  "zh-TW": "Noto+Sans+TC:wght@400..700",
+  ja: "IBM+Plex+Sans+JP:wght@400;500;600",
+  ko: "IBM+Plex+Sans+KR:wght@400;500;600",
 };
 
 interface LanguageContextType {
@@ -52,7 +54,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const link = document.createElement("link");
     link.id = id;
     link.rel = "stylesheet";
-    link.href = `https://fonts.googleapis.com/css2?family=${family}:wght@400..700&display=swap`;
+    link.href = `https://fonts.googleapis.com/css2?family=${family}&display=swap`;
     document.head.appendChild(link);
   }, [language]);
 
@@ -96,4 +98,9 @@ export function useSiteCopyV6(): SiteCopyTypeV6 {
 export function useCopyV7(): CopyV7 {
   const { language } = useLanguage();
   return COPY_V7[language] || COPY_V7.en;
+}
+
+export function useCopyV8(): CopyV8 {
+  const { language } = useLanguage();
+  return COPY_V8[language] || COPY_V8.en;
 }

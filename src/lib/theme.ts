@@ -57,8 +57,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const toggleTheme = useCallback(() => {
     const themes: Theme[] = ["matrix-mode", "xuan-mode"];
-    const nextIndex = (themes.indexOf(theme) + 1) % themes.length;
-    setTheme(themes[nextIndex]);
+    const next = themes[(themes.indexOf(theme) + 1) % themes.length];
+    // The new theme dissolves in through a dither wipe (globals.css › theme
+    // switch); browsers without view transitions, and reduced motion, just swap.
+    const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
+    if (doc.startViewTransition && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) doc.startViewTransition(() => setTheme(next));
+    else setTheme(next);
   }, [theme, setTheme]);
 
   return React.createElement(

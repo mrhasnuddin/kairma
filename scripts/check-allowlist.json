@@ -1,0 +1,137 @@
+{
+  "src/app/globals.css": {
+    "rule/css-px": {
+      "border-radius: 3px": 1,
+      "font-size: 18px": 1,
+      "font-size: 20px": 1,
+      "font-size: 34px": 1,
+      "height: 6px": 1,
+      "width: 6px": 1
+    },
+    "rule/raw-value": {
+      "#000": 1
+    },
+    "rule/token-parity": {
+      "--font-plex-sans is used and never defined": 1,
+      "--k-accent-wash has a light color and no dark value": 1,
+      "--k-fig-face has a light color and no dark value": 1,
+      "--k-fig-faint has a light color and no dark value": 1,
+      "--k-fig-halo has a light color and no dark value": 1,
+      "--k-fig-lo has a light color and no dark value": 1,
+      "--k-fig-mid has a light color and no dark value": 1,
+      "--k-fig-shade-0 has a light color and no dark value": 1,
+      "--k-fig-shade-1 has a light color and no dark value": 1,
+      "--k-fig-shade-2 has a light color and no dark value": 1,
+      "--k-fig-shade-3 has a light color and no dark value": 1,
+      "--k-fig-top has a light color and no dark value": 1,
+      "--kairma-chrome-silver has a light color and no dark value": 1,
+      "--kairma-matrix-green has a light color and no dark value": 1,
+      "--kairma-pixel-white has a light color and no dark value": 1,
+      "--kairma-void has a light color and no dark value": 1,
+      "--kairma-void-ink has a light color and no dark value": 1,
+      "--kairma-xuan-red has a light color and no dark value": 1,
+      "--kairma-xuan-white has a light color and no dark value": 1,
+      "--sidebar-ring has a light color and no dark value": 1,
+      "--theme-accent-wash has a light color and no dark value": 1,
+      "--theme-border has a light color and no dark value": 1,
+      "--theme-border-glow has a light color and no dark value": 1,
+      "--theme-text-muted has a light color and no dark value": 1
+    },
+    "trap/viewport-height": {
+      "height: 100vh": 1
+    }
+  },
+  "src/components/iso/iso.css": {
+    "rule/css-px": {
+      "bottom: 18px": 1,
+      "font-size: 10.5px": 1,
+      "font-size: 13px": 1,
+      "gap: 6px 18px": 1,
+      "gap: 7px": 1,
+      "gap: 8px": 1,
+      "height: 10px": 1,
+      "inset: 18px 20px": 1,
+      "margin-top: 12px": 1,
+      "margin: 32px 0 36px": 1,
+      "padding: 48px 12px 70px": 1,
+      "padding: 52px 24px": 1,
+      "width: 16px": 1
+    }
+  },
+  "src/components/v5/Cursor.tsx": {
+    "rule/arbitrary-value": {
+      "z-[90]": 1
+    }
+  },
+  "src/components/v5/Dialog.tsx": {
+    "rule/arbitrary-value": {
+      "max-h-[88svh]": 1,
+      "w-[min(92vw,40rem)]": 1
+    }
+  },
+  "src/components/v5/Header.tsx": {
+    "rule/arbitrary-value": {
+      "animate-[k-pop_var(--k-dur-enter)_var(--k-ease-ui)]": 1,
+      "rounded-[calc(var(--k-radius-field)-4px)]": 1,
+      "scale-[0.98]": 1,
+      "z-[60]": 1,
+      "z-[70]": 1
+    }
+  },
+  "src/components/v5/Hero.tsx": {
+    "rule/arbitrary-value": {
+      "max-w-[1100px]": 1
+    }
+  },
+  "src/components/v5/Intro.tsx": {
+    "rule/arbitrary-value": {
+      "max-w-[420px]": 1
+    }
+  },
+  "src/components/v5/Leaderboard.tsx": {
+    "rule/arbitrary-value": {
+      "min-w-[34rem]": 1
+    }
+  },
+  "src/components/v5/Loader.tsx": {
+    "rule/arbitrary-value": {
+      "w-[min(88vw,720px)]": 1,
+      "z-[80]": 1
+    }
+  },
+  "src/components/v5/Platform.tsx": {
+    "rule/arbitrary-value": {
+      "scale-[0.97]": 1,
+      "top-[calc(var(--k-header-h)+2rem)]": 1
+    }
+  },
+  "src/components/v5/Problems.tsx": {
+    "rule/arbitrary-value": {
+      "max-w-[300px]": 1
+    }
+  },
+  "src/components/v5/SiteShellV5.tsx": {
+    "rule/arbitrary-value": {
+      "min-h-[100svh]": 1
+    }
+  },
+  "src/components/v5/Why.tsx": {
+    "rule/arbitrary-value": {
+      "max-w-[520px]": 1
+    }
+  },
+  "src/components/v5/Workforce.tsx": {
+    "rule/arbitrary-value": {
+      "grid-rows-[0fr]": 1,
+      "grid-rows-[1fr]": 1,
+      "pl-[calc(var(--k-gutter)+2.25rem)]": 1,
+      "top-[calc(var(--k-header-h)+2rem)]": 1
+    }
+  },
+  "src/components/v5/ui.tsx": {
+    "rule/arbitrary-value": {
+      "left-[calc(var(--k-gutter)+4px)]": 1,
+      "scale-[0.97]": 1
+    }
+  }
+}

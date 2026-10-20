@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=IBM+Plex+Mono:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=UnifrakturMaguntia&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "../components/iso/iso.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -132,103 +132,155 @@
 }
 
 /* ==========================================================================
-   DESIGN SYSTEM v4 — Heron grammar, Kairma brand.  Spec: DESIGN.md
-   Structure (grid, hairlines, fluid unit, type roles, motion) is measured
-   from heronaiapp.com; colour accents, themes and fonts are Kairma's.
-   Every v4 token is prefixed `--k-` so it can coexist with the v3 `--theme-*`
-   tokens while sections migrate one at a time.
+   DESIGN SYSTEM v5 · Heron structure, Kairma brand.  Spec: DESIGN.md
+   Three layers. Primitives (--kp-*) hold raw values and are read only by the
+   semantic layer. Semantic roles (--k-*) swap per theme and are what
+   components read. Tailwind utilities (@theme inline) expose the roles.
+   Colour follows 60-30-10: paper 60 · ink 30 · accent 10 (see DESIGN.md).
    ========================================================================== */
 
-/* --- colour: dark (matrix-mode) is the cascade default, light overrides --- */
+/* --- layer 1 · primitives (mode-stable; never read by components) --- */
 :root {
-  --k-paper: #0B0A0C;
-  --k-surface: #141316;
-  --k-ink: #EDECE8;
-  --k-ink-2: #C8C7C2;
-  --k-ink-3: #8D8C87;    /* 5.86:1 on paper — smallest informational text */
-  --k-ink-4: #4B4A47;    /* disabled + scrub-reveal start ONLY, never content */
-  --k-line: #34332F;     /* decorative hairlines; field borders use ink-3 */
-  --k-accent: var(--kairma-matrix-green);   /* #C9402B: fills, CTAs, hotspots */
-  --k-accent-text: #CE5340;                 /* 4.64:1 — red as small text; raw accent is 4.00:1 */
-  --k-on-accent: #FFFFFF;                   /* 4.94:1 on accent */
-}
-.xuan-mode, [data-theme="xuan-mode"] {
-  --k-paper: #F2F2F0;
-  --k-surface: #FFFFFF;
-  --k-ink: #282828;
-  --k-ink-2: #414140;
-  --k-ink-3: #696966;    /* 4.91:1 — Heron's #72726F is 4.30:1 and fails AA */
-  --k-ink-4: #B4B4B0;
-  --k-line: #B3B3AF;
-  --k-accent: var(--kairma-xuan-red);       /* #00492E */
-  --k-accent-text: var(--kairma-xuan-red);  /* 9.40:1 on paper */
-  --k-on-accent: #FFFFFF;
+  --kp-stone-0: #FFFFFF;
+  --kp-stone-50: #F2F2F0;
+  --kp-stone-300: #B4B4B0;   /* also the light hairline (#B3B3AF merged, ΔE < 0.5) */
+  --kp-stone-600: #696966;
+  --kp-stone-750: #414140;
+  --kp-stone-850: #282828;
+  --kp-night-950: #0B0A0C;
+  --kp-night-900: #141316;
+  --kp-night-800: #34332F;
+  --kp-night-700: #4B4A47;
+  --kp-night-500: #8D8C87;
+  --kp-night-200: #C8C7C2;
+  --kp-night-100: #EDECE8;
+  --kp-green-800: #00492E;   /* brand accent, light (xuan) */
+  --kp-red-500: #C9402B;     /* brand accent, dark (matrix) */
+  --kp-red-400: #D25A47;     /* the red as small text: 5.0:1 on paper, 4.6:1 on surface */
 }
 
-/* --- fluid unit: 1u = 10px on Heron's design canvases (393 mobile / 1728
-       desktop), capped at 12px so very wide screens don't balloon --- */
+/* --- layer 2 · semantic roles. Dark (matrix-mode) is the cascade default --- */
+:root {
+  /* 60 · dominant: the page and the cells */
+  --k-paper: var(--kp-night-950);
+  --k-surface: var(--kp-night-900);
+  /* 30 · secondary: type, hairlines, drawings */
+  --k-ink: var(--kp-night-100);
+  --k-ink-2: var(--kp-night-200);
+  --k-ink-3: var(--kp-night-500);    /* 5.86:1 on paper: smallest informational text */
+  --k-ink-4: var(--kp-night-700);    /* disabled only, never content */
+  --k-line: var(--kp-night-800);     /* decorative hairlines; field borders use ink-3 */
+  /* 10 · accent: actions, live state, the one lit part of a drawing */
+  --k-accent: var(--kp-red-500);
+  --k-accent-text: var(--kp-red-400);
+  --k-on-accent: var(--kp-stone-0);  /* 4.94:1 on the red */
+  --k-accent-wash: color-mix(in srgb, var(--k-accent) 65%, var(--k-paper));
+  /* status: errors only. Never the accent, which is green in light */
+  --k-danger: var(--kp-red-400);
+
+  /* drawing tones (anatomy figures), derived from the roles above */
+  --k-fig-face: color-mix(in oklab, var(--k-ink) 12%, var(--k-paper));
+  --k-fig-top: color-mix(in oklab, var(--k-ink) 15%, var(--k-paper));
+  --k-fig-shade-0: color-mix(in oklab, var(--k-ink) 3%, var(--k-paper));
+  --k-fig-shade-1: color-mix(in oklab, var(--k-ink) 6%, var(--k-paper));
+  --k-fig-shade-2: color-mix(in oklab, var(--k-ink) 9%, var(--k-paper));
+  --k-fig-shade-3: color-mix(in oklab, var(--k-ink) 12%, var(--k-paper));
+  --k-fig-hi: var(--k-ink);
+  --k-fig-mid: color-mix(in oklab, var(--k-ink-2) 55%, var(--k-ink-3));
+  --k-fig-lo: color-mix(in oklab, var(--k-ink-3) 70%, var(--k-ink-4));
+  --k-fig-faint: color-mix(in oklab, var(--k-ink-4) 70%, var(--k-line));
+  --k-fig-halo: #000000;
+  --k-fig-halo-opacity: 0.9;
+}
+.xuan-mode, [data-theme="xuan-mode"] {
+  --k-paper: var(--kp-stone-50);
+  --k-surface: var(--kp-stone-0);
+  --k-ink: var(--kp-stone-850);
+  --k-ink-2: var(--kp-stone-750);
+  --k-ink-3: var(--kp-stone-600);    /* 4.91:1; Heron's #72726F is 4.30:1 and fails AA */
+  --k-ink-4: var(--kp-stone-300);
+  --k-line: var(--kp-stone-300);
+  --k-accent: var(--kp-green-800);
+  --k-accent-text: var(--kp-green-800);  /* 9.40:1 on paper */
+  --k-on-accent: var(--kp-stone-0);
+  --k-accent-wash: color-mix(in srgb, var(--k-accent) 24%, var(--k-paper));
+  --k-danger: var(--kp-red-500);  /* 6.1:1 on paper */
+
+  --k-fig-face: var(--kp-stone-0);
+  --k-fig-top: var(--kp-stone-0);
+  --k-fig-shade-0: color-mix(in oklab, var(--k-ink) 13%, var(--k-paper));
+  --k-fig-shade-1: color-mix(in oklab, var(--k-ink) 9%, var(--k-paper));
+  --k-fig-shade-2: color-mix(in oklab, var(--k-ink) 5%, var(--k-paper));
+  --k-fig-shade-3: color-mix(in oklab, var(--k-ink) 2%, var(--k-paper));
+  --k-fig-hi: var(--k-ink);
+  --k-fig-mid: color-mix(in oklab, var(--k-ink-3) 70%, var(--k-ink-4));
+  --k-fig-lo: var(--k-ink-4);
+  --k-fig-faint: color-mix(in oklab, var(--k-line) 55%, var(--k-paper));
+  --k-fig-halo: var(--k-ink-3);
+  --k-fig-halo-opacity: 0.3;
+}
+
+/* --- fluid unit: 1u = 10px on Heron's canvases (393 mobile / 1728 desktop),
+       capped at 12px so very wide screens don't balloon --- */
 :root {
   --k-u: min(calc(100vw / 39.3), 12px);
 
-  --k-cols: 4;
   --k-gutter: calc(var(--k-u) * 1.6);
   --k-inset: calc(var(--k-u) * 0.8);
-  --k-line-w: max(1px, calc(var(--k-u) * 0.1));
-  --k-header-h: calc(var(--k-u) * 5);
+  --k-header-h: calc(var(--k-u) * 5.6);
 
-  /* type sizes — floors keep every role at or above the 12px minimum */
-  --k-fs-display-1: max(32px, calc(var(--k-u) * 3.2));
+  /* type sizes; floors keep every role at or above the 12px minimum */
+  --k-fs-display-1: max(34px, calc(var(--k-u) * 3.6));
   --k-fs-display-2: max(28px, calc(var(--k-u) * 3.2));
   --k-fs-statement: max(22px, calc(var(--k-u) * 2.4));
-  --k-lh-statement: 1.1;
+  --k-lh-statement: 1.08;
   --k-fs-title: max(18px, calc(var(--k-u) * 2));
-  --k-lh-title: 1.2;
-  --k-fs-label: max(12px, calc(var(--k-u) * 1.4));
-  --k-lh-label: 1.1;
-  --k-fs-body: max(14px, calc(var(--k-u) * 1.4));
+  --k-lh-title: 1.15;
+  --k-fs-label: max(12px, calc(var(--k-u) * 1.2));
+  --k-fs-body: max(15px, calc(var(--k-u) * 1.5));
 
-  /* radius — HYBRID: structure is square, things you touch are rounded */
-  --k-radius-frame: 0px;      /* grid cells, sections, header cells, dividers */
-  --k-radius-media: 1rem;     /* image + video cards */
-  --k-radius-field: 0.75rem;  /* inputs, selects */
-  --k-radius-control: 9999px; /* buttons, pills, chips */
+  /* radius: HYBRID. Structure is square; media, fields and controls are rounded */
+  --k-radius-frame: 0px;
+  --k-radius-media: 1rem;
+  --k-radius-field: 0.75rem;
+  --k-radius-control: 9999px;
 
-  /* motion — durations/eases from Heron's bundle; GSAP names in DESIGN.md */
-  --k-dur-1: 0.5s;
-  --k-dur-2: 0.8s;
-  --k-dur-3: 1.2s;
-  --k-ease-out: cubic-bezier(0.16, 1, 0.3, 1);          /* ≈ expo.out */
-  --k-ease-out-soft: cubic-bezier(0.215, 0.61, 0.355, 1); /* ≈ power3.out */
+  /* motion presets, named by job (DESIGN.md · Motion) */
+  --k-ease-out: cubic-bezier(0.16, 1, 0.3, 1);        /* reveals (≈ expo.out, Heron) */
+  --k-ease-ui: cubic-bezier(0.23, 1, 0.32, 1);        /* interface enters */
+  --k-ease-move: cubic-bezier(0.77, 0, 0.175, 1);     /* on-screen movement */
+  --k-dur-instant: 120ms;   /* press */
+  --k-dur-micro: 160ms;     /* hover, colour */
+  --k-dur-enter: 240ms;     /* menus, dialogs in */
+  --k-dur-exit: 160ms;      /* menus, dialogs out (always shorter than enter) */
+  --k-dur-collapse: 320ms;  /* accordion */
+  --k-dur-reveal: 800ms;    /* scroll-in reveals, marketing only */
 
-  /* fonts — Inter (self-hosted) for display/body; CJK from Google Fonts, chosen
-     by :lang below, with each OS's native face as the fallback while it loads */
+  /* fonts: IBM Plex (self-hosted) first; the CJK face follows <html lang> */
   --k-font-cjk: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei";
-  --k-font-display: var(--font-inter), var(--k-font-cjk), system-ui, sans-serif;
-  --k-font-mono: var(--font-mono);
-  --k-font-editorial: var(--font-serif);  /* Gloock — 观 column only */
-  --k-font-gothic: var(--font-gothic);    /* Canterbury — wordmark capitals only */
+  --k-font-display: var(--font-plex-sans), var(--k-font-cjk), system-ui, sans-serif;
+  --k-font-mono: var(--font-plex-mono), var(--k-font-cjk), ui-monospace, monospace;
 }
 @media (min-width: 768px) {
   :root {
     --k-u: min(calc(100vw / 172.8), 12px);
-    --k-cols: 12;
     --k-gutter: calc(var(--k-u) * 2);
     --k-header-h: calc(var(--k-u) * 6.4);
-    --k-fs-display-1: max(32px, calc(var(--k-u) * 5.6));
+    --k-fs-display-1: max(34px, calc(var(--k-u) * 5.6));
     --k-fs-display-2: max(28px, calc(var(--k-u) * 4.8));
     --k-fs-statement: max(22px, calc(var(--k-u) * 4));
-    --k-lh-statement: 1;
+    --k-lh-statement: 1.02;
     --k-fs-title: max(18px, calc(var(--k-u) * 2.8));
-    --k-lh-title: 1;
-    --k-lh-label: 1.4;
-    --k-fs-body: max(14px, calc(var(--k-u) * 1.6));
+    --k-lh-title: 1.05;
+    --k-fs-label: max(12px, calc(var(--k-u) * 1.4));
+    --k-fs-body: max(15px, calc(var(--k-u) * 1.7));
   }
 }
 /* zh-TW and ja share Han code points with different glyph forms, so the CJK
    face must follow <html lang>, never a single fallback list. */
 :root:lang(zh-TW) { --k-font-cjk: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei"; }
-:root:lang(ja) { --k-font-cjk: "Noto Sans JP", "Hiragino Sans", "Yu Gothic"; }
-:root:lang(ko) { --k-font-cjk: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic"; }
+:root:lang(ja) { --k-font-cjk: "IBM Plex Sans JP", "Hiragino Sans", "Yu Gothic"; }
+:root:lang(ko) { --k-font-cjk: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic"; }
 
 @theme inline {
   --color-k-paper: var(--k-paper);
@@ -241,11 +293,11 @@
   --color-k-accent: var(--k-accent);
   --color-k-accent-text: var(--k-accent-text);
   --color-k-on-accent: var(--k-on-accent);
-  --color-k-accent-wash: var(--theme-accent-wash);
+  --color-k-accent-wash: var(--k-accent-wash);
+  --color-k-danger: var(--k-danger);
 
   --font-k-display: var(--k-font-display);
   --font-k-mono: var(--k-font-mono);
-  --font-k-editorial: var(--k-font-editorial);
 
   --radius-k-frame: var(--k-radius-frame);
   --radius-k-media: var(--k-radius-media);
@@ -253,11 +305,146 @@
   --radius-k-control: var(--k-radius-control);
 
   --ease-k-out: var(--k-ease-out);
-  --ease-k-out-soft: var(--k-ease-out-soft);
+  --ease-k-ui: var(--k-ease-ui);
+  --ease-k-move: var(--k-ease-move);
 }
 
-/* --- motion: Lenis smooth scroll (rules from lenis/dist/lenis.css) and the
-       two looping keyframes v4 uses --- */
+/* --- drawings: the anatomy kit's tokens, pointed at the roles above so every
+       figure follows the theme and keeps to one lit accent --- */
+.iso {
+  --anatomy-page: var(--k-paper);
+  --anatomy-card: var(--k-paper);
+  --anatomy-text: var(--k-ink-3);
+  --anatomy-strong: var(--k-ink);
+  --anatomy-muted: var(--k-ink-3);
+  --anatomy-paper: var(--k-paper);
+  --anatomy-face: var(--k-fig-face);
+  --anatomy-top: var(--k-fig-top);
+  --anatomy-shade-0: var(--k-fig-shade-0);
+  --anatomy-shade-1: var(--k-fig-shade-1);
+  --anatomy-shade-2: var(--k-fig-shade-2);
+  --anatomy-shade-3: var(--k-fig-shade-3);
+  --anatomy-lit-top: color-mix(in oklab, var(--k-accent) 7%, var(--k-fig-top));
+  --anatomy-lit-shade: color-mix(in oklab, var(--k-accent) 11%, var(--k-fig-shade-2));
+  --anatomy-hi: var(--k-fig-hi);
+  --anatomy-mid: var(--k-fig-mid);
+  --anatomy-lo: var(--k-fig-lo);
+  --anatomy-faint: var(--k-fig-faint);
+  --anatomy-lit: var(--k-accent);
+  --anatomy-halo: var(--k-fig-halo);
+  --anatomy-halo-opacity: var(--k-fig-halo-opacity);
+  --anatomy-dot: var(--k-fig-hi);
+  --anatomy-mono: var(--k-font-mono);
+  --anatomy-weight: 0.7px;
+}
+
+/* figure details the kit has no class for: a status lamp, a liquid level, an
+   opening into a dark interior. All read the drawing tokens above. */
+.iso .k-lamp { fill: var(--anatomy-paper); stroke: var(--anatomy-mid); stroke-width: var(--anatomy-weight); vector-effect: non-scaling-stroke; transition: fill var(--k-dur-micro), stroke var(--k-dur-micro); }
+.iso .k-lamp[data-on] { fill: var(--anatomy-lit); stroke: var(--anatomy-lit); }
+.iso .k-fig-liquid { fill: color-mix(in oklab, var(--anatomy-mid) 38%, var(--anatomy-paper)); stroke: none; }
+.iso .k-void { fill: color-mix(in oklab, var(--anatomy-hi) 72%, var(--anatomy-paper)); }
+.matrix-mode .iso .k-void, [data-theme="matrix-mode"] .iso .k-void { fill: color-mix(in oklab, #000 70%, var(--anatomy-paper)); }
+/* the part a reader picked: tones step up, the rest step down (motion.md › Selection) */
+.iso [data-pick] .iso-line[data-tone="hi"], .iso [data-pick] .iso-line[data-tone="mid"] { stroke: var(--anatomy-lit); }
+.iso [data-pick] .iso-top { fill: var(--anatomy-lit-top); }
+.iso [data-pick] .iso-shade { fill: var(--anatomy-lit-shade); }
+
+@keyframes k-pop {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+/* one visible focus ring across v5, in the accent */
+.font-k-display :focus-visible { outline: 2px solid var(--k-accent); outline-offset: 2px; }
+/* sections take focus after an in-page jump; no ring for a programmatic focus */
+section[tabindex="-1"]:focus, main[tabindex="-1"]:focus { outline: none; }
+/* native dialog motion: enter 240ms ease-ui, exit 160ms */
+.k-dialog { opacity: 1; transform: none; transition: opacity var(--k-dur-exit) var(--k-ease-ui), transform var(--k-dur-exit) var(--k-ease-ui), overlay var(--k-dur-exit) allow-discrete, display var(--k-dur-exit) allow-discrete; }
+.k-dialog:not([open]) { opacity: 0; transform: translateY(8px) scale(0.98); }
+@starting-style { .k-dialog[open] { opacity: 0; transform: translateY(8px) scale(0.98); } }
+.k-dialog[open] { transition-duration: var(--k-dur-enter); }
+@media (prefers-reduced-motion: reduce) { .k-dialog { transition: opacity var(--k-dur-exit) linear; transform: none !important; } }
+
+/* --- inverted scope: the accent becomes the page (the footer, and the header
+       while it sits over the footer). Only pure white clears 4.5:1 on the red,
+       so every text role is white here; hierarchy comes from the type role. --- */
+:root { --k-accent-base: var(--kp-red-500); --k-press-fill: var(--k-ink); --k-press-ink: var(--k-paper); }
+.xuan-mode, [data-theme="xuan-mode"] { --k-accent-base: var(--kp-green-800); }
+.k-invert {
+  --k-paper: var(--k-accent-base);
+  --k-surface: color-mix(in oklab, var(--kp-stone-0) 10%, var(--k-accent-base));
+  --k-ink: var(--kp-stone-0);
+  --k-ink-2: var(--kp-stone-0);
+  --k-ink-3: var(--kp-stone-0);
+  --k-ink-4: color-mix(in oklab, var(--kp-stone-0) 45%, var(--k-accent-base));
+  --k-line: color-mix(in oklab, var(--kp-stone-0) 30%, var(--k-accent-base));
+  --k-accent: var(--kp-stone-0);
+  --k-accent-text: var(--kp-stone-0);
+  --k-on-accent: var(--k-accent-base);
+  --k-press-fill: var(--kp-stone-850);
+  --k-press-ink: var(--kp-stone-0);
+}
+
+/* --- dither: Kairma prints in ordered dither (8×8 Bayer). The ramps in
+       public/dither are solid · dithered gradient · empty; sliding one across an
+       element with mask-position dissolves a fill in or out pixel by pixel. --- */
+:root { --k-dither-x: url(/dither/ramp-x.svg); --k-dither-y: url(/dither/ramp-y.svg); }
+
+/* --- hover (DESIGN.md › Motion): Heron rolls its labels over a wipe; Kairma
+       rolls the label over a dither dissolve. Nav cells dissolve up from their
+       accent underline, pills dissolve in from the left as the arrow rides out. --- */
+.k-roll { display: inline-grid; overflow: hidden; vertical-align: top; }
+.k-roll > * { grid-area: 1 / 1; transition: transform 420ms var(--k-ease-ui); }
+.k-roll > :last-child { transform: translateY(110%); }
+.k-arrow { display: inline-grid; overflow: hidden; }
+.k-arrow > * { grid-area: 1 / 1; transition: transform 420ms var(--k-ease-ui); }
+.k-arrow > :last-child { transform: translateX(-120%); }
+.k-fx { position: relative; isolation: isolate; overflow: hidden; transition: color 300ms var(--k-ease-ui), transform var(--k-dur-instant) var(--k-ease-ui); }
+.k-fx::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--k-fx-fill, var(--k-accent));
+  -webkit-mask: var(--k-dither-y) 0 0 / 21px 300% repeat-x; mask: var(--k-dither-y) 0 0 / 21px 300% repeat-x;
+  transition: -webkit-mask-position 480ms var(--k-ease-ui), mask-position 480ms var(--k-ease-ui);
+}
+.k-fx[data-fx="x"]::before {
+  -webkit-mask: var(--k-dither-x) 100% 0 / 300% 24px repeat-y; mask: var(--k-dither-x) 100% 0 / 300% 24px repeat-y;
+}
+.k-fx-press { --k-fx-fill: var(--k-press-fill); --k-fx-ink: var(--k-press-ink); }
+@media (hover: hover) and (pointer: fine) {
+  .k-fx:hover::before { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  .k-fx[data-fx="x"]:hover::before { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  .k-fx:hover { color: var(--k-fx-ink, var(--k-on-accent)); }
+  .k-fx:hover .k-roll > :first-child { transform: translateY(-110%); }
+  .k-fx:hover .k-roll > :last-child { transform: none; }
+  .k-fx:hover .k-arrow > :first-child { transform: translateX(120%); }
+  .k-fx:hover .k-arrow > :last-child { transform: none; }
+}
+.k-fx:focus-visible::before { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+.k-fx[data-fx="x"]:focus-visible::before { -webkit-mask-position: 0 0; mask-position: 0 0; }
+.k-fx:focus-visible { color: var(--k-fx-ink, var(--k-on-accent)); }
+@media (prefers-reduced-motion: reduce) {
+  .k-roll > *, .k-arrow > *, .k-fx::before { transition: none; }
+  .k-roll > :first-child, .k-arrow > :first-child { transform: none !important; }
+  .k-roll > :last-child, .k-arrow > :last-child { visibility: hidden; }
+}
+/* a dithered edge: the element fades out downward in Bayer steps (the ramp
+   third of ramp-y, flipped so the solid end is on top) */
+.k-dither-edge { -webkit-mask: var(--k-dither-y) 0 50% / 21px 300% repeat-x; mask: var(--k-dither-y) 0 50% / 21px 300% repeat-x; transform: scaleY(-1); }
+
+/* theme switch: the new theme dissolves up the screen in Bayer steps over the
+   old one (View Transitions; src/lib/theme.ts starts it) */
+::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: k-dither-up 760ms var(--k-ease-move) both;
+  -webkit-mask: url(/dither/ramp-screen.svg) 0 0 / calc(100vh / 20) 300% repeat-x;
+  mask: url(/dither/ramp-screen.svg) 0 0 / calc(100vh / 20) 300% repeat-x;
+}
+@keyframes k-dither-up {
+  from { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  to { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+}
+
+/* --- Lenis smooth scroll (rules from lenis/dist/lenis.css) --- */
 html.lenis,
 html.lenis body {
   height: auto;
@@ -274,32 +461,28 @@ html.lenis body {
 @keyframes k-marquee {
   to { transform: translateX(-50%); }
 }
-/* tasks moving along the Keep's routes */
-@keyframes k-dash {
-  to { stroke-dashoffset: -24; }
-}
 
-/* --- type roles: one utility per role; size/leading come from the tokens --- */
+/* --- type roles: one utility per role; size and leading come from tokens --- */
 @utility k-display-1 {
   font-family: var(--k-font-display);
   font-size: var(--k-fs-display-1);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
 }
 @utility k-display-2 {
   font-family: var(--k-font-display);
   font-size: var(--k-fs-display-2);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
 }
 @utility k-statement {
   font-family: var(--k-font-display);
   font-size: var(--k-fs-statement);
-  font-weight: 600;
+  font-weight: 500;
   line-height: var(--k-lh-statement);
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -307,21 +490,23 @@ html.lenis body {
 @utility k-title {
   font-family: var(--k-font-display);
   font-size: var(--k-fs-title);
-  font-weight: 600;
+  font-weight: 500;
   line-height: var(--k-lh-title);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   text-transform: uppercase;
 }
 @utility k-label {
   font-family: var(--k-font-mono);
   font-size: var(--k-fs-label);
-  line-height: var(--k-lh-label);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
 }
 @utility k-body {
   font-family: var(--k-font-display);
   font-size: var(--k-fs-body);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 @theme {

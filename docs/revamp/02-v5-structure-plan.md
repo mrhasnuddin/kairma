@@ -184,3 +184,14 @@ Inter goes in every case. Specimens were shown in chat; the pick is gate F.
 ## 8. Order of work
 
 1. Gates → 2. tokens, checks, wave-1 components → 3. copy file from §3 (six locales from the v6 translations; archive lines need new translations, flagged for native review) → 4. sections in Heron order with figure placeholders → 5. figures A, B, C → 6. verify at 1440 and 390, both themes, reduced motion, `next build`, `check:ds` → 7. delete v3/v4 code after sign-off.
+
+## 9 · As built (2026-10-19)
+
+Decisions taken: font pair 1 (IBM Plex Sans + Mono) · copy rewritten with humanize from the original (sloplint 1/100, no dashes, six locales, non-English drafts for native review) · 观 frontispiece dropped for now · v4 committed as a checkpoint (9a21938) and v5 built on branch `v5`.
+
+- **Page**: loader (Keep drawn in behind a scan line, three boot lines) → hero (Fig. 01) → intro (statement, Key close-up, routed-across strip) → the shift (four problem cards) → platform [03] the Keep (Fig. 02, pick a part) and [04] model router (Fig. 03 rack + live OpenRouter top 10, server-rendered, ISR 5 min) → why Kairma (four moats) → workforce (accordion + Fig. 04 cage) → CTA with the developer line → old reveal footer.
+- **Drawings** (anatomy): keep, keep-detail, keep-open, rack, cage, four moats, four problem icons. 13 figures, 35–147 KB each before compression, fetched near the viewport.
+- **Cursor**: accent trail, crop marks around pressable things, seal stamp on click; desktop and fine pointers only; off under reduced motion.
+- **Frame marks**: default `crop`; preview `?frame=ledger`, `?frame=grid`, `?frame=seal`.
+- **Fixed on the way**: the pilot form never sent anything (now opens an email to pilot@kairma.ai, the address from the original copy); the leaderboard's invented fallback models are gone (it says rankings are unavailable instead); the copy now says "daily usage" to match the API (`order=top-daily`).
+- **Accessibility audit** (impeccable): fixed focus hidden under the footer curtain, dark red text contrast (4.4 → 4.6:1), the endless ticker (now static), language menu semantics, small table touch targets, focus reachable behind the loader, the intro heading, faint focus rings. Remaining: the kept footer's all-caps line and scanline stripes.

@@ -1,0 +1,37 @@
+{
+  "include": [
+    "src/components/v5"
+  ],
+  "tokenSources": [
+    "src/app/globals.css",
+    "src/components/iso/iso.css"
+  ],
+  "uiDir": "src/components/v5/__none__",
+  "registry": "registry.json",
+  "driftList": "scripts/ui-drift.tsv",
+  "allowlist": "scripts/check-allowlist.json",
+  "rulesOff": [
+    "trap/native-control",
+    "trap/label-unbound"
+  ],
+  "sharedTokens": [
+    "--kp-stone-0",
+    "--kp-stone-50",
+    "--kp-stone-300",
+    "--kp-stone-600",
+    "--kp-stone-750",
+    "--kp-stone-850",
+    "--kp-night-950",
+    "--kp-night-900",
+    "--kp-night-800",
+    "--kp-night-700",
+    "--kp-night-500",
+    "--kp-night-200",
+    "--kp-night-100",
+    "--kp-green-800",
+    "--kp-red-500",
+    "--kp-red-400",
+    "--font-plex-sans",
+    "--font-plex-mono"
+  ]
+}

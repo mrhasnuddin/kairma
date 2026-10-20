@@ -3,21 +3,23 @@ import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, SHARE_DESCRIPTION, K
 import { ThemeProvider, themeScript } from "@/lib/theme";
 import { LanguageProvider } from "@/lib/language";
 import "./globals.css";
-import { Geist, Inter } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-// v4 display/body face. `opsz` lets Inter tighten its forms at display sizes.
+// v5 type: IBM Plex Sans (display + body) and Plex Mono (labels, readouts).
 // latin-ext + vietnamese cover the vi and ms locales.
-const inter = Inter({
+const plexSans = IBM_Plex_Sans({
   subsets: ["latin", "latin-ext", "vietnamese"],
-  axes: ["opsz"],
-  variable: "--font-inter",
+  variable: "--font-plex-sans",
 });
-// CJK faces (Noto Sans TC/JP/KR) are NOT self-hosted: each is ~100 unicode
-// slices, and fetching them all at build time made builds flaky. They load
-// from Google Fonts on demand — see LanguageProvider.
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin", "latin-ext", "vietnamese"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
+});
+// CJK faces (IBM Plex Sans JP / KR, Noto Sans TC) are NOT self-hosted: each is
+// ~100 unicode slices and made builds flaky. They load from Google Fonts on
+// demand, only for that locale (see LanguageProvider).
 
 // Share images come from the opengraph-image / twitter-image file conventions
 // (landscape 1200×630 + square 1200×1200), so no `images` are set here.
@@ -104,7 +106,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("font-sans", geist.variable, inter.variable)}
+      className={cn(plexSans.variable, plexMono.variable)}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

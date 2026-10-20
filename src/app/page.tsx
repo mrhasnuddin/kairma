@@ -1,11 +1,22 @@
 import React, { Suspense } from "react";
-import SiteShellV4 from "@/components/v4/SiteShellV4";
+import SiteShellV5 from "@/components/v5/SiteShellV5";
+import { fetchRankedModels, slimModel, type ModelRow } from "@/lib/openrouter";
 
-// v4 (Heron grammar). The v3 bento shell stays in components/layout until v4 is signed off.
-export default function Home() {
+// Rankings are prerendered and refreshed at most every 5 minutes (ISR); the
+// client re-syncs on the same cadence.
+export const revalidate = 300;
+
+// v5. The v3 and v4 shells stay in components/ until v5 is signed off.
+export default async function Home() {
+  let models: ModelRow[] = [];
+  try {
+    models = (await fetchRankedModels(10)).map(slimModel);
+  } catch {
+    // OpenRouter down at render time: the leaderboard says so and retries.
+  }
   return (
     <Suspense fallback={<div className="min-h-screen w-full bg-k-paper" />}>
-      <SiteShellV4 />
+      <SiteShellV5 models={models} />
     </Suspense>
   );
 }
