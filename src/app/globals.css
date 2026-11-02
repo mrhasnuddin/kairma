@@ -361,6 +361,8 @@ section[tabindex="-1"]:focus, main[tabindex="-1"]:focus { outline: none; }
 .k-dialog { opacity: 1; transform: none; transition: opacity var(--k-dur-exit) var(--k-ease-ui), transform var(--k-dur-exit) var(--k-ease-ui), overlay var(--k-dur-exit) allow-discrete, display var(--k-dur-exit) allow-discrete; }
 .k-dialog:not([open]) { opacity: 0; transform: translateY(8px) scale(0.98); }
 @starting-style { .k-dialog[open] { opacity: 0; transform: translateY(8px) scale(0.98); } }
+/* an unchosen select reads like an input placeholder */
+.k-select:has(option[value=""]:checked) { color: var(--k-ink-3); }
 .k-dialog[open] { transition-duration: var(--k-dur-enter); }
 @media (prefers-reduced-motion: reduce) { .k-dialog { transition: opacity var(--k-dur-exit) linear; transform: none !important; } }
 

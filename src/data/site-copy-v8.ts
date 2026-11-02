@@ -33,7 +33,7 @@ export interface CopyV8 {
   workforce: { label: string; h: string; status: string; items: Employee[] };
   cta: { h: string; body: string; button: string; devLabel: string; devText: string; devNote: string };
   deploy: { title: string; lead: string; paragraphs: string[]; close: string };
-  pilot: { required: string; invalid: string; sent: string; again: string };
+  pilot: { required: string; invalid: string; sent: string; again: string; choose: string };
   figures: {
     keep: FigureCopy; keepOpen: FigureCopy; rack: FigureCopy; cage: FigureCopy;
     moats: string[]; problems: string[];
@@ -137,7 +137,7 @@ const en: CopyV8 = {
     ],
     close: "Close",
   },
-  pilot: { required: "Enter your work email.", invalid: "That email doesn't look right. Check it and try again.", sent: "Your email app has opened with these details. Send it to pilot@kairma.ai and we reply within one business day.", again: "Open email again" },
+  pilot: { required: "Enter your work email.", invalid: "That email doesn't look right. Check it and try again.", sent: "Your email app has opened with these details. Send it to pilot@kairma.ai and we reply within one business day.", again: "Open email again", choose: "Choose one" },
   figures: {
     keep: { title: "The Keep", hint: "Hover to pull the Key", aria: "Drawing of the Keep as a small Greek treasury on a stone base, its bronze door shut and the temple key in the lock. Sealed scrolls, the tasks, leave by one side window along a stone runnel." },
     keepOpen: { title: "Inside the Keep", hint: "Select a part", aria: "Cutaway drawing of the treasury. The brand data lake is a spring in a stone well-head, the SOP engine is Clotho's spindle, the model router is a herm of Hermes, and the RPA and API are four golden handmaidens tied to your systems. Scrolls leave by one channel, and the spring is not connected to it." },
@@ -255,7 +255,7 @@ const zhTW: CopyV8 = {
     ],
     close: "關閉",
   },
-  pilot: { required: "請輸入工作電郵。", invalid: "這個電郵格式不正確，請檢查後再試。", sent: "你的電郵程式已帶著這些資料開啟。寄到 pilot@kairma.ai 後，我們會在一個工作天內回覆。", again: "再次開啟電郵" },
+  pilot: { required: "請輸入工作電郵。", invalid: "這個電郵格式不正確，請檢查後再試。", sent: "你的電郵程式已帶著這些資料開啟。寄到 pilot@kairma.ai 後，我們會在一個工作天內回覆。", again: "再次開啟電郵", choose: "請選擇" },
   figures: {
     keep: { title: "the Keep", hint: "懸停以拔出鑰匙", aria: "the Keep 圖示：石座上的一座希臘式寶庫，青銅門緊閉，神殿鑰匙插在鎖中。封存的卷軸（任務）從一扇側窗沿石槽送出。" },
     keepOpen: { title: "the Keep 內部", hint: "選擇一個部件", aria: "寶庫剖面圖：品牌數據湖是石砌井欄中的泉水，SOP 引擎是克洛托的紡錘，模型路由是赫密士的界石像，RPA 與 API 是四位連接你各個系統的黃金侍女。卷軸經由一條石槽離開，泉水與它互不相連。" },
@@ -373,7 +373,7 @@ const ja: CopyV8 = {
     ],
     close: "閉じる",
   },
-  pilot: { required: "勤務先のメールアドレスを入力してください。", invalid: "メールアドレスの形式が正しくありません。確認してもう一度お試しください。", sent: "入力内容を含めてメールアプリを開きました。pilot@kairma.ai へ送信いただければ、1 営業日以内にご連絡します。", again: "もう一度メールを開く" },
+  pilot: { required: "勤務先のメールアドレスを入力してください。", invalid: "メールアドレスの形式が正しくありません。確認してもう一度お試しください。", sent: "入力内容を含めてメールアプリを開きました。pilot@kairma.ai へ送信いただければ、1 営業日以内にご連絡します。", again: "もう一度メールを開く", choose: "選択してください" },
   figures: {
     keep: { title: "the Keep", hint: "ホバーで鍵を抜く", aria: "the Keep の図：石の基壇に建つギリシャ式の宝庫。青銅の扉は閉じられ、神殿の鍵が錠に差さっている。封をした巻物（タスク）が一つの側窓から石の樋を通って出ていく。" },
     keepOpen: { title: "the Keep の内部", hint: "部品を選ぶ", aria: "宝庫の断面図：ブランドデータレイクは石の井戸枠の中の泉、SOP エンジンはクロトの紡錘、モデルルーターはヘルメスの柱像、RPA と API はあなたのシステムにつながる四体の黄金の侍女。巻物は一本の樋から出ていき、泉はそこにつながっていない。" },
@@ -491,7 +491,7 @@ const ko: CopyV8 = {
     ],
     close: "닫기",
   },
-  pilot: { required: "업무용 이메일을 입력하세요.", invalid: "이메일 형식이 올바르지 않습니다. 확인 후 다시 시도하세요.", sent: "입력한 내용으로 이메일 앱을 열었습니다. pilot@kairma.ai로 보내 주시면 1영업일 안에 답장드립니다.", again: "이메일 다시 열기" },
+  pilot: { required: "업무용 이메일을 입력하세요.", invalid: "이메일 형식이 올바르지 않습니다. 확인 후 다시 시도하세요.", sent: "입력한 내용으로 이메일 앱을 열었습니다. pilot@kairma.ai로 보내 주시면 1영업일 안에 답장드립니다.", again: "이메일 다시 열기", choose: "선택하세요" },
   figures: {
     keep: { title: "the Keep", hint: "마우스를 올려 열쇠 뽑기", aria: "the Keep 그림: 돌 기단 위의 그리스식 보물창고. 청동 문은 닫혀 있고 신전 열쇠가 자물쇠에 꽂혀 있다. 봉인된 두루마리(작업)가 옆 창 하나로 나와 돌 홈통을 따라 나간다." },
     keepOpen: { title: "the Keep 내부", hint: "부품 선택", aria: "보물창고 단면도: 브랜드 데이터 레이크는 돌 우물 속의 샘, SOP 엔진은 클로토의 물레가락, 모델 라우터는 헤르메스의 기둥상, RPA와 API는 당신의 시스템에 연결된 네 명의 황금 시녀다. 두루마리는 홈통 하나로 나가며, 샘은 그것과 연결되어 있지 않다." },
@@ -609,7 +609,7 @@ const vi: CopyV8 = {
     ],
     close: "Đóng",
   },
-  pilot: { required: "Hãy nhập email công việc của bạn.", invalid: "Email này có vẻ chưa đúng. Hãy kiểm tra và thử lại.", sent: "Ứng dụng email đã mở với các thông tin này. Gửi đến pilot@kairma.ai và chúng tôi sẽ phản hồi trong một ngày làm việc.", again: "Mở lại email" },
+  pilot: { required: "Hãy nhập email công việc của bạn.", invalid: "Email này có vẻ chưa đúng. Hãy kiểm tra và thử lại.", sent: "Ứng dụng email đã mở với các thông tin này. Gửi đến pilot@kairma.ai và chúng tôi sẽ phản hồi trong một ngày làm việc.", again: "Mở lại email", choose: "Chọn một mục" },
   figures: {
     keep: { title: "the Keep", hint: "Rê chuột để rút chìa", aria: "Hình the Keep: một kho báu kiểu Hy Lạp trên nền đá, cửa đồng đóng kín, chìa khóa đền cắm trong ổ. Những cuộn giấy niêm phong (tác vụ) ra qua một ô cửa bên, theo một máng đá." },
     keepOpen: { title: "Bên trong the Keep", hint: "Chọn một bộ phận", aria: "Hình cắt của kho báu: hồ dữ liệu thương hiệu là dòng suối trong thành giếng đá, công cụ SOP là con suốt của Clotho, bộ định tuyến mô hình là trụ tượng Hermes, còn RPA và API là bốn nữ hầu bằng vàng nối với các hệ thống của bạn. Cuộn giấy ra qua một máng duy nhất, và dòng suối không nối với máng đó." },
@@ -727,7 +727,7 @@ const ms: CopyV8 = {
     ],
     close: "Tutup",
   },
-  pilot: { required: "Masukkan e-mel kerja anda.", invalid: "E-mel itu kelihatan tidak betul. Semak dan cuba lagi.", sent: "Aplikasi e-mel anda telah dibuka dengan butiran ini. Hantar ke pilot@kairma.ai dan kami membalas dalam satu hari bekerja.", again: "Buka e-mel semula" },
+  pilot: { required: "Masukkan e-mel kerja anda.", invalid: "E-mel itu kelihatan tidak betul. Semak dan cuba lagi.", sent: "Aplikasi e-mel anda telah dibuka dengan butiran ini. Hantar ke pilot@kairma.ai dan kami membalas dalam satu hari bekerja.", again: "Buka e-mel semula", choose: "Pilih satu" },
   figures: {
     keep: { title: "the Keep", hint: "Tuding untuk mencabut Kunci", aria: "Lukisan the Keep sebagai perbendaharaan Yunani kecil di atas tapak batu, pintu gangsanya tertutup dan kunci kuil di dalam mangganya. Gulungan bermeterai, iaitu tugasan, keluar melalui satu tingkap sisi di sepanjang saluran batu." },
     keepOpen: { title: "Di dalam the Keep", hint: "Pilih satu bahagian", aria: "Lukisan keratan perbendaharaan. Tasik data jenama ialah mata air di dalam bibir perigi batu, enjin SOP ialah pemintal Clotho, penghala model ialah tugu Hermes, dan RPA serta API ialah empat dayang emas yang terikat pada sistem anda. Gulungan keluar melalui satu saluran, dan mata air itu tidak bersambung dengannya." },

@@ -77,10 +77,13 @@ export function PilotDialog({ open, onClose }: { open: boolean; onClose: () => v
             {(["country", "workflow", "sovereignty"] as const).map((k) => (
               <label key={k} className={label}>
                 {p.fields[k].label}
-                <select name={k} defaultValue="" className={field}>
-                  <option value="" disabled>·</option>
-                  {p.fields[k].options?.map((o) => <option key={o} value={o}>{o}</option>)}
-                </select>
+                <span className="relative">
+                  <select name={k} defaultValue="" className={`k-select ${field} appearance-none pr-10`}>
+                    <option value="" disabled>{c.pilot.choose}</option>
+                    {p.fields[k].options?.map((o) => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                  <svg aria-hidden viewBox="0 0 16 16" className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 fill-none stroke-k-ink-3" strokeWidth="1.5"><path d="M4 6l4 4 4-4" /></svg>
+                </span>
               </label>
             ))}
           </div>
